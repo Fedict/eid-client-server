@@ -27,7 +27,7 @@
 						<artifactId>keytool-maven-plugin</artifactId>
 						<executions>
 							<execution>
-								<phase>process-resources</phase>
+								<phase>prepare-package</phase>
 								<goals>
 									<goal>generateKeyPair</goal>
 								</goals>
@@ -43,6 +43,7 @@
 							<keyalg>RSA</keyalg>
 							<storetype>PKCS12</storetype>
 							<verbose>true</verbose>
+							<skipIfExist>true</skipIfExist>
 						</configuration>
 					</plugin>
 					<plugin>
