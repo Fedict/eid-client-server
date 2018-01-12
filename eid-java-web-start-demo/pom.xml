@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>be.fedict.eid-java-web-start</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>eid-java-web-start-demo</artifactId>
+	<packaging>war</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+							<includeArtifactIds>eid-java-web-start-signed</includeArtifactIds>
+							<stripClassifier>true</stripClassifier>
+							<stripVersion>true</stripVersion>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<packagingExcludes>WEB-INF/lib/eid-java-web-start*.jar</packagingExcludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>keytool-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>generateKeyPair</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<keystore>${project.build.directory}/webserver.p12</keystore>
+					<dname><![CDATA[CN=localhost]]></dname>
+					<alias>SIGN</alias>
+					<keypass>changeit</keypass>
+					<storepass>changeit</storepass>
+					<validity>365</validity>
+					<keyalg>RSA</keyalg>
+					<storetype>PKCS12</storetype>
+					<verbose>true</verbose>
+					<skipIfExist>true</skipIfExist>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<configuration>
+					<jettyXml>
+						src/jetty/jetty.xml,
+						src/jetty/jetty-http.xml,
+						src/jetty/jetty-ssl.xml,
+						src/jetty/jetty-https.xml
+					</jettyXml>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>be.fedict.eid-java-web-start</groupId>
+			<artifactId>eid-java-web-start-signed</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-maven-plugin</artifactId>
+			<version>9.4.8.v20171121</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+</project>

@@ -55,6 +55,8 @@
 
 	<modules>
 		<module>eid-java-web-start-signed</module>
+
+		<module>eid-java-web-start-demo</module>
 	</modules>
 
 	<build>
@@ -135,6 +137,11 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>3.2.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>3.1.0</version>
 				</plugin>
@@ -168,6 +175,12 @@
 					<artifactId>maven-jarsigner-plugin</artifactId>
 					<version>1.4</version>
 				</plugin>
+
+				<plugin>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-maven-plugin</artifactId>
+					<version>9.4.8.v20171121</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -184,6 +197,21 @@
 			</extension>
 		</extensions>
 	</build>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>be.fedict.eid-java-web-start</groupId>
+				<artifactId>eid-java-web-start-signed</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>be.fedict.eid-java-web-start</groupId>
+				<artifactId>eid-java-web-start-demo</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<repositories>
 		<repository>
