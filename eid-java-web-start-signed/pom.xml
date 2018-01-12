@@ -14,6 +14,32 @@
 	<artifactId>eid-java-web-start-signed</artifactId>
 	<name>Java Web Start Main artifact</name>
 
+	<dependencies>
+		<dependency>
+			<groupId>javax.jnlp</groupId>
+			<artifactId>jnlp-api</artifactId>
+			<version>${version.jdk}</version>
+			<scope>system</scope>
+			<systemPath>${java.home}/lib/javaws.jar</systemPath>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Permissions>all-permissions</Permissions>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<profiles>
 		<profile>
 			<id>self-signed</id>
