@@ -11,7 +11,7 @@
 	</security>
 	<resources>
 		<java version="1.8+" />
-		<jar href="eid-java-web-start-signed.jar" />
+		<jar href="eid-java-web-start-client-signed.jar" />
 	</resources>
-	<application-desc main-class="be.bosa.eidjws.TestApplication" />
+	<application-desc main-class="be.bosa.eidjws.client.TestApplication" />
 </jnlp>

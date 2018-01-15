@@ -52,10 +52,14 @@
 		<version.jdk>1.8</version.jdk>
 		<encoding>UTF-8</encoding>
 		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+
+		<version.be.fedict.commons-eid>1.0.0-SNAPSHOT</version.be.fedict.commons-eid>
 	</properties>
 
 	<modules>
-		<module>eid-java-web-start-signed</module>
+		<module>eid-java-web-start-client</module>
+		<module>eid-java-web-start-client-signed</module>
+
 		<module>eid-java-web-start-demo</module>
 	</modules>
 
@@ -132,6 +136,11 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
 					<version>3.0.2</version>
 				</plugin>
@@ -202,13 +211,29 @@
 		<dependencies>
 			<dependency>
 				<groupId>be.bosa.eid-java-web-start</groupId>
-				<artifactId>eid-java-web-start-signed</artifactId>
+				<artifactId>eid-java-web-start-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>be.bosa.eid-java-web-start</groupId>
+				<artifactId>eid-java-web-start-client-signed</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>be.bosa.eid-java-web-start</groupId>
 				<artifactId>eid-java-web-start-demo</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>be.fedict.commons-eid</groupId>
+				<artifactId>commons-eid-client</artifactId>
+				<version>${version.be.fedict.commons-eid}</version>
+			</dependency>
+			<dependency>
+				<groupId>be.fedict.commons-eid</groupId>
+				<artifactId>commons-eid-dialogs</artifactId>
+				<version>${version.be.fedict.commons-eid}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

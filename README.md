@@ -65,7 +65,7 @@ mvn clean install -Pcodesigning
 After building all artifacts, you can use the embedded Jetty web server to run a demo. 
 Enter the `eid-java-web-start-demo` directory and run: 
 ```
-mvn jetty:run-exploded
+mvn jetty:run-war
 ```
 
 Then open your browser at [http://localhost:8080](http://localhost:8080/) or 

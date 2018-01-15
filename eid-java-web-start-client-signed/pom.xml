@@ -11,16 +11,13 @@
 		<relativePath>..</relativePath>
 	</parent>
 
-	<artifactId>eid-java-web-start-signed</artifactId>
+	<artifactId>eid-java-web-start-client-signed</artifactId>
 	<name>Java Web Start Main artifact</name>
 
 	<dependencies>
 		<dependency>
-			<groupId>javax.jnlp</groupId>
-			<artifactId>jnlp-api</artifactId>
-			<version>${version.jdk}</version>
-			<scope>system</scope>
-			<systemPath>${java.home}/lib/javaws.jar</systemPath>
+			<groupId>be.bosa.eid-java-web-start</groupId>
+			<artifactId>eid-java-web-start-client</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -28,14 +25,45 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifestEntries>
-							<Permissions>all-permissions</Permissions>
-						</manifestEntries>
-					</archive>
-				</configuration>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<artifactSet>
+								<includes>
+									<include>be.bosa.eid-java-web-start:eid-java-web-start-client</include>
+									<include>be.fedict.commons-eid:commons-eid-client</include>
+									<include>be.fedict.commons-eid:commons-eid-dialogs</include>
+									<include>be.fedict.commons-eid:commons-eid-consumer</include>
+									<include>commons-logging:commons-logging-api</include>
+									<include>commons-codec:commons-codec</include>
+									<include>org.bouncycastle:bcprov-jdk15on</include>
+								</includes>
+							</artifactSet>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<manifestEntries>
+										<Permissions>all-permissions</Permissions>
+									</manifestEntries>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -68,7 +96,7 @@
 							<validity>365</validity>
 							<keyalg>RSA</keyalg>
 							<storetype>PKCS12</storetype>
-							<verbose>true</verbose>
+							<verbose>false</verbose>
 							<skipIfExist>true</skipIfExist>
 						</configuration>
 					</plugin>
@@ -87,7 +115,7 @@
 							<keystore>${project.build.directory}/sign.p12</keystore>
 							<alias>SIGN</alias>
 							<storepass>secret</storepass>
-							<verbose>true</verbose>
+							<verbose>false</verbose>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -113,7 +141,7 @@
 							<keystore>${keystore.path}</keystore>
 							<alias>${keystore.alias}</alias>
 							<storepass>${keystore.password}</storepass>
-							<verbose>true</verbose>
+							<verbose>false</verbose>
 							<arguments>
 								<argument>-tsa</argument>
 								<argument>http://tsa.belgium.be/connect</argument>
