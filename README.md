@@ -8,6 +8,9 @@ by the main browsers.
 
 For more information on Java Web Start, see: https://www.java.com/en/download/faq/java_webstart.xml.  
 
+The source code of the Commons eID Project is licensed under GNU LGPL v3.0.
+The license conditions can be found in the file: LICENSE.
+
 ## Building
 
 eID Java Web Start can be build using a standard Maven build. Simply run the following command:

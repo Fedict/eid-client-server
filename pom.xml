@@ -32,6 +32,7 @@
 	<scm>
 		<connection>scm:git:ssh://git@github.com:Fedict/eid-java-web-start.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com:Fedict/eid-java-web-start.git</developerConnection>
+		<tag>HEAD</tag>
 	</scm>
 
 	<distributionManagement>
@@ -55,7 +56,6 @@
 
 	<modules>
 		<module>eid-java-web-start-signed</module>
-
 		<module>eid-java-web-start-demo</module>
 	</modules>
 
