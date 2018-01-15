@@ -12,7 +12,7 @@
 	</parent>
 
 	<artifactId>eid-java-web-start-client</artifactId>
-	<name>Java Web Start Client Code</name>
+	<name>Java Web Start Client</name>
 
 	<dependencies>
 		<dependency>
