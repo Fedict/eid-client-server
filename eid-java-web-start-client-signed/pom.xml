@@ -40,8 +40,6 @@
 									<include>be.fedict.commons-eid:commons-eid-dialogs</include>
 									<include>be.fedict.commons-eid:commons-eid-consumer</include>
 									<include>commons-logging:commons-logging-api</include>
-									<include>commons-codec:commons-codec</include>
-									<include>org.bouncycastle:bcprov-jdk15on</include>
 								</includes>
 							</artifactSet>
 							<filters>
