@@ -17,8 +17,12 @@
 
 package be.bosa.eidjws.client;
 
-import be.fedict.commons.eid.consumer.Identity;
-import be.fedict.commons.eid.consumer.tlv.TlvParser;
+import be.bosa.commons.eid.client.BeIDCard;
+import be.bosa.commons.eid.client.BeIDCards;
+import be.bosa.commons.eid.client.CancelledException;
+import be.bosa.commons.eid.client.FileType;
+import be.bosa.commons.eid.consumer.Identity;
+import be.bosa.commons.eid.consumer.tlv.TlvParser;
 
 import javax.smartcardio.CardException;
 import javax.swing.*;

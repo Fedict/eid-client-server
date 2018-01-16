@@ -70,7 +70,7 @@
 		<encoding>UTF-8</encoding>
 		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
 
-		<version.be.fedict.commons-eid>1.0.0-SNAPSHOT</version.be.fedict.commons-eid>
+		<version.be.bosa.commons-eid>1.0.0-SNAPSHOT</version.be.bosa.commons-eid>
 
 		<version.commons-logging-api>1.1</version.commons-logging-api>
 
@@ -80,6 +80,8 @@
 
 	<modules>
 		<module>eid-client-server-shared</module>
+
+		<module>eid-server-spi</module>
 
 		<module>eid-java-web-start-client</module>
 		<module>eid-java-web-start-client-signed</module>
@@ -250,14 +252,14 @@
 			</dependency>
 
 			<dependency>
-				<groupId>be.fedict.commons-eid</groupId>
+				<groupId>be.bosa.commons-eid</groupId>
 				<artifactId>commons-eid-client</artifactId>
-				<version>${version.be.fedict.commons-eid}</version>
+				<version>${version.be.bosa.commons-eid}</version>
 			</dependency>
 			<dependency>
-				<groupId>be.fedict.commons-eid</groupId>
+				<groupId>be.bosa.commons-eid</groupId>
 				<artifactId>commons-eid-dialogs</artifactId>
-				<version>${version.be.fedict.commons-eid}</version>
+				<version>${version.be.bosa.commons-eid}</version>
 			</dependency>
 
 			<dependency>

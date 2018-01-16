@@ -18,6 +18,10 @@ The license conditions can be found in the file: LICENSE.
 This artifact holds Java classes that are shared between the clients and the server.
 This artifact basically defines the protocol used between them.
 
+* *eid-server-spi*: 
+This artifact holds the service provider interfaces (SPIs) that can be used to configure the eID Server.
+The configuration of the eID Server directly impacts the behavior of the eID clients.
+
 # Building
 
 eID Client Server can be build using a standard Maven build. Simply run the following command:
