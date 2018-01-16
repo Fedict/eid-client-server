@@ -35,14 +35,13 @@ public interface SignatureService {
 	 * <code>null</code> if no pre-sign digest infos are required.
 	 *
 	 * @return the digest algorithm to be used when digesting local files.
-	 * @see #preSign(List, List)
+	 * @see #preSign(List, List, IdentityDTO, AddressDTO, byte[])
 	 */
 	String getFilesDigestAlgorithm();
 
 	/**
 	 * Pre-sign callback method. Depending on the configuration some parameters
 	 * are passed. The returned value will be signed by the eID Applet.
-	 * <p>
 	 * <p>
 	 * TODO: service must be able to throw some exception on failure.
 	 * </p>
@@ -53,8 +52,6 @@ public interface SignatureService {
 	 * @param address                 the optional identity address.
 	 * @param photo                   the optional identity photo.
 	 * @return the digest to be signed.
-	 * @throws NoSuchAlgorithmException
-	 * @throws AuthorizationException
 	 */
 	DigestInfo preSign(List<DigestInfo> digestInfos, List<X509Certificate> signingCertificateChain,
 					   IdentityDTO identity, AddressDTO address, byte[] photo)
@@ -64,10 +61,9 @@ public interface SignatureService {
 	 * Post-sign callback method. Received the signature value. Depending on the
 	 * configuration the signing certificate chain is also obtained.
 	 *
-	 * @param signatureValue
 	 * @param signingCertificateChain the optional chain of signing certificates.
 	 */
 	void postSign(byte[] signatureValue, List<X509Certificate> signingCertificateChain)
-			throws ExpiredCertificateSecurityException, RevokedCertificateSecurityException,
-			TrustCertificateSecurityException, CertificateSecurityException, SecurityException;
+			throws
+			SecurityException;
 }

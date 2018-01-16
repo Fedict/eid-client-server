@@ -38,7 +38,6 @@ public interface AuthenticationService {
 	 * validation. Processing the incoming citizen identifier (if required at
 	 * all) should be handled as part of the eID Applet target page.
 	 * <p>
-	 * <p>
 	 * Check out <a href="http://code.google.com/p/jtrust/">jTrust</a> for an
 	 * implementation of a PKI validation framework.
 	 * </p>
@@ -46,6 +45,7 @@ public interface AuthenticationService {
 	 * @param certificateChain the X509 authentication certificate chain of the citizen.
 	 * @throws SecurityException in case the certificate chain is invalid/not accepted.
 	 */
+	// FIXME jTrust / eid-trust no longer available.
 	void validateCertificateChain(List<X509Certificate> certificateChain)
-			throws ExpiredCertificateSecurityException, RevokedCertificateSecurityException, TrustCertificateSecurityException, CertificateSecurityException, SecurityException;
+			throws SecurityException;
 }

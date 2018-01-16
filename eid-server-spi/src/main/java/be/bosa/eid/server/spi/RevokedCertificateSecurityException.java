@@ -23,7 +23,4 @@ package be.bosa.eid.server.spi;
  * @author Frank Cornelis
  */
 public class RevokedCertificateSecurityException extends CertificateSecurityException {
-
-	private static final long serialVersionUID = 1L;
-
 }

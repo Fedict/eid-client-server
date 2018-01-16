@@ -26,8 +26,6 @@ import java.io.Serializable;
  */
 public class DigestInfo implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * Main constructor.
 	 */

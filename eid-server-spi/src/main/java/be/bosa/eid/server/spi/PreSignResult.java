@@ -21,8 +21,6 @@ import java.io.Serializable;
 
 public class PreSignResult implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-
 	private final DigestInfo digestInfo;
 
 	private final boolean logoff;
