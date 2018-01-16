@@ -1,19 +1,26 @@
-[![Build Status](https://travis-ci.org/Fedict/eid-java-web-start.svg?branch=develop)](https://travis-ci.org/Fedict/eid-java-web-start)
+[![Build Status](https://travis-ci.org/Fedict/eid-client-server.svg?branch=develop)](https://travis-ci.org/Fedict/eid-client-server)
 
-# eID Java Web Start
+# eID Client Server Overview
 
-eID Java Web Start is a software component to easily give access to the Belgian Electronic Identity Card on the desktop.
-The codebase is a continuation of the eID Applet that was deprecated in 2016 when applets became no longer supported
-by the main browsers.
-
-For more information on Java Web Start, see: https://www.java.com/en/download/faq/java_webstart.xml.  
+eID Client Server is a set of software components to easily access the Belgian eID in a back-end using a supported
+client on the desktop of the user.  
+The codebase is a continuation of the eID Applet project that was deprecated in 2016 when applets became no longer 
+supported by the main browsers.
+The client - server protocol used by the eID applet has remained, but its client is now deployed on the front-end
+using Java Web Start.
 
 The source code of the Commons eID Project is licensed under GNU LGPL v3.0.
 The license conditions can be found in the file: LICENSE.
 
-## Building
+# Modules
 
-eID Java Web Start can be build using a standard Maven build. Simply run the following command:
+* *eid-client-server-shared*: 
+This artifact holds Java classes that are shared between the clients and the server.
+This artifact basically defines the protocol used between them.
+
+# Building
+
+eID Client Server can be build using a standard Maven build. Simply run the following command:
 ```
 mvn clean install
 ```
@@ -21,7 +28,7 @@ mvn clean install
 ## Code signing
 
 Only signed code can be ran outside of the Java sandbox.
-When the project is build, this component will automatically be signed with a self-signed certificate.
+When the project is build, this client component will automatically be signed with a self-signed certificate.
 
 To sign with your own private key and certificate add the `codesigning` profile to the `.m2/settings.xml` file:
 ```xml
@@ -60,7 +67,7 @@ Then you can build the project with:
 mvn clean install -Pcodesigning
 ```
 
-## Running the demo
+# Running the demo
 
 After building all artifacts, you can use the embedded Jetty web server to run a demo. 
 Enter the `eid-java-web-start-demo` directory and run: 
