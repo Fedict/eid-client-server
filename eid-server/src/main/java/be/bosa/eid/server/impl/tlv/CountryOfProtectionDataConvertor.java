@@ -15,18 +15,28 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.bosa.eid.server.spi;
+package be.bosa.eid.server.impl.tlv;
 
-import java.io.Serializable;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-/**
- * Address Data Transfer Object.
- *
- * @author Frank Cornelis
- */
-public class AddressDTO implements Serializable {
+public class CountryOfProtectionDataConvertor implements DataConvertor<String> {
 
-	public String streetAndNumber;
-	public String zip;
-	public String city;
+	private static final Log LOG = LogFactory.getLog(DateOfProtectionDataConvertor.class);
+
+	@Override
+	public String convert(byte[] value) {
+		if (0 == value.length) {
+			return null;
+		}
+
+		byte[] country = new byte[2];
+		try {
+			System.arraycopy(value, 11, country, 0, 2);
+			return new String(country);
+		} catch (Exception e) {
+			LOG.error("error parsing CountryOfProtection: " + e.getMessage(), e);
+			return null;
+		}
+	}
 }

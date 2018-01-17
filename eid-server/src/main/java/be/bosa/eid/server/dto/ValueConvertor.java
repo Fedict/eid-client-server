@@ -15,18 +15,23 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.bosa.eid.server.spi;
-
-import java.io.Serializable;
+package be.bosa.eid.server.dto;
 
 /**
- * Address Data Transfer Object.
+ * Interface for a value convertor component.
  *
+ * @param <TO>   the type to which to convert to.
+ * @param <FROM> the type from which to convert.
  * @author Frank Cornelis
  */
-public class AddressDTO implements Serializable {
+public interface ValueConvertor<FROM, TO> {
 
-	public String streetAndNumber;
-	public String zip;
-	public String city;
+	/**
+	 * Convert the given object to the convertor data type.
+	 *
+	 * @param value the object to convert.
+	 * @return an object of the data convertor data type type.
+	 * @throws ValueConvertorException in case the conversion failed.
+	 */
+	TO convert(FROM value) throws ValueConvertorException;
 }

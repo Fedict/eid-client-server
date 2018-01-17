@@ -15,18 +15,26 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.bosa.eid.server.spi;
+package be.bosa.eid.server.impl.tlv;
 
-import java.io.Serializable;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Address Data Transfer Object.
+ * Marks that a field will be converted during TLV parsing.
  *
  * @author Frank Cornelis
  */
-public class AddressDTO implements Serializable {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+@Documented
+public @interface ConvertData {
 
-	public String streetAndNumber;
-	public String zip;
-	public String city;
+	/**
+	 * The data convertor class to use for conversion.
+	 */
+	Class<? extends DataConvertor<?>> value();
 }

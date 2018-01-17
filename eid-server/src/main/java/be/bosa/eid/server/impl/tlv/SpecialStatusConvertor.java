@@ -15,18 +15,20 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.bosa.eid.server.spi;
+package be.bosa.eid.server.impl.tlv;
 
-import java.io.Serializable;
+import be.bosa.eid.server.SpecialStatus;
 
 /**
- * Address Data Transfer Object.
+ * Data convertor for eID special status.
  *
  * @author Frank Cornelis
+ * @see SpecialStatus
  */
-public class AddressDTO implements Serializable {
+public class SpecialStatusConvertor implements DataConvertor<SpecialStatus> {
 
-	public String streetAndNumber;
-	public String zip;
-	public String city;
+	public SpecialStatus convert(byte[] value) {
+		String strValue = new String(value);
+		return SpecialStatus.toSpecialStatus(strValue);
+	}
 }

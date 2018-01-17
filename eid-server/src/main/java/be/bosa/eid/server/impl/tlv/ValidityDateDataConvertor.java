@@ -15,18 +15,22 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.bosa.eid.server.spi;
+package be.bosa.eid.server.impl.tlv;
 
-import java.io.Serializable;
+import java.util.GregorianCalendar;
 
 /**
- * Address Data Transfer Object.
+ * Data convertor for eID identity validity dates.
  *
  * @author Frank Cornelis
  */
-public class AddressDTO implements Serializable {
+public class ValidityDateDataConvertor implements DataConvertor<GregorianCalendar> {
 
-	public String streetAndNumber;
-	public String zip;
-	public String city;
+	public GregorianCalendar convert(byte[] value) {
+		String dateStr = new String(value);
+		int day = Integer.parseInt(dateStr.substring(0, 2));
+		int month = Integer.parseInt(dateStr.substring(3, 5));
+		int year = Integer.parseInt(dateStr.substring(6));
+		return new GregorianCalendar(year, month - 1, day);
+	}
 }

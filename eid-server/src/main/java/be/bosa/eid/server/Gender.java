@@ -15,18 +15,16 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.bosa.eid.server.spi;
+package be.bosa.eid.server;
 
 import java.io.Serializable;
 
 /**
- * Address Data Transfer Object.
+ * Gender enumeration. For the moment we only have 2 values.
  *
  * @author Frank Cornelis
  */
-public class AddressDTO implements Serializable {
-
-	public String streetAndNumber;
-	public String zip;
-	public String city;
+public enum Gender implements Serializable {
+	MALE,
+	FEMALE
 }

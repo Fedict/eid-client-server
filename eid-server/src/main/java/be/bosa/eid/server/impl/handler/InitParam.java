@@ -15,18 +15,26 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.bosa.eid.server.spi;
+package be.bosa.eid.server.impl.handler;
 
-import java.io.Serializable;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Address Data Transfer Object.
+ * Marks that a field from a message handler should get some init-param value
+ * injection.
  *
  * @author Frank Cornelis
  */
-public class AddressDTO implements Serializable {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+@Documented
+public @interface InitParam {
 
-	public String streetAndNumber;
-	public String zip;
-	public String city;
+	String value();
+
+	boolean required() default false;
 }

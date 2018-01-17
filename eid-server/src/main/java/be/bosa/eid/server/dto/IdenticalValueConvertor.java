@@ -15,18 +15,16 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.bosa.eid.server.spi;
-
-import java.io.Serializable;
+package be.bosa.eid.server.dto;
 
 /**
- * Address Data Transfer Object.
+ * A value convertor that does nothing.
  *
  * @author Frank Cornelis
  */
-public class AddressDTO implements Serializable {
+public class IdenticalValueConvertor implements ValueConvertor<Object, Object> {
 
-	public String streetAndNumber;
-	public String zip;
-	public String city;
+	public Object convert(Object value) {
+		return value;
+	}
 }

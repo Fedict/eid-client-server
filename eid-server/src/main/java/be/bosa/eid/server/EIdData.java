@@ -15,18 +15,44 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.bosa.eid.server.spi;
+package be.bosa.eid.server;
 
 import java.io.Serializable;
 
 /**
- * Address Data Transfer Object.
+ * Top-level eID data container.
  *
  * @author Frank Cornelis
  */
-public class AddressDTO implements Serializable {
+public class EIdData implements Serializable {
 
-	public String streetAndNumber;
-	public String zip;
-	public String city;
+	public Identity identity;
+
+	public Address address;
+
+	public byte[] photo;
+
+	public String identifier;
+
+	public EIdCertsData certs;
+
+	public Identity getIdentity() {
+		return this.identity;
+	}
+
+	public Address getAddress() {
+		return this.address;
+	}
+
+	public byte[] getPhoto() {
+		return this.photo;
+	}
+
+	public String getIdentifier() {
+		return this.identifier;
+	}
+
+	public EIdCertsData getCerts() {
+		return this.certs;
+	}
 }

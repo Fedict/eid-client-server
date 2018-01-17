@@ -15,18 +15,24 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.bosa.eid.server.spi;
+package be.bosa.eid.server.dto;
 
-import java.io.Serializable;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Address Data Transfer Object.
+ * Marks how a field should be mapped to a Data Transfer Object.
  *
  * @author Frank Cornelis
  */
-public class AddressDTO implements Serializable {
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface MapsTo {
 
-	public String streetAndNumber;
-	public String zip;
-	public String city;
+	Class<?> value();
+
+	String field() default "";
+
+	Class<? extends ValueConvertor<?, ?>> convertor() default IdenticalValueConvertor.class;
 }

@@ -557,7 +557,7 @@
 			<programlisting language="XML"><![CDATA[<servlet>
 	<servlet-name>AppletServiceServlet</servlet-name>
 	<servlet-class>
-		be.fedict.eid.applet.service.AppletServiceServlet
+		AppletServiceServlet
 	</servlet-class>
 </servlet>
 <servlet-mapping>
@@ -636,7 +636,7 @@
 				container session. The
 				<code>eid.identity</code>
 				session attribute is of Java type
-				<code>be.fedict.eid.applet.service.Identity
+				<code>Identity
 				</code>
 				. More information on the exposed attributes can be found in the
 				Javadoc API documentation of the eID Applet Service artifact. The
@@ -652,7 +652,7 @@
 					types. The top-level
 					<code>eid</code>
 					session attribute is of Java type
-					<code>be.fedict.eid.applet.service.EIdData
+					<code>EIdData
 					</code>
 					. This means that the identity is available via both
 					<code>eid.identity</code>
@@ -700,7 +700,7 @@
 					session attribute within the servlet container session context. The
 					<code>eid.address</code>
 					session attribute is of Java type
-					<code>be.fedict.eid.applet.service.Address
+					<code>Address
 					</code>
 					. The available fields and functions of the
 					<code>Address</code>
@@ -741,7 +741,7 @@
 				</para>
 				<programlisting language="XML"><![CDATA[<servlet>
 	<servlet-name>PhotoServlet</servlet-name>
-	<servlet-class>be.fedict.eid.applet.service.PhotoServlet</servlet-class>
+	<servlet-class>PhotoServlet</servlet-class>
 </servlet>
 <servlet-mapping>
 	<servlet-name>PhotoServlet</servlet-name>
@@ -793,7 +793,7 @@
 				</para>
 				<programlisting language="XML"><![CDATA[<servlet>
 	<servlet-name>PdfServlet</servlet-name>
-	<servlet-class>be.fedict.eid.applet.service.PdfServlet</servlet-class>
+	<servlet-class>PdfServlet</servlet-class>
 </servlet>
 <servlet-mapping>
 	<servlet-name>PdfServlet</servlet-name>
@@ -834,7 +834,7 @@
 				<para>The servlet is configured as follows:</para>
 				<programlisting language="XML"><![CDATA[<servlet>
 	<servlet-name>KmlServlet</servlet-name>
-	<servlet-class>be.fedict.eid.applet.service.KmlServlet</servlet-class>
+	<servlet-class>KmlServlet</servlet-class>
 </servlet>
 <servlet-mapping>
 	<servlet-name>KmlServlet</servlet-name>
@@ -855,7 +855,7 @@
 				</para>
 				<programlisting language="XML"><![CDATA[<servlet>
 	<servlet-name>JSONServlet</servlet-name>
-	<servlet-class>be.fedict.eid.applet.service.JSONServlet</servlet-class>
+	<servlet-class>JSONServlet</servlet-class>
 </servlet>
 <servlet-mapping>
 	<servlet-name>JSONServlet</servlet-name>

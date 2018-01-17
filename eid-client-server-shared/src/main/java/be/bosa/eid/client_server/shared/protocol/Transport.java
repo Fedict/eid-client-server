@@ -64,7 +64,6 @@ public class Transport {
 	@SuppressWarnings("unchecked")
 	private static void addBody(Object dataObject, HttpTransmitter httpTransmitter, Field bodyField) {
 		if (bodyField == null) {
-			httpTransmitter.addHeader("Content-Length", "0");
 			return;
 		}
 
@@ -88,7 +87,6 @@ public class Transport {
 			body = (byte[]) bodyValue;
 		}
 
-		httpTransmitter.addHeader("Content-Length", Integer.toString(body.length));
 		httpTransmitter.setBody(body);
 	}
 

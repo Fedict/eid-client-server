@@ -58,7 +58,6 @@ public class TransportTest {
 		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-IdentityFileSize", "20");
 		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-AddressFileSize", "10");
 		verify(mockHttpTransmitter).setBody(MESSAGE.getBytes());
-		verify(mockHttpTransmitter).addHeader("Content-Length", Integer.toString(MESSAGE.getBytes().length));
 	}
 
 	@Test
@@ -70,7 +69,6 @@ public class TransportTest {
 
 		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-Version", "1");
 		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-Type", "FinishedMessage");
-		verify(mockHttpTransmitter).addHeader("Content-Length", "0");
 	}
 
 	@Test
@@ -83,7 +81,6 @@ public class TransportTest {
 		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-Version", "1");
 		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-Type", "FinishedMessage");
 		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-ErrorCode", ErrorCode.CERTIFICATE_EXPIRED.name());
-		verify(mockHttpTransmitter).addHeader("Content-Length", "0");
 	}
 
 	@Test
@@ -102,7 +99,6 @@ public class TransportTest {
 		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-IncludeIntegrityData", "false");
 		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-IncludeCertificates", "false");
 		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-RemoveCard", "false");
-		verify(mockHttpTransmitter).addHeader("Content-Length", "0");
 	}
 
 	@Test
@@ -131,7 +127,6 @@ public class TransportTest {
 		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-OSVersion", "2.6");
 		byte[] body = ("Reader 1" + System.getProperty("line.separator") + "Reader 2" + System.getProperty("line.separator")).getBytes();
 		verify(mockHttpTransmitter).setBody(body);
-		verify(mockHttpTransmitter).addHeader("Content-Length", Integer.toString(body.length));
 	}
 
 	@Test(expected = SecurityException.class)

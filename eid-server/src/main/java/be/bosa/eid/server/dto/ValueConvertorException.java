@@ -15,18 +15,22 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.bosa.eid.server.spi;
-
-import java.io.Serializable;
+package be.bosa.eid.server.dto;
 
 /**
- * Address Data Transfer Object.
+ * Exception class thrown by a value convertor.
  *
  * @author Frank Cornelis
+ * @see ValueConvertor
  */
-public class AddressDTO implements Serializable {
+public class ValueConvertorException extends Exception {
 
-	public String streetAndNumber;
-	public String zip;
-	public String city;
+	/**
+	 * Main constructor.
+	 *
+	 * @param message the exception message.
+	 */
+	public ValueConvertorException(String message) {
+		super(message);
+	}
 }

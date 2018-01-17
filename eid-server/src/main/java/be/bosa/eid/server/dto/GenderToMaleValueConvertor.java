@@ -15,18 +15,18 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.bosa.eid.server.spi;
+package be.bosa.eid.server.dto;
 
-import java.io.Serializable;
+import be.bosa.eid.server.Gender;
 
 /**
- * Address Data Transfer Object.
+ * Converts a gender field value to a male boolean value.
  *
  * @author Frank Cornelis
  */
-public class AddressDTO implements Serializable {
+public class GenderToMaleValueConvertor implements ValueConvertor<Gender, Boolean> {
 
-	public String streetAndNumber;
-	public String zip;
-	public String city;
+	public Boolean convert(Gender value) {
+		return Gender.MALE == value;
+	}
 }

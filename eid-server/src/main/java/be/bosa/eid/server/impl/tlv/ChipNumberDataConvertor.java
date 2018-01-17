@@ -15,18 +15,18 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.bosa.eid.server.spi;
+package be.bosa.eid.server.impl.tlv;
 
-import java.io.Serializable;
+import org.apache.commons.codec.binary.Hex;
 
 /**
- * Address Data Transfer Object.
+ * Convertor for the chip number field.
  *
  * @author Frank Cornelis
  */
-public class AddressDTO implements Serializable {
+public class ChipNumberDataConvertor implements DataConvertor<String> {
 
-	public String streetAndNumber;
-	public String zip;
-	public String city;
+	public String convert(byte[] value) {
+		return new String(Hex.encodeHex(value)).toUpperCase();
+	}
 }

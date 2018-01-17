@@ -15,18 +15,33 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.bosa.eid.server.spi;
+package be.bosa.eid.server.impl.tlv;
 
-import java.io.Serializable;
+import be.bosa.eid.server.Gender;
 
 /**
- * Address Data Transfer Object.
+ * Data convertor for gender data type.
  *
  * @author Frank Cornelis
  */
-public class AddressDTO implements Serializable {
+public class GenderDataConvertor implements DataConvertor<Gender> {
 
-	public String streetAndNumber;
-	public String zip;
-	public String city;
+	public Gender convert(byte[] value) throws DataConvertorException {
+		String genderStr = new String(value);
+		if ("M".equals(genderStr)) {
+			return Gender.MALE;
+		}
+		if ("F".equals(genderStr)) {
+			return Gender.FEMALE;
+		}
+		if ("V".equals(genderStr)) {
+			return Gender.FEMALE;
+		}
+		if ("W".equals(genderStr)) {
+			return Gender.FEMALE;
+		}
+
+		throw new DataConvertorException("unknown gender: " + genderStr);
+	}
+
 }
