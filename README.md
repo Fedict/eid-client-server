@@ -1,15 +1,16 @@
 [![Build Status](https://travis-ci.org/Fedict/eid-client-server.svg?branch=develop)](https://travis-ci.org/Fedict/eid-client-server)
 
-# eID Client Server Overview
+# eID Client Server Project
 
-eID Client Server is a set of software components to easily access the Belgian eID in a back-end using a supported
-client on the desktop of the user.  
+eID Client Server is a set of software components to easily access the Belgian eID from a back-end applicationusing a 
+supported client on the desktop of the user.  
 The codebase is a continuation of the eID Applet project that was deprecated in 2016 when applets became no longer 
 supported by the main browsers.
 The client - server protocol used by the eID applet has remained, but its client is now deployed on the front-end
 using Java Web Start.
 
 The source code of the Commons eID Project is licensed under GNU LGPL v3.0.
+It is hosted at https://github.com/Fedict/eid-client-server.
 The license conditions can be found in the file: LICENSE.
 
 # Modules

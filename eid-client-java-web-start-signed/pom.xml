@@ -75,6 +75,7 @@
 							<transformers>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<manifestEntries>
+										<Codebase><![CDATA[https://*.be https://*.brussels https://*.vlaanderen localhost 127.0.0.1]]></Codebase>
 										<Permissions>all-permissions</Permissions>
 									</manifestEntries>
 								</transformer>
