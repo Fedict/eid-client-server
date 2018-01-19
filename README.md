@@ -26,6 +26,9 @@ The configuration of the eID Server directly impacts the behavior of the eID cli
 This artifact holds the eID Server components. 
 Embed these in your web application to communicate with a client. 
 
+* *eid-client-core*:
+This artifact holds the eID Client core Java classes and is used in the actual clients.
+
 # Building
 
 eID Client Server can be build using a standard Maven build. Simply run the following command:

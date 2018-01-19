@@ -135,8 +135,7 @@ public class ClientEnvironmentMessageHandler implements MessageHandler<ClientEnv
 		String sslCipherSuite = (String) request.getAttribute("javax.servlet.request.cipher_suite");
 		try {
 			secureClientEnvService.checkSecureClientEnvironment(message.javaVersion, message.javaVendor, message.osName,
-					message.osArch, message.osVersion, userAgent, message.navigatorAppName, message.navigatorAppVersion,
-					message.navigatorUserAgent, remoteAddress, sslKeySize, sslCipherSuite, message.readerList);
+					message.osArch, message.osVersion, userAgent, remoteAddress, sslKeySize, sslCipherSuite);
 		} catch (InsecureClientEnvironmentException e) {
 			return new InsecureClientMessage(e.isWarnOnly());
 		}

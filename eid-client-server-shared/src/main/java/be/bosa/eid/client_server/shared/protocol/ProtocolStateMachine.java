@@ -18,10 +18,12 @@
 package be.bosa.eid.client_server.shared.protocol;
 
 import be.bosa.eid.client_server.shared.annotation.ProtocolStateAllowed;
+import be.bosa.eid.client_server.shared.annotation.ResponsesAllowed;
 import be.bosa.eid.client_server.shared.annotation.StartRequestMessage;
 import be.bosa.eid.client_server.shared.annotation.StateTransition;
 import be.bosa.eid.client_server.shared.annotation.StopResponseMessage;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,7 +56,14 @@ public class ProtocolStateMachine {
 	/**
 	 * Checks the given response message against the protocol state rules.
 	 */
-	public void checkResponseMessage(Object responseMessage) {
+	public void checkResponseMessage(Object requestMessage, Object responseMessage) {
+		Class<?> messageClass = requestMessage.getClass();
+		ResponsesAllowed responsesAllowedAnnotation = messageClass.getAnnotation(ResponsesAllowed.class);
+		Class<?>[] responsesAllowed = responsesAllowedAnnotation.value();
+		if (!isOfClass(responseMessage, responsesAllowed)) {
+			throw new RuntimeException("Response not of correct type: " + responseMessage.getClass());
+		}
+
 		ProtocolState protocolState = protocolContext.getProtocolState();
 		if (protocolState == null) {
 			throw new RuntimeException("responding without a protocol state");
@@ -75,6 +84,10 @@ public class ProtocolStateMachine {
 		}
 	}
 
+	private boolean isOfClass(Object object, Class<?>[] classes) {
+		return Arrays.stream(classes).anyMatch(clazz -> clazz.equals(object.getClass()));
+	}
+
 	private void notifyProtocolListenersProtocolStateTransition(ProtocolState newProtocolState) {
 		protocolStateListeners.forEach(protocolStateListener -> protocolStateListener.protocolStateTransition(newProtocolState));
 	}
@@ -90,25 +103,30 @@ public class ProtocolStateMachine {
 	/**
 	 * Checks the given request message against protocol state rules.
 	 */
-	public void checkRequestMessage(Object requestMessage) {
-		// TODO throw some non-runtime exception
+	public void checkRequestMessage(Object requestMessage) throws ProtocolException {
 		ProtocolState protocolState = protocolContext.getProtocolState();
 		Class<?> requestMessageClass = requestMessage.getClass();
+
+		Class<?> messageClass = requestMessage.getClass();
+		ResponsesAllowed responsesAllowedAnnotation = messageClass.getAnnotation(ResponsesAllowed.class);
+		if (responsesAllowedAnnotation == null) {
+			throw new ProtocolException("Message should have a @ResponsesAllowed constraint");
+		}
 
 		StartRequestMessage startRequestMessageAnnotation = requestMessageClass.getAnnotation(StartRequestMessage.class);
 		if (startRequestMessageAnnotation == null) {
 			if (protocolState == null) {
-				throw new RuntimeException("expected a protocol start message");
+				throw new ProtocolException("Expected a protocol start message");
 			}
 
 			ProtocolStateAllowed protocolStateAllowedAnnotation = requestMessageClass.getAnnotation(ProtocolStateAllowed.class);
 			if (protocolStateAllowedAnnotation == null) {
-				throw new RuntimeException("cannot check protocol state for message: " + requestMessageClass.getSimpleName());
+				throw new ProtocolException("Cannot check protocol state for message: " + requestMessageClass.getSimpleName());
 			}
 
 			ProtocolState allowedProtocolState = protocolStateAllowedAnnotation.value();
 			if (protocolState != allowedProtocolState) {
-				throw new RuntimeException("protocol state incorrect. expected: " + allowedProtocolState + "; actual: " + protocolState);
+				throw new ProtocolException("Protocol state incorrect. expected: " + allowedProtocolState + "; actual: " + protocolState);
 			}
 		} else {
 			if (protocolState == null) {
@@ -117,11 +135,6 @@ public class ProtocolStateMachine {
 				notifyProtocolListenersStartProtocolRun();
 				notifyProtocolListenersProtocolStateTransition(initialState);
 			}
-			/*
-			 * Throwing an exception in the else case might be to strict since we want
-			 * to allow easy recovery from a crashed eID Applet. I.e. no
-			 * need to restart the web browser.
-			 */
 		}
 	}
 }

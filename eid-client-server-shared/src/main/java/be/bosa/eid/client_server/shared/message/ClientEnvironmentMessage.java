@@ -17,15 +17,12 @@
 
 package be.bosa.eid.client_server.shared.message;
 
-import be.bosa.eid.client_server.shared.annotation.HttpBody;
 import be.bosa.eid.client_server.shared.annotation.HttpHeader;
 import be.bosa.eid.client_server.shared.annotation.MessageDiscriminator;
 import be.bosa.eid.client_server.shared.annotation.NotNull;
 import be.bosa.eid.client_server.shared.annotation.ProtocolStateAllowed;
 import be.bosa.eid.client_server.shared.annotation.ResponsesAllowed;
 import be.bosa.eid.client_server.shared.protocol.ProtocolState;
-
-import java.util.List;
 
 /**
  * Client environment message transfer object.
@@ -62,16 +59,4 @@ public class ClientEnvironmentMessage extends AbstractProtocolMessage {
 	@NotNull
 	public String osVersion;
 
-	@HttpHeader(HTTP_HEADER_PREFIX + "NavigatorUserAgent")
-	public String navigatorUserAgent;
-
-	@HttpHeader(HTTP_HEADER_PREFIX + "NavigatorAppName")
-	public String navigatorAppName;
-
-	@HttpHeader(HTTP_HEADER_PREFIX + "NavigatorAppVersion")
-	public String navigatorAppVersion;
-
-	@HttpBody
-	@NotNull
-	public List<String> readerList;
 }

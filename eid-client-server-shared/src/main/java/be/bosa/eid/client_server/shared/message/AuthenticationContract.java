@@ -90,49 +90,53 @@ public class AuthenticationContract {
 		this.challenge = challenge;
 	}
 
-	public byte[] calculateToBeSigned() throws IOException {
-		ByteArrayOutputStream toBeSignedOutputStream = new ByteArrayOutputStream();
+	public byte[] calculateToBeSigned() {
+		try {
+			ByteArrayOutputStream toBeSignedOutputStream = new ByteArrayOutputStream();
 
-		/*
-		 * Salting prevents that we sign a document digest directly instead of
-		 * some meaningless challenge.
-		 */
-		writeTag(SALT_TAG, this.salt, toBeSignedOutputStream);
-
-		if (this.hostname != null) {
 			/*
-			 * Signing (salt||hostname||challenge) prevents man-in-the-middle
-			 * attacks from websites for which the SSL certificate is still
-			 * trusted but that have been compromised. If at the same time the
-			 * DNS is also attacked, well then everything is lost anyway.
+			 * Salting prevents that we sign a document digest directly instead of
+			 * some meaningless challenge.
 			 */
-			writeTag(HOSTNAME_TAG, this.hostname.getBytes(), toBeSignedOutputStream);
-		}
+			writeTag(SALT_TAG, this.salt, toBeSignedOutputStream);
 
-		if (null != this.inetAddress) {
-			byte[] address = this.inetAddress.getAddress();
-			writeTag(INET_ADDRESS_TAG, address, toBeSignedOutputStream);
-		}
+			if (this.hostname != null) {
+				/*
+				 * Signing (salt||hostname||challenge) prevents man-in-the-middle
+				 * attacks from websites for which the SSL certificate is still
+				 * trusted but that have been compromised. If at the same time the
+				 * DNS is also attacked, well then everything is lost anyway.
+				 */
+				writeTag(HOSTNAME_TAG, this.hostname.getBytes(), toBeSignedOutputStream);
+			}
 
-		/*
-		 * Next is to prevent abuse of the challenge in the context of a digital
-		 * signature claim on this cryptographic authentication signature.
-		 */
-		writeTag(LEGAL_NOTICE_TAG, LEGAL_NOTICE.getBytes(), toBeSignedOutputStream);
-		if (null != this.sessionId) {
-			writeTag(SESSION_ID_TAG, this.sessionId, toBeSignedOutputStream);
-		}
-		if (null != this.encodedServerCertificate) {
-			writeTag(ENCODED_SERVER_CERTIFICATE_TAG, this.encodedServerCertificate, toBeSignedOutputStream);
-		}
+			if (null != this.inetAddress) {
+				byte[] address = this.inetAddress.getAddress();
+				writeTag(INET_ADDRESS_TAG, address, toBeSignedOutputStream);
+			}
 
-		/*
-		 * Of course we also digest the challenge as the server needs some mean
-		 * to authenticate us.
-		 */
-		writeTag(CHALLENGE_TAG, this.challenge, toBeSignedOutputStream);
+			/*
+			 * Next is to prevent abuse of the challenge in the context of a digital
+			 * signature claim on this cryptographic authentication signature.
+			 */
+			writeTag(LEGAL_NOTICE_TAG, LEGAL_NOTICE.getBytes(), toBeSignedOutputStream);
+			if (null != this.sessionId) {
+				writeTag(SESSION_ID_TAG, this.sessionId, toBeSignedOutputStream);
+			}
+			if (null != this.encodedServerCertificate) {
+				writeTag(ENCODED_SERVER_CERTIFICATE_TAG, this.encodedServerCertificate, toBeSignedOutputStream);
+			}
 
-		return toBeSignedOutputStream.toByteArray();
+			/*
+			 * Of course we also digest the challenge as the server needs some mean
+			 * to authenticate us.
+			 */
+			writeTag(CHALLENGE_TAG, this.challenge, toBeSignedOutputStream);
+
+			return toBeSignedOutputStream.toByteArray();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**

@@ -28,7 +28,10 @@
 	</security>
 	<resources>
 		<java version="1.8+" />
-		<jar href="eid-java-web-start-client-signed.jar" />
+		<jar href="eid-client-java-web-start-signed.jar" />
 	</resources>
-	<application-desc main-class="be.bosa.eidjws.client.TestApplication" />
+	<application-desc name="eID Client" main-class="be.bosa.eid.client.javawebstart.JavaWebStartApplication">
+		<argument>--language=nl</argument>
+		<argument>--eidServerUrl=https://localhost:8443/eid/server</argument>
+	</application-desc>
 </jnlp>

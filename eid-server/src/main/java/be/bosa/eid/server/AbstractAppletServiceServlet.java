@@ -18,7 +18,8 @@
 package be.bosa.eid.server;
 
 import be.bosa.eid.client_server.shared.annotation.ResponsesAllowed;
-import be.bosa.eid.client_server.shared.message.AppletProtocolMessageCatalog;
+import be.bosa.eid.client_server.shared.message.ClientServerProtocolMessageCatalog;
+import be.bosa.eid.client_server.shared.protocol.ProtocolException;
 import be.bosa.eid.client_server.shared.protocol.ProtocolStateMachine;
 import be.bosa.eid.client_server.shared.protocol.Transport;
 import be.bosa.eid.client_server.shared.protocol.Unmarshaller;
@@ -71,7 +72,7 @@ public abstract class AbstractAppletServiceServlet extends HttpServlet {
 
 		LOG.debug("init");
 
-		this.unmarshaller = new Unmarshaller(new AppletProtocolMessageCatalog());
+		this.unmarshaller = new Unmarshaller(new ClientServerProtocolMessageCatalog());
 
 		String skipSecureConnectionCheck = config.getInitParameter(SKIP_SECURE_CONNECTION_CHECK_INIT_PARAM);
 		if (skipSecureConnectionCheck != null) {
@@ -118,27 +119,24 @@ public abstract class AbstractAppletServiceServlet extends HttpServlet {
 		/*
 		 * Incoming message unmarshaller.
 		 */
-		HttpServletRequestHttpReceiver httpReceiver = new HttpServletRequestHttpReceiver(request,
-				this.skipSecureConnectionCheck);
+		HttpServletRequestHttpReceiver httpReceiver = new HttpServletRequestHttpReceiver(request, this.skipSecureConnectionCheck);
 		Object transferObject;
-		try {
-			transferObject = this.unmarshaller.receive(httpReceiver);
-		} catch (Exception e) {
-			LOG.debug("unmarshaller error: " + e.getMessage(), e);
-			throw new RuntimeException("unmarshaller error: " + e.getMessage(), e);
-		}
+		transferObject = this.unmarshaller.receive(httpReceiver);
 
 		/*
 		 * Protocol state checker for incoming message.
 		 */
 		HttpServletProtocolContext protocolContext = new HttpServletProtocolContext(request);
 		ProtocolStateMachine protocolStateMachine = new ProtocolStateMachine(protocolContext);
-		CleanSessionProtocolStateListener cleanSessionProtocolStateListener = new CleanSessionProtocolStateListener(
-				request);
+		CleanSessionProtocolStateListener cleanSessionProtocolStateListener = new CleanSessionProtocolStateListener(request);
 		protocolStateMachine.addProtocolStateListener(cleanSessionProtocolStateListener);
 		RequestContext requestContext = new RequestContext(request);
 		protocolStateMachine.addProtocolStateListener(requestContext);
-		protocolStateMachine.checkRequestMessage(transferObject);
+		try {
+			protocolStateMachine.checkRequestMessage(transferObject);
+		} catch (ProtocolException e) {
+			throw new RuntimeException("Protocol error", e);
+		}
 
 		/*
 		 * Message dispatcher
@@ -171,7 +169,7 @@ public abstract class AbstractAppletServiceServlet extends HttpServlet {
 		/*
 		 * Protocol state checker for outgoing message.
 		 */
-		protocolStateMachine.checkResponseMessage(responseMessage);
+		protocolStateMachine.checkResponseMessage(transferObject, responseMessage);
 
 		/*
 		 * Marshall outgoing message.

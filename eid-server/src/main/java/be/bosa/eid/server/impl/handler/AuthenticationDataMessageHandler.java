@@ -200,12 +200,7 @@ public class AuthenticationDataMessageHandler implements MessageHandler<Authenti
 		 */
 		AuthenticationContract authenticationContract = new AuthenticationContract(message.saltValue, this.hostname,
 				this.inetAddress, message.sessionId, serverCertificateClientPOV, challenge);
-		byte[] toBeSigned;
-		try {
-			toBeSigned = authenticationContract.calculateToBeSigned();
-		} catch (IOException e) {
-			throw new ServletException("IO error: " + e.getMessage(), e);
-		}
+		byte[] toBeSigned = authenticationContract.calculateToBeSigned();
 
 		try {
 			Signature signature = Signature.getInstance("SHA1withRSA");

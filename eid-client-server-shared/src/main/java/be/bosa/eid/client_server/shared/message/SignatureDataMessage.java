@@ -72,22 +72,24 @@ public class SignatureDataMessage extends AbstractProtocolMessage {
 	public SignatureDataMessage() {
 	}
 
-	public SignatureDataMessage(byte[] signatureValue, List<X509Certificate> signCertChain)
-			throws IOException, CertificateEncodingException {
+	public SignatureDataMessage(byte[] signatureValue, List<X509Certificate> signCertChain) throws CertificateEncodingException {
 		this(signatureValue, signCertChain.get(0).getEncoded(), signCertChain.get(1).getEncoded(),
 				signCertChain.get(2).getEncoded());
 	}
 
-	public SignatureDataMessage(byte[] signatureValue, byte[] signCertFile, byte[] citizenCaCertFile,
-								byte[] rootCaCertFile) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		this.signatureValueSize = signatureValue.length;
-		baos.write(signatureValue);
-		baos.write(signCertFile);
-		baos.write(citizenCaCertFile);
-		baos.write(rootCaCertFile);
-		this.body = baos.toByteArray();
+	public SignatureDataMessage(byte[] signatureValue, byte[] signCertFile, byte[] citizenCaCertFile, byte[] rootCaCertFile) {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			baos.write(signatureValue);
+			baos.write(signCertFile);
+			baos.write(citizenCaCertFile);
+			baos.write(rootCaCertFile);
+			this.body = baos.toByteArray();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 
+		this.signatureValueSize = signatureValue.length;
 		this.signCertFileSize = signCertFile.length;
 		this.caCertFileSize = citizenCaCertFile.length;
 		this.rootCertFileSize = rootCaCertFile.length;

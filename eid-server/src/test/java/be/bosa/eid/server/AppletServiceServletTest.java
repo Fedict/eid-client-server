@@ -17,7 +17,7 @@
 
 package be.bosa.eid.server;
 
-import be.bosa.eid.client_server.shared.message.AppletProtocolMessageCatalog;
+import be.bosa.eid.client_server.shared.message.ClientServerProtocolMessageCatalog;
 import be.bosa.eid.client_server.shared.message.HelloMessage;
 import be.bosa.eid.client_server.shared.message.IdentificationRequestMessage;
 import be.bosa.eid.client_server.shared.message.IdentityDataMessage;
@@ -351,7 +351,7 @@ public class AppletServiceServletTest {
 		// verify
 		assertEquals(HttpServletResponse.SC_OK, response.getStatusLine().getStatusCode());
 
-		Unmarshaller unmarshaller = new Unmarshaller(new AppletProtocolMessageCatalog());
+		Unmarshaller unmarshaller = new Unmarshaller(new ClientServerProtocolMessageCatalog());
 
 		HttpResponseHttpReceiver httpReceiver = new HttpResponseHttpReceiver(response);
 		Object resultMessageObject = unmarshaller.receive(httpReceiver);

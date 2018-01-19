@@ -29,8 +29,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.LinkedList;
-
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -109,9 +107,6 @@ public class TransportTest {
 		message.osName = "Linux";
 		message.osArch = "i386";
 		message.osVersion = "2.6";
-		message.readerList = new LinkedList<>();
-		message.readerList.add("Reader 1");
-		message.readerList.add("Reader 2");
 
 		when(mockHttpTransmitter.isSecure()).thenReturn(true);
 
@@ -125,8 +120,6 @@ public class TransportTest {
 		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-OSName", "Linux");
 		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-OSArch", "i386");
 		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-OSVersion", "2.6");
-		byte[] body = ("Reader 1" + System.getProperty("line.separator") + "Reader 2" + System.getProperty("line.separator")).getBytes();
-		verify(mockHttpTransmitter).setBody(body);
 	}
 
 	@Test(expected = SecurityException.class)

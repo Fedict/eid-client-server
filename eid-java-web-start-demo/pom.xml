@@ -44,7 +44,7 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
-							<includeArtifactIds>eid-java-web-start-client-signed</includeArtifactIds>
+							<includeArtifactIds>eid-client-java-web-start-signed</includeArtifactIds>
 							<stripClassifier>true</stripClassifier>
 							<stripVersion>true</stripVersion>
 						</configuration>
@@ -55,7 +55,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<packagingExcludes>WEB-INF/lib/eid-java-web-start*.jar, WEB-INF/lib/commons-eid-*</packagingExcludes>
+					<packagingExcludes>
+						WEB-INF/lib/eid-client-java-web-start*.jar,
+						WEB-INF/lib/eid-client-core*.jar,
+						WEB-INF/lib/commons-eid-*</packagingExcludes>
 				</configuration>
 			</plugin>
 
@@ -101,7 +104,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>be.bosa.eid-client-server</groupId>
-			<artifactId>eid-java-web-start-client-signed</artifactId>
+			<artifactId>eid-client-java-web-start-signed</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>

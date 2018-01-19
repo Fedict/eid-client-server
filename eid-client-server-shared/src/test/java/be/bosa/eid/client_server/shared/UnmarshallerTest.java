@@ -21,8 +21,8 @@ import be.bosa.eid.client_server.shared.annotation.HttpHeader;
 import be.bosa.eid.client_server.shared.annotation.MessageDiscriminator;
 import be.bosa.eid.client_server.shared.annotation.PostConstruct;
 import be.bosa.eid.client_server.shared.message.AbstractProtocolMessage;
-import be.bosa.eid.client_server.shared.message.AppletProtocolMessageCatalog;
 import be.bosa.eid.client_server.shared.message.ClientEnvironmentMessage;
+import be.bosa.eid.client_server.shared.message.ClientServerProtocolMessageCatalog;
 import be.bosa.eid.client_server.shared.message.ErrorCode;
 import be.bosa.eid.client_server.shared.message.FinishedMessage;
 import be.bosa.eid.client_server.shared.message.IdentificationRequestMessage;
@@ -54,7 +54,7 @@ public class UnmarshallerTest {
 
 	@Test(expected = RuntimeException.class)
 	public void receiveIdentityDataMessageWithoutRequiredHeaders() {
-		ProtocolMessageCatalog catalog = new AppletProtocolMessageCatalog();
+		ProtocolMessageCatalog catalog = new ClientServerProtocolMessageCatalog();
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
@@ -68,7 +68,7 @@ public class UnmarshallerTest {
 
 	@Test(expected = RuntimeException.class)
 	public void receiveNoHeadersAtAll() {
-		ProtocolMessageCatalog catalog = new AppletProtocolMessageCatalog();
+		ProtocolMessageCatalog catalog = new ClientServerProtocolMessageCatalog();
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
@@ -80,7 +80,7 @@ public class UnmarshallerTest {
 	@Test
 	public void receiveIdentityDataMessage() {
 		// setup
-		ProtocolMessageCatalog catalog = new AppletProtocolMessageCatalog();
+		ProtocolMessageCatalog catalog = new ClientServerProtocolMessageCatalog();
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
@@ -109,7 +109,7 @@ public class UnmarshallerTest {
 
 	@Test
 	public void receiveIdentificationRequestMessage() {
-		ProtocolMessageCatalog catalog = new AppletProtocolMessageCatalog();
+		ProtocolMessageCatalog catalog = new ClientServerProtocolMessageCatalog();
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
@@ -131,7 +131,7 @@ public class UnmarshallerTest {
 
 	@Test
 	public void receiveFinishedMessage() {
-		ProtocolMessageCatalog catalog = new AppletProtocolMessageCatalog();
+		ProtocolMessageCatalog catalog = new ClientServerProtocolMessageCatalog();
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
@@ -150,7 +150,7 @@ public class UnmarshallerTest {
 
 	@Test
 	public void receiveFinishedMessageWithErrorCode() {
-		ProtocolMessageCatalog catalog = new AppletProtocolMessageCatalog();
+		ProtocolMessageCatalog catalog = new ClientServerProtocolMessageCatalog();
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		// stubs
@@ -193,7 +193,7 @@ public class UnmarshallerTest {
 
 	@Test
 	public void receiveClientEnvironmentMessage() {
-		ProtocolMessageCatalog catalog = new AppletProtocolMessageCatalog();
+		ProtocolMessageCatalog catalog = new ClientServerProtocolMessageCatalog();
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
@@ -227,7 +227,7 @@ public class UnmarshallerTest {
 
 	@Test
 	public void receiveIdentityDataMessageCaseInsensitiveHeaders() {
-		ProtocolMessageCatalog catalog = new AppletProtocolMessageCatalog();
+		ProtocolMessageCatalog catalog = new ClientServerProtocolMessageCatalog();
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
@@ -258,7 +258,7 @@ public class UnmarshallerTest {
 
 	@Test(expected = RuntimeException.class)
 	public void receiveUnknownMessage() {
-		ProtocolMessageCatalog catalog = new AppletProtocolMessageCatalog();
+		ProtocolMessageCatalog catalog = new ClientServerProtocolMessageCatalog();
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
@@ -270,7 +270,7 @@ public class UnmarshallerTest {
 
 	@Test(expected = SecurityException.class)
 	public void unsecureHttpReceiver() {
-		ProtocolMessageCatalog catalog = new AppletProtocolMessageCatalog();
+		ProtocolMessageCatalog catalog = new ClientServerProtocolMessageCatalog();
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(false);
@@ -280,7 +280,7 @@ public class UnmarshallerTest {
 
 	@Test(expected = RuntimeException.class)
 	public void protocolVersion() {
-		ProtocolMessageCatalog catalog = new AppletProtocolMessageCatalog();
+		ProtocolMessageCatalog catalog = new ClientServerProtocolMessageCatalog();
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
