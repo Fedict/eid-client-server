@@ -25,9 +25,8 @@ import java.io.OutputStream;
 
 /**
  * Output Stream proxy that doesn't close the underlying stream.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class NoCloseOutputStream extends ProxyOutputStream {
 
@@ -35,7 +34,7 @@ public class NoCloseOutputStream extends ProxyOutputStream {
 
 	/**
 	 * Main constructor.
-	 * 
+	 *
 	 * @param proxy
 	 */
 	public NoCloseOutputStream(OutputStream proxy) {

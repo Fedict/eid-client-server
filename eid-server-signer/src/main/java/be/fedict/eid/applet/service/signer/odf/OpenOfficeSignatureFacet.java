@@ -57,8 +57,8 @@ public class OpenOfficeSignatureFacet implements SignatureFacet {
 	}
 
 	public void preSign(XMLSignatureFactory signatureFactory, Document document, String signatureId,
-			List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
-					throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+						List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
+			throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 		LOG.debug("pre sign");
 
 		Element dateElement = document.createElementNS("", "dc:date");

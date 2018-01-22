@@ -23,9 +23,8 @@ import java.util.Comparator;
 
 /**
  * Comparator for Relationship DOM elements.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class RelationshipComparator implements Comparator<Element> {
 

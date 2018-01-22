@@ -37,9 +37,8 @@ import java.util.List;
 
 /**
  * Signature Facet implementation to create enveloped signatures.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class EnvelopedSignatureFacet implements SignatureFacet {
 
@@ -54,10 +53,9 @@ public class EnvelopedSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Main constructor.
-	 * 
-	 * @param digestAlgorithm
-	 *            the digest algorithm to be used within the ds:Reference
-	 *            element. Possible values: "SHA-1", "SHA-256, or "SHA-512".
+	 *
+	 * @param digestAlgorithm the digest algorithm to be used within the ds:Reference
+	 *                        element. Possible values: "SHA-1", "SHA-256, or "SHA-512".
 	 */
 	public EnvelopedSignatureFacet(DigestAlgo digestAlgorithm) {
 		this.digestAlgo = digestAlgorithm;
@@ -68,8 +66,8 @@ public class EnvelopedSignatureFacet implements SignatureFacet {
 	}
 
 	public void preSign(XMLSignatureFactory signatureFactory, Document document, String signatureId,
-			List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
-					throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+						List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
+			throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 		DigestMethod digestMethod = signatureFactory.newDigestMethod(this.digestAlgo.getXmlAlgoId(), null);
 
 		List<Transform> transforms = new LinkedList<Transform>();

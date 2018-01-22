@@ -24,22 +24,19 @@ import java.util.List;
 
 /**
  * Interface for trust validator of a TSP.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public interface TimeStampServiceValidator {
 
 	/**
 	 * Validates the given certificate chain.
-	 * 
+	 *
 	 * @param certificateChain
-	 * @param revocationData
-	 *            the optional data container that should be filled with
-	 *            revocation data that was used to validate the given
-	 *            certificate chain.
-	 * @throws Exception
-	 *             in case the certificate chain is invalid.
+	 * @param revocationData   the optional data container that should be filled with
+	 *                         revocation data that was used to validate the given
+	 *                         certificate chain.
+	 * @throws Exception in case the certificate chain is invalid.
 	 */
 	void validate(List<X509Certificate> certificateChain, RevocationData revocationData) throws Exception;
 }

@@ -38,9 +38,8 @@ import java.util.zip.ZipEntry;
 
 /**
  * JSR105 URI dereferencer for Office Open XML documents.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class OOXMLURIDereferencer implements URIDereferencer {
 

@@ -60,9 +60,9 @@ public class ASiCSignatureServiceTest {
 	private final static class ASiCSignatureService extends AbstractASiCSignatureService {
 
 		public ASiCSignatureService(InputStream documentInputStream, DigestAlgo digestAlgo,
-				RevocationDataService revocationDataService, TimeStampService timeStampService,
-				TemporaryDataStorage temporaryDataStorage, IdentityDTO identity, byte[] photo,
-				OutputStream documentOutputStream) throws IOException {
+									RevocationDataService revocationDataService, TimeStampService timeStampService,
+									TemporaryDataStorage temporaryDataStorage, IdentityDTO identity, byte[] photo,
+									OutputStream documentOutputStream) throws IOException {
 			super(documentInputStream, digestAlgo, revocationDataService, timeStampService, "ClaimedRole", identity,
 					photo, temporaryDataStorage, documentOutputStream);
 			setSignatureNamespacePrefix("ds");
@@ -108,7 +108,7 @@ public class ASiCSignatureServiceTest {
 		identity.firstName = "Frank";
 		identity.male = true;
 
-		byte[] photo = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+		byte[] photo = new byte[]{1, 2, 3, 4, 5, 6, 7, 8};
 		AddressDTO address = new AddressDTO();
 		address.city = "Brussels";
 

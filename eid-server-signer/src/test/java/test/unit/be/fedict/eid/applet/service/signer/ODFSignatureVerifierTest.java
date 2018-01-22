@@ -35,9 +35,8 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for ODF signature verifier.
- * 
+ *
  * @author fcorneli
- * 
  */
 public class ODFSignatureVerifierTest {
 

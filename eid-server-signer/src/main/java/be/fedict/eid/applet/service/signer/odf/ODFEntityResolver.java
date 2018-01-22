@@ -27,9 +27,8 @@ import java.io.InputStream;
 
 /**
  * ODF Entity Resolver for MathML DTD.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class ODFEntityResolver implements EntityResolver {
 

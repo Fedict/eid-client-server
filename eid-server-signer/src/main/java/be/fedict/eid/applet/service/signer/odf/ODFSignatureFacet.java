@@ -42,9 +42,8 @@ import java.util.zip.ZipInputStream;
 
 /**
  * Signature Facet implementation to create ODF signatures.
- * 
+ *
  * @author fcorneli
- * 
  */
 public class ODFSignatureFacet implements SignatureFacet {
 
@@ -63,7 +62,7 @@ public class ODFSignatureFacet implements SignatureFacet {
 	}
 
 	public void preSign(XMLSignatureFactory signatureFactory, Document document, String signatureId,
-			List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects) {
+						List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects) {
 		try {
 			URL odfUrl = this.signatureService.getOpenDocumentURL();
 			InputStream odfInputStream = odfUrl.openStream();
@@ -77,7 +76,7 @@ public class ODFSignatureFacet implements SignatureFacet {
 					String name = zipEntry.getName();
 					/*
 					 * Whitespaces are illegal in URIs
-					 * 
+					 *
 					 * Note that OOo 3.0/3.1 seems to have a bug, seems like the
 					 * OOo signature verification doesn't convert it back to
 					 * whitespace, to be investigated
@@ -109,7 +108,7 @@ public class ODFSignatureFacet implements SignatureFacet {
 	/**
 	 * Unfortunately zipEntry.getSize() often returns -1/size unknown, so this
 	 * is a quick hack to see if the file is empty or not
-	 * 
+	 *
 	 * @param inputStream
 	 * @return
 	 * @throws IOException

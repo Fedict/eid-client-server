@@ -23,9 +23,8 @@ import java.util.List;
 
 /**
  * Relationship Transform parameter specification class.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class RelationshipTransformParameterSpec implements TransformParameterSpec {
 
@@ -43,7 +42,7 @@ public class RelationshipTransformParameterSpec implements TransformParameterSpe
 
 	/**
 	 * Adds a relationship reference for the given source identifier.
-	 * 
+	 *
 	 * @param sourceId
 	 */
 	public void addRelationshipReference(String sourceId) {
@@ -52,7 +51,7 @@ public class RelationshipTransformParameterSpec implements TransformParameterSpe
 
 	/**
 	 * Adds a relationship group reference for the given source type.
-	 * 
+	 *
 	 * @param sourceType
 	 */
 	public void addRelationshipGroupReference(String sourceType) {

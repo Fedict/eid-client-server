@@ -15,6 +15,6 @@
   ~ along with this software; if not, see https://www.gnu.org/licenses/.
   -->
 
-<!ELEMENT bookstore (name, title)>
-<!ELEMENT name (#PCDATA)>
-<!ELEMENT title (#PCDATA)>
+		<!ELEMENT bookstore (name, title)>
+		<!ELEMENT name (#PCDATA)>
+		<!ELEMENT title (#PCDATA)>

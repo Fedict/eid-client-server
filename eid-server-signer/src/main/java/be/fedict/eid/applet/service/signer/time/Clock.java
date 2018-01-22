@@ -21,15 +21,14 @@ import java.util.Date;
 
 /**
  * Interface for a clock.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public interface Clock {
 
 	/**
 	 * Gives back the current time.
-	 * 
+	 *
 	 * @return
 	 */
 	Date getTime();

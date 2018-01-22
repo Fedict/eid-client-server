@@ -222,7 +222,7 @@ public class AbstractODFSignatureServiceTest {
 	/**
 	 * Verification via the default JSR105 implementation triggers some
 	 * canonicalization errors.
-	 * 
+	 *
 	 * @param odfUrl
 	 * @param signatureNode
 	 * @throws MarshalException

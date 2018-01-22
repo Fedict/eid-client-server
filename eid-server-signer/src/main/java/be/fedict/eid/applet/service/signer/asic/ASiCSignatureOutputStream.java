@@ -35,9 +35,8 @@ import java.util.zip.ZipOutputStream;
  * <p/>
  * This output stream implementation injects an ASiC signature into an ASiC
  * file.
- * 
+ *
  * @author Frank Cornelis.
- * 
  */
 public class ASiCSignatureOutputStream extends ByteArrayOutputStream {
 
@@ -49,12 +48,10 @@ public class ASiCSignatureOutputStream extends ByteArrayOutputStream {
 
 	/**
 	 * Main constructor.
-	 * 
-	 * @param originalZipFile
-	 *            the original ASiC document.
-	 * @param targetOutputStream
-	 *            the output stream in which to copy the original ASiC document,
-	 *            together with the new ASiC signature.
+	 *
+	 * @param originalZipFile    the original ASiC document.
+	 * @param targetOutputStream the output stream in which to copy the original ASiC document,
+	 *                           together with the new ASiC signature.
 	 */
 	public ASiCSignatureOutputStream(File originalZipFile, OutputStream targetOutputStream) {
 		this.originalZipFile = originalZipFile;

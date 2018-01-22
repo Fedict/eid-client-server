@@ -44,8 +44,8 @@ public class SignatureTestFacet implements SignatureFacet {
 	}
 
 	public void preSign(XMLSignatureFactory signatureFactory, Document document, String signatureId,
-			List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
-					throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+						List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
+			throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 		DigestMethod digestMethod = signatureFactory.newDigestMethod(DigestMethod.SHA1, null);
 		for (String uri : this.uris) {
 			Reference reference = signatureFactory.newReference(uri, digestMethod);

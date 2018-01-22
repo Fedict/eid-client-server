@@ -41,7 +41,7 @@ import java.util.zip.ZipInputStream;
 
 /**
  * Helper class to remove some code duplication
- * 
+ *
  * @author Bart Hanssens
  */
 public class ODFUtil {
@@ -56,7 +56,7 @@ public class ODFUtil {
 
 	/**
 	 * Load an XML file from ODF package as a DOM Document
-	 * 
+	 *
 	 * @param documentInputStream
 	 * @return
 	 * @throws ParserConfigurationException
@@ -72,7 +72,7 @@ public class ODFUtil {
 
 	/**
 	 * Return a new DOM Document
-	 * 
+	 *
 	 * @return DOM Document
 	 * @throws ParserConfigurationException
 	 */
@@ -82,7 +82,7 @@ public class ODFUtil {
 
 	/**
 	 * Return a new DOM Document Builder
-	 * 
+	 *
 	 * @return DOM Document Builder
 	 * @throws ParserConfigurationException
 	 */
@@ -96,7 +96,7 @@ public class ODFUtil {
 	/**
 	 * Read the zipped data in the ODF package and return the inputstream for a
 	 * given file / zip entry
-	 * 
+	 *
 	 * @param inputStream
 	 * @param uri
 	 * @return inputstream for the file / zip entry
@@ -115,7 +115,7 @@ public class ODFUtil {
 
 	/**
 	 * Checks if a file / zip entry is a content file
-	 * 
+	 *
 	 * @param zipEntry
 	 * @return true if zip entry is a content file
 	 */
@@ -129,7 +129,7 @@ public class ODFUtil {
 
 	/**
 	 * Checks if a file / zip entry is a signature file
-	 * 
+	 *
 	 * @param zipEntry
 	 * @return true if zip entry is a signature file
 	 */
@@ -143,7 +143,7 @@ public class ODFUtil {
 
 	/**
 	 * Check if a file / zip entry is to be signed
-	 * 
+	 *
 	 * @param zipEntry
 	 * @return true if zip entry is to be signed
 	 */
@@ -162,7 +162,7 @@ public class ODFUtil {
 
 	/**
 	 * Get a list of all the files / zip entries in an ODF package
-	 * 
+	 *
 	 * @param odfInputStream
 	 * @return
 	 * @throws IOException
@@ -182,7 +182,7 @@ public class ODFUtil {
 	/**
 	 * Check if an ODF package is self-contained, i.e. content files don't have
 	 * OLE objects linked to external files
-	 * 
+	 *
 	 * @param odfUrl
 	 * @return
 	 * @throws IOException

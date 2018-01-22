@@ -43,9 +43,8 @@ import java.util.List;
 /**
  * Abstract CMS Signature Service class. The content and signing certificate are
  * included in the CMS signature.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public abstract class AbstractCMSSignatureService implements SignatureService {
 
@@ -54,7 +53,7 @@ public abstract class AbstractCMSSignatureService implements SignatureService {
 	}
 
 	public DigestInfo preSign(List<DigestInfo> digestInfos, List<X509Certificate> signingCertificateChain,
-			IdentityDTO identity, AddressDTO address, byte[] photo) throws NoSuchAlgorithmException {
+							  IdentityDTO identity, AddressDTO address, byte[] photo) throws NoSuchAlgorithmException {
 		CMSSignedDataGenerator generator = createCMSSignedDataGenerator(signingCertificateChain);
 		byte[] toBeSigned = getToBeSigned();
 		CMSProcessable content = new CMSProcessableByteArray(toBeSigned);

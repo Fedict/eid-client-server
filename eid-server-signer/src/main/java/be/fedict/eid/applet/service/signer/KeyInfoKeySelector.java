@@ -35,9 +35,8 @@ import java.util.List;
 /**
  * JSR105 key selector implementation using the ds:KeyInfo data of the signature
  * itself.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class KeyInfoKeySelector extends KeySelector implements KeySelectorResult {
 
@@ -89,7 +88,7 @@ public class KeyInfoKeySelector extends KeySelector implements KeySelectorResult
 	/**
 	 * Gives back the X509 certificate used during the last signature
 	 * verification operation.
-	 * 
+	 *
 	 * @return
 	 */
 	public X509Certificate getCertificate() {

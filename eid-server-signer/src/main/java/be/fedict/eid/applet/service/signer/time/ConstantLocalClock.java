@@ -21,9 +21,8 @@ import java.util.Date;
 
 /**
  * A local clock that does not tick.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class ConstantLocalClock extends LocalClock {
 

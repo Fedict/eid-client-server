@@ -174,13 +174,13 @@ public class XAdESSignatureFacetTest {
 		// expectations
 		EasyMock.expect(mockTimeStampService.timeStamp(EasyMock.anyObject(byte[].class),
 				EasyMock.anyObject(RevocationData.class))).andStubAnswer(new IAnswer<byte[]>() {
-					public byte[] answer() {
-						Object[] arguments = EasyMock.getCurrentArguments();
-						RevocationData revocationData = (RevocationData) arguments[1];
-						revocationData.addCRL(crl);
-						return "time-stamp-token".getBytes();
-					}
-				});
+			public byte[] answer() {
+				Object[] arguments = EasyMock.getCurrentArguments();
+				RevocationData revocationData = (RevocationData) arguments[1];
+				revocationData.addCRL(crl);
+				return "time-stamp-token".getBytes();
+			}
+		});
 		EasyMock.expect(mockRevocationDataService.getRevocationData(EasyMock.eq(certificateChain)))
 				.andStubReturn(revocationData);
 
@@ -319,13 +319,13 @@ public class XAdESSignatureFacetTest {
 		// expectations
 		EasyMock.expect(mockTimeStampService.timeStamp(EasyMock.anyObject(byte[].class),
 				EasyMock.anyObject(RevocationData.class))).andStubAnswer(new IAnswer<byte[]>() {
-					public byte[] answer() {
-						Object[] arguments = EasyMock.getCurrentArguments();
-						RevocationData revocationData = (RevocationData) arguments[1];
-						revocationData.addCRL(crl);
-						return "time-stamp-token".getBytes();
-					}
-				});
+			public byte[] answer() {
+				Object[] arguments = EasyMock.getCurrentArguments();
+				RevocationData revocationData = (RevocationData) arguments[1];
+				revocationData.addCRL(crl);
+				return "time-stamp-token".getBytes();
+			}
+		});
 		EasyMock.expect(mockRevocationDataService.getRevocationData(EasyMock.eq(certificateChain)))
 				.andStubReturn(revocationData);
 
@@ -431,7 +431,7 @@ public class XAdESSignatureFacetTest {
 		private static final Log LOG = LogFactory.getLog(XAdESLSResourceResolver.class);
 
 		public LSInput resolveResource(String type, String namespaceURI, String publicId, String systemId,
-				String baseURI) {
+									   String baseURI) {
 			LOG.debug("resolve resource");
 			LOG.debug("type: " + type);
 			LOG.debug("namespace URI: " + namespaceURI);

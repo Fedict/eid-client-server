@@ -102,7 +102,7 @@ public class CMSTest {
 	/**
 	 * CMS signature with external data and external certificate. The CMS only
 	 * contains the signature and some certificate selector.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -140,7 +140,7 @@ public class CMSTest {
 	/**
 	 * CMS signature with embedded data and external certificate. The CMS only
 	 * contains the original content, signature and some certificate selector.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -181,7 +181,7 @@ public class CMSTest {
 	 * CMS signature with external data and embedded certificate. The CMS only
 	 * contains the signature, signing certificate and some certificate
 	 * selector.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	@Test
@@ -364,7 +364,7 @@ public class CMSTest {
 	}
 
 	private X509Certificate generateSelfSignedCertificate(KeyPair keyPair, String subjectDn, DateTime notBefore,
-			DateTime notAfter) throws IOException, IllegalStateException,
+														  DateTime notAfter) throws IOException, IllegalStateException,
 			CertificateException {
 		PublicKey subjectPublicKey = keyPair.getPublic();
 		PrivateKey issuerPrivateKey = keyPair.getPrivate();

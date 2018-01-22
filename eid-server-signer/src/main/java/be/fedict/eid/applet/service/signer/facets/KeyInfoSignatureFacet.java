@@ -46,9 +46,8 @@ import java.util.List;
 
 /**
  * Signature Facet implementation that adds ds:KeyInfo to the XML signature.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class KeyInfoSignatureFacet implements SignatureFacet {
 
@@ -62,13 +61,13 @@ public class KeyInfoSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Main constructor.
-	 * 
+	 *
 	 * @param includeEntireCertificateChain
 	 * @param includeIssuerSerial
 	 * @param includeKeyValue
 	 */
 	public KeyInfoSignatureFacet(boolean includeEntireCertificateChain, boolean includeIssuerSerial,
-			boolean includeKeyValue) {
+								 boolean includeKeyValue) {
 		this.includeEntireCertificateChain = includeEntireCertificateChain;
 		this.includeIssuerSerial = includeIssuerSerial;
 		this.includeKeyValue = includeKeyValue;
@@ -157,7 +156,7 @@ public class KeyInfoSignatureFacet implements SignatureFacet {
 	}
 
 	public void preSign(XMLSignatureFactory signatureFactory, Document document, String signatureId,
-			List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects) {
+						List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects) {
 		// empty
 	}
 }

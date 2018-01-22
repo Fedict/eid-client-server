@@ -22,9 +22,8 @@ import java.security.Security;
 
 /**
  * Security Provider for Office OpenXML.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class OOXMLProvider extends Provider {
 

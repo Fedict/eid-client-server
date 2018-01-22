@@ -21,9 +21,8 @@ import java.security.PrivateKey;
 
 /**
  * A dummy private key implementation.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class DummyPrivateKey implements PrivateKey {
 

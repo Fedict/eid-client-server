@@ -31,9 +31,8 @@ import java.security.Signature;
 
 /**
  * A signature proxy implementation for SHA1withRSA signatures.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class SHA1WithRSAProxySignature extends Signature {
 

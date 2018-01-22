@@ -40,9 +40,8 @@ import java.util.zip.ZipInputStream;
 
 /**
  * Associated Signature Container signature facet implementation.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class ASiCSignatureFacet implements SignatureFacet {
 
@@ -56,8 +55,8 @@ public class ASiCSignatureFacet implements SignatureFacet {
 	}
 
 	public void preSign(XMLSignatureFactory signatureFactory, Document document, String signatureId,
-			List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
-					throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+						List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
+			throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 		FileInputStream fileInputStream;
 		try {
 			fileInputStream = new FileInputStream(this.tmpZipFile);

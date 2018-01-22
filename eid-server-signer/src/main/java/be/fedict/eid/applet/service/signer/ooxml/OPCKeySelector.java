@@ -46,9 +46,8 @@ import java.util.List;
 /**
  * Open Packaging Conventions (ECMA-376-2) based JSR105 key selector
  * implementation.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class OPCKeySelector extends KeyInfoKeySelector {
 

@@ -23,9 +23,8 @@ import javax.xml.crypto.dsig.XMLSignature;
 
 /**
  * JAXB RI namespace prefix mapper for XAdES.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class XAdESNamespacePrefixMapper extends NamespacePrefixMapper {
 

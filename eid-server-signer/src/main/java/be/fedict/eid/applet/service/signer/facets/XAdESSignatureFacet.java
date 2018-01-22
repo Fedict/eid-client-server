@@ -81,13 +81,12 @@ import java.util.TimeZone;
  * XAdES Signature Facet. Implements XAdES v1.4.1 which is compatible with XAdES
  * v1.3.2. The implemented XAdES format is XAdES-BES/EPES. It's up to another
  * part of the signature service to upgrade the XAdES-BES to a XAdES-X-L.
- * 
+ * <p>
  * This implementation has been tested against an implementation that
  * participated multiple ETSI XAdES plugtests.
- * 
+ *
  * @author Frank Cornelis
  * @see http://en.wikipedia.org/wiki/XAdES
- * 
  */
 public class XAdESSignatureFacet implements SignatureFacet {
 
@@ -131,9 +130,8 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Convenience constructor. Will use "SHA-1" for digest algorithm.
-	 * 
-	 * @param clock
-	 *            the clock to be used for determining the xades:SigningTime
+	 *
+	 * @param clock the clock to be used for determining the xades:SigningTime
 	 */
 	public XAdESSignatureFacet(Clock clock) {
 		this(clock, DigestAlgo.SHA1);
@@ -141,10 +139,9 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Convenience constructor. Will use a local clock.
-	 * 
-	 * @param digestAlgorithm
-	 *            the digest algorithm to be used for all required XAdES digest
-	 *            operations. Possible values: "SHA-1", "SHA-256", or "SHA-512".
+	 *
+	 * @param digestAlgorithm the digest algorithm to be used for all required XAdES digest
+	 *                        operations. Possible values: "SHA-1", "SHA-256", or "SHA-512".
 	 */
 	public XAdESSignatureFacet(DigestAlgo digestAlgorithm) {
 		this(new LocalClock(), digestAlgorithm);
@@ -152,12 +149,10 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Convenience constructor. Will use a local clock.
-	 * 
-	 * @param digestAlgorithm
-	 *            the digest algorithm to be used for all required XAdES digest
-	 *            operations. Possible values: "SHA-1", "SHA-256", or "SHA-512".
-	 * @param signaturePolicyService
-	 *            the optional signature policy service used for XAdES-EPES.
+	 *
+	 * @param digestAlgorithm        the digest algorithm to be used for all required XAdES digest
+	 *                               operations. Possible values: "SHA-1", "SHA-256", or "SHA-512".
+	 * @param signaturePolicyService the optional signature policy service used for XAdES-EPES.
 	 */
 	public XAdESSignatureFacet(DigestAlgo digestAlgorithm, SignaturePolicyService signaturePolicyService) {
 		this(new LocalClock(), digestAlgorithm, signaturePolicyService);
@@ -166,9 +161,8 @@ public class XAdESSignatureFacet implements SignatureFacet {
 	/**
 	 * Convenience constructor. Will use a local clock and "SHA-1" as digest
 	 * algorithm.
-	 * 
-	 * @param signaturePolicyService
-	 *            the optional signature policy service used for XAdES-EPES.
+	 *
+	 * @param signaturePolicyService the optional signature policy service used for XAdES-EPES.
 	 */
 	public XAdESSignatureFacet(SignaturePolicyService signaturePolicyService) {
 		this(new LocalClock(), DigestAlgo.SHA1, signaturePolicyService);
@@ -176,12 +170,10 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Convenience constructor.
-	 * 
-	 * @param clock
-	 *            the clock to be used for determining the xades:SigningTime
-	 * @param digestAlgorithm
-	 *            the digest algorithm to be used for all required XAdES digest
-	 *            operations. Possible values: "SHA-1", "SHA-256", or "SHA-512".
+	 *
+	 * @param clock           the clock to be used for determining the xades:SigningTime
+	 * @param digestAlgorithm the digest algorithm to be used for all required XAdES digest
+	 *                        operations. Possible values: "SHA-1", "SHA-256", or "SHA-512".
 	 */
 	public XAdESSignatureFacet(Clock clock, DigestAlgo digestAlgorithm) {
 		this(clock, digestAlgorithm, null);
@@ -189,14 +181,11 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Main constructor.
-	 * 
-	 * @param clock
-	 *            the clock to be used for determining the xades:SigningTime
-	 * @param digestAlgorithm
-	 *            the digest algorithm to be used for all required XAdES digest
-	 *            operations. Possible values: "SHA-1", "SHA-256", or "SHA-512".
-	 * @param signaturePolicyService
-	 *            the optional signature policy service used for XAdES-EPES.
+	 *
+	 * @param clock                  the clock to be used for determining the xades:SigningTime
+	 * @param digestAlgorithm        the digest algorithm to be used for all required XAdES digest
+	 *                               operations. Possible values: "SHA-1", "SHA-256", or "SHA-512".
+	 * @param signaturePolicyService the optional signature policy service used for XAdES-EPES.
 	 */
 	public XAdESSignatureFacet(Clock clock, DigestAlgo digestAlgorithm, SignaturePolicyService signaturePolicyService) {
 		this.clock = clock;
@@ -226,8 +215,8 @@ public class XAdESSignatureFacet implements SignatureFacet {
 	}
 
 	public void preSign(XMLSignatureFactory signatureFactory, Document document, String signatureId,
-			List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
-					throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+						List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
+			throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 		LOG.debug("preSign");
 
 		// QualifyingProperties
@@ -358,7 +347,7 @@ public class XAdESSignatureFacet implements SignatureFacet {
 	}
 
 	private Node marshallQualifyingProperties(Document document, ObjectFactory xadesObjectFactory,
-			QualifyingPropertiesType qualifyingProperties) {
+											  QualifyingPropertiesType qualifyingProperties) {
 		Node marshallNode = document.createElement("marshall-node");
 		try {
 			this.marshaller.marshal(xadesObjectFactory.createQualifyingProperties(qualifyingProperties), marshallNode);
@@ -374,7 +363,7 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Gives back the JAXB DigestAlgAndValue data structure.
-	 * 
+	 *
 	 * @param data
 	 * @param xadesObjectFactory
 	 * @param xmldsigObjectFactory
@@ -382,8 +371,8 @@ public class XAdESSignatureFacet implements SignatureFacet {
 	 * @return
 	 */
 	public static DigestAlgAndValueType getDigestAlgAndValue(byte[] data, ObjectFactory xadesObjectFactory,
-			be.fedict.eid.applet.service.signer.jaxb.xmldsig.ObjectFactory xmldsigObjectFactory,
-			DigestAlgo digestAlgorithm) {
+															 be.fedict.eid.applet.service.signer.jaxb.xmldsig.ObjectFactory xmldsigObjectFactory,
+															 DigestAlgo digestAlgorithm) {
 		DigestAlgAndValueType digestAlgAndValue = xadesObjectFactory.createDigestAlgAndValueType();
 
 		DigestMethodType digestMethod = xmldsigObjectFactory.createDigestMethodType();
@@ -404,7 +393,7 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Gives back the JAXB CertID data structure.
-	 * 
+	 *
 	 * @param certificate
 	 * @param xadesObjectFactory
 	 * @param xmldsigObjectFactory
@@ -412,8 +401,8 @@ public class XAdESSignatureFacet implements SignatureFacet {
 	 * @return
 	 */
 	public static CertIDType getCertID(X509Certificate certificate, ObjectFactory xadesObjectFactory,
-			be.fedict.eid.applet.service.signer.jaxb.xmldsig.ObjectFactory xmldsigObjectFactory,
-			DigestAlgo digestAlgorithm, boolean issuerNameNoReverseOrder) {
+									   be.fedict.eid.applet.service.signer.jaxb.xmldsig.ObjectFactory xmldsigObjectFactory,
+									   DigestAlgo digestAlgorithm, boolean issuerNameNoReverseOrder) {
 		CertIDType certId = xadesObjectFactory.createCertIDType();
 
 		X509IssuerSerialType issuerSerial = xmldsigObjectFactory.createX509IssuerSerialType();
@@ -425,7 +414,7 @@ public class XAdESSignatureFacet implements SignatureFacet {
 				 * Make sure the DN is encoded using the same order as present
 				 * within the certificate. This is an Office2010 work-around.
 				 * Should be reverted back.
-				 * 
+				 *
 				 * XXX: not correct according to RFC 4514.
 				 */
 				issuerName = PrincipalUtil.getIssuerX509Principal(certificate).getName().replace(",", ", ");
@@ -454,7 +443,7 @@ public class XAdESSignatureFacet implements SignatureFacet {
 	/**
 	 * Adds a mime-type for the given ds:Reference (referred via its @URI). This
 	 * information is added via the xades:DataObjectFormat element.
-	 * 
+	 *
 	 * @param dsReferenceUri
 	 * @param mimetype
 	 */
@@ -464,7 +453,7 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Sets the Id that will be used on the SignedProperties element;
-	 * 
+	 *
 	 * @param idSignedProperties
 	 */
 	public void setIdSignedProperties(String idSignedProperties) {
@@ -473,7 +462,7 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Sets the signature policy to implied.
-	 * 
+	 *
 	 * @param signaturePolicyImplied
 	 */
 	public void setSignaturePolicyImplied(boolean signaturePolicyImplied) {
@@ -482,7 +471,7 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Sets the XAdES XML namespace prefix.
-	 * 
+	 *
 	 * @param xadesNamespacePrefix
 	 */
 	public void setXadesNamespacePrefix(String xadesNamespacePrefix) {
@@ -491,7 +480,7 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Sets the XAdES claimed role.
-	 * 
+	 *
 	 * @param role
 	 */
 	public void setRole(String role) {
@@ -500,7 +489,7 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Work-around for Office 2010 IssuerName encoding.
-	 * 
+	 *
 	 * @param reverseOrder
 	 */
 	public void setIssuerNameNoReverseOrder(boolean reverseOrder) {

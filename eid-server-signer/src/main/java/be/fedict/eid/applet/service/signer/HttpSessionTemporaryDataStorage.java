@@ -35,9 +35,8 @@ import java.util.Map;
 /**
  * Implementation of a temporary data storage using the HTTP session as
  * temporary repository.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class HttpSessionTemporaryDataStorage implements TemporaryDataStorage {
 
@@ -73,7 +72,7 @@ public class HttpSessionTemporaryDataStorage implements TemporaryDataStorage {
 
 	/**
 	 * Gives back the current HTTP session using JACC.
-	 * 
+	 *
 	 * @return
 	 */
 	public static HttpSession getHttpSession() {

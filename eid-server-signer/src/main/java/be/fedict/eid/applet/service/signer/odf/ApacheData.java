@@ -45,7 +45,7 @@ import javax.xml.crypto.Data;
 
 /**
  * XMLSignatureInput Data wrapper.
- * 
+ *
  * @author Sean Mullan
  */
 public interface ApacheData extends Data {

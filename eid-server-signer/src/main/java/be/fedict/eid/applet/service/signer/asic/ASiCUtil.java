@@ -27,9 +27,8 @@ import java.util.zip.ZipEntry;
 
 /**
  * Associated Signature Container utility class.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class ASiCUtil {
 

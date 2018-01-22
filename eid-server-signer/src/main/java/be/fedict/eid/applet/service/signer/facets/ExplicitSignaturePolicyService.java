@@ -19,9 +19,8 @@ package be.fedict.eid.applet.service.signer.facets;
 
 /**
  * Explicit signature policy service implementation.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class ExplicitSignaturePolicyService implements SignaturePolicyService {
 
@@ -35,17 +34,14 @@ public class ExplicitSignaturePolicyService implements SignaturePolicyService {
 
 	/**
 	 * Main constructor.
-	 * 
-	 * @param signaturePolicyIdentifier
-	 *            the identifier URI.
+	 *
+	 * @param signaturePolicyIdentifier  the identifier URI.
 	 * @param signaturePolicyDocument
-	 * @param signaturePolicyDescription
-	 *            the optional description.
-	 * @param signaturePolicyDownloadUrl
-	 *            the optional download URL.
+	 * @param signaturePolicyDescription the optional description.
+	 * @param signaturePolicyDownloadUrl the optional download URL.
 	 */
 	public ExplicitSignaturePolicyService(String signaturePolicyIdentifier, byte[] signaturePolicyDocument,
-			String signaturePolicyDescription, String signaturePolicyDownloadUrl) {
+										  String signaturePolicyDescription, String signaturePolicyDownloadUrl) {
 		super();
 		this.signaturePolicyIdentifier = signaturePolicyIdentifier;
 		this.signaturePolicyDocument = signaturePolicyDocument;

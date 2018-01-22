@@ -90,7 +90,7 @@ public class HttpSessionTemporaryDataStorageTest {
 		}
 
 		public String[] getKeys() {
-			return new String[] { KEY };
+			return new String[]{KEY};
 		}
 
 		public boolean supports(String key) {

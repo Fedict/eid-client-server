@@ -23,15 +23,14 @@ import java.io.Serializable;
 
 /**
  * Interface for temporary data storage.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public interface TemporaryDataStorage {
 
 	/**
 	 * Gives back the temporary output stream that can be used for data storage.
-	 * 
+	 *
 	 * @return
 	 */
 	OutputStream getTempOutputStream();
@@ -39,14 +38,14 @@ public interface TemporaryDataStorage {
 	/**
 	 * Gives back the temporary input stream for retrieval of the previously
 	 * stored data.
-	 * 
+	 *
 	 * @return
 	 */
 	InputStream getTempInputStream();
 
 	/**
 	 * Stores an attribute to the temporary data storage.
-	 * 
+	 *
 	 * @param attributeName
 	 * @param attributeValue
 	 */
@@ -54,7 +53,7 @@ public interface TemporaryDataStorage {
 
 	/**
 	 * Retrieves an attribute from the temporary data storage.
-	 * 
+	 *
 	 * @param attributeName
 	 * @return
 	 */

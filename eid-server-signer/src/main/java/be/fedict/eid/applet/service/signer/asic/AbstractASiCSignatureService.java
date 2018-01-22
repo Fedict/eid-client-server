@@ -53,9 +53,8 @@ import java.util.zip.ZipInputStream;
 /**
  * Abstract ASiC signature service implementation. Implements Associated
  * Signature Containers according to ETSI TS 102 918 v1.1.1.
- * 
+ *
  * @author Frank Cornelis.
- * 
  */
 public class AbstractASiCSignatureService extends AbstractXmlSignatureService implements SignatureService {
 
@@ -66,9 +65,9 @@ public class AbstractASiCSignatureService extends AbstractXmlSignatureService im
 	private final OutputStream documentOutputStream;
 
 	public AbstractASiCSignatureService(InputStream documentInputStream, DigestAlgo digestAlgo,
-			RevocationDataService revocationDataService, TimeStampService timeStampService, String claimedRole,
-			IdentityDTO identity, byte[] photo, TemporaryDataStorage temporaryDataStorage,
-			OutputStream documentOutputStream) throws IOException {
+										RevocationDataService revocationDataService, TimeStampService timeStampService, String claimedRole,
+										IdentityDTO identity, byte[] photo, TemporaryDataStorage temporaryDataStorage,
+										OutputStream documentOutputStream) throws IOException {
 		super(digestAlgo);
 		this.temporaryDataStorage = temporaryDataStorage;
 		this.documentOutputStream = documentOutputStream;
@@ -127,7 +126,7 @@ public class AbstractASiCSignatureService extends AbstractXmlSignatureService im
 
 	@Override
 	public DigestInfo preSign(List<DigestInfo> digestInfos, List<X509Certificate> signingCertificateChain,
-			IdentityDTO identity, AddressDTO address, byte[] photo) throws NoSuchAlgorithmException {
+							  IdentityDTO identity, AddressDTO address, byte[] photo) throws NoSuchAlgorithmException {
 		return super.preSign(digestInfos, signingCertificateChain, identity, address, photo);
 	}
 

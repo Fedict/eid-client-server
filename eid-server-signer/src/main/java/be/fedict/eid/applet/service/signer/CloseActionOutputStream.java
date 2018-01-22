@@ -27,9 +27,8 @@ import java.io.OutputStream;
 /**
  * An output stream proxy implementation that allows us to run something when
  * the stream has been closed. Useful to perform resource cleanup tasks.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class CloseActionOutputStream extends ProxyOutputStream {
 

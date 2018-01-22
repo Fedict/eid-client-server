@@ -23,9 +23,8 @@ import java.security.Provider;
 
 /**
  * Security Provider for proxy signature implementation.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class CMSProvider extends Provider {
 

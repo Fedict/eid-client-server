@@ -41,9 +41,8 @@ import java.util.zip.ZipInputStream;
 
 /**
  * Simple signature verifier for Associated Signature Container signed files.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class ASiCSignatureVerifier {
 
@@ -53,9 +52,8 @@ public class ASiCSignatureVerifier {
 
 	/**
 	 * Verifies the signatures on the given ASiC document.
-	 * 
-	 * @param asicDocument
-	 *            the ASiC document as byte array.
+	 *
+	 * @param asicDocument the ASiC document as byte array.
 	 * @return the list of signatories.
 	 * @throws IOException
 	 * @throws ParserConfigurationException

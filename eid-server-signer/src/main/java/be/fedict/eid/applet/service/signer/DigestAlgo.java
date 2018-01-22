@@ -34,10 +34,8 @@ public enum DigestAlgo {
 	private final String xmlAlgoId;
 
 	/**
-	 * @param algoId
-	 *            the digest algorithm
-	 * @param xmlAlgoId
-	 *            the XML digest algorithm
+	 * @param algoId    the digest algorithm
+	 * @param xmlAlgoId the XML digest algorithm
 	 */
 	DigestAlgo(String algoId, String xmlAlgoId) {
 		this.algoId = algoId;

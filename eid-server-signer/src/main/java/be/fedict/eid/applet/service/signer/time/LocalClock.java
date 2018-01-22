@@ -21,9 +21,8 @@ import java.util.Date;
 
 /**
  * Implementation of a clock using the local system time.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class LocalClock implements Clock {
 

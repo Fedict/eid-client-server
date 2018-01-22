@@ -85,11 +85,11 @@ import java.util.Date;
 
 public class PkiTestUtils {
 
-	public static final byte[] SHA1_DIGEST_INFO_PREFIX = new byte[] { 0x30, 0x1f, 0x30, 0x07, 0x06, 0x05, 0x2b, 0x0e,
-			0x03, 0x02, 0x1a, 0x04, 0x14 };
+	public static final byte[] SHA1_DIGEST_INFO_PREFIX = new byte[]{0x30, 0x1f, 0x30, 0x07, 0x06, 0x05, 0x2b, 0x0e,
+			0x03, 0x02, 0x1a, 0x04, 0x14};
 
-	public static final byte[] SHA256_DIGEST_INFO_PREFIX = new byte[] { 0x30, 0x2f, 0x30, 0x0b, 0x06, 0x09, 0x60,
-			(byte) 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01, 0x04, 0x20 };
+	public static final byte[] SHA256_DIGEST_INFO_PREFIX = new byte[]{0x30, 0x2f, 0x30, 0x0b, 0x06, 0x09, 0x60,
+			(byte) 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01, 0x04, 0x20};
 
 	private PkiTestUtils() {
 		super();
@@ -118,8 +118,8 @@ public class PkiTestUtils {
 	}
 
 	static X509Certificate generateCertificate(PublicKey subjectPublicKey, String subjectDn, DateTime notBefore,
-			DateTime notAfter, X509Certificate issuerCertificate, PrivateKey issuerPrivateKey, boolean caFlag,
-			int pathLength, String crlUri, String ocspUri, KeyUsage keyUsage) throws IOException,
+											   DateTime notAfter, X509Certificate issuerCertificate, PrivateKey issuerPrivateKey, boolean caFlag,
+											   int pathLength, String crlUri, String ocspUri, KeyUsage keyUsage) throws IOException,
 			IllegalStateException, CertificateException {
 		String signatureAlgorithm = "SHA1withRSA";
 		X509V3CertificateGenerator certificateGenerator = new X509V3CertificateGenerator();
@@ -228,8 +228,8 @@ public class PkiTestUtils {
 	}
 
 	public static OCSPResp createOcspResp(X509Certificate certificate, boolean revoked,
-			X509Certificate issuerCertificate, X509Certificate ocspResponderCertificate,
-			PrivateKey ocspResponderPrivateKey, String signatureAlgorithm) {
+										  X509Certificate issuerCertificate, X509Certificate ocspResponderCertificate,
+										  PrivateKey ocspResponderPrivateKey, String signatureAlgorithm) {
 		// request
 		OCSPReqGenerator ocspReqGenerator = new OCSPReqGenerator();
 		CertificateID certId = new CertificateID(CertificateID.HASH_SHA1, issuerCertificate,
@@ -256,7 +256,7 @@ public class PkiTestUtils {
 		// basic response generation
 		X509Certificate[] chain = null;
 		if (!ocspResponderCertificate.equals(issuerCertificate)) {
-			chain = new X509Certificate[] { ocspResponderCertificate, issuerCertificate };
+			chain = new X509Certificate[]{ocspResponderCertificate, issuerCertificate};
 		}
 
 		BasicOCSPResp basicOCSPResp = basicOCSPRespGenerator.generate(signatureAlgorithm, ocspResponderPrivateKey,

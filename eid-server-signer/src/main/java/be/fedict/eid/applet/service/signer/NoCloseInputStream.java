@@ -25,9 +25,8 @@ import java.io.InputStream;
 
 /**
  * Input Stream proxy that doesn't close the underlying input stream.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class NoCloseInputStream extends ProxyInputStream {
 
@@ -35,7 +34,7 @@ public class NoCloseInputStream extends ProxyInputStream {
 
 	/**
 	 * Main constructor.
-	 * 
+	 *
 	 * @param proxy
 	 */
 	public NoCloseInputStream(InputStream proxy) {

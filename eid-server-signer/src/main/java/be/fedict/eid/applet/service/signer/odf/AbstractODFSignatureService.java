@@ -41,14 +41,12 @@ import java.util.zip.ZipOutputStream;
 
 /**
  * Signature Service implementation for OpenDocument format signatures.
- * 
+ * <p>
  * The signatures created with this class are accepted as valid signature within
  * OpenOffice.org 3.x. They probably don't get accepted by older OOo versions.
- * 
- * @see http://wiki.services.openoffice.org/wiki/Security/Digital_Signatures
- * 
+ *
  * @author fcorneli
- * 
+ * @see http://wiki.services.openoffice.org/wiki/Security/Digital_Signatures
  */
 abstract public class AbstractODFSignatureService extends AbstractXmlSignatureService {
 
@@ -68,7 +66,7 @@ abstract public class AbstractODFSignatureService extends AbstractXmlSignatureSe
 	/**
 	 * Gives back the used XAdES signature facet. Allows for extra configuration
 	 * of the XAdES elements.
-	 * 
+	 *
 	 * @return
 	 */
 	protected XAdESSignatureFacet getXAdESSignatureFacet() {
@@ -77,7 +75,7 @@ abstract public class AbstractODFSignatureService extends AbstractXmlSignatureSe
 
 	/**
 	 * Returns the URL of the ODF to be signed.
-	 * 
+	 *
 	 * @return
 	 */
 	abstract protected URL getOpenDocumentURL();
@@ -144,7 +142,7 @@ abstract public class AbstractODFSignatureService extends AbstractXmlSignatureSe
 
 	/**
 	 * The output stream to which to write the signed ODF file.
-	 * 
+	 *
 	 * @return
 	 */
 	abstract protected OutputStream getSignedOpenDocumentOutputStream();
@@ -171,7 +169,7 @@ abstract public class AbstractODFSignatureService extends AbstractXmlSignatureSe
 
 	/**
 	 * Get the XML signature file from the ODF package
-	 * 
+	 *
 	 * @return
 	 * @throws IOException
 	 * @throws ParserConfigurationException

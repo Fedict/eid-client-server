@@ -95,14 +95,14 @@ import java.util.UUID;
 /**
  * XAdES-X-L v1.4.1 signature facet. This signature facet implementation will
  * upgrade a given XAdES-BES/EPES signature to XAdES-X-L.
- * 
+ * <p>
  * We don't inherit from XAdESSignatureFacet as we also want to be able to use
  * this facet out of the context of a signature creation. This signature facet
  * assumes that the signature is already XAdES-BES/EPES compliant.
- * 
+ * <p>
  * This implementation has been tested against an implementation that
  * participated multiple ETSI XAdES plugtests.
- * 
+ *
  * @author Frank Cornelis
  * @see XAdESSignatureFacet
  */
@@ -142,13 +142,11 @@ public class XAdESXLSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Convenience constructor.
-	 * 
-	 * @param timeStampService
-	 *            the time-stamp service used for XAdES-T and XAdES-X.
-	 * @param revocationDataService
-	 *            the optional revocation data service used for XAdES-C and
-	 *            XAdES-X-L. When <code>null</code> the signature will be
-	 *            limited to XAdES-T only.
+	 *
+	 * @param timeStampService      the time-stamp service used for XAdES-T and XAdES-X.
+	 * @param revocationDataService the optional revocation data service used for XAdES-C and
+	 *                              XAdES-X-L. When <code>null</code> the signature will be
+	 *                              limited to XAdES-T only.
 	 */
 	public XAdESXLSignatureFacet(TimeStampService timeStampService, RevocationDataService revocationDataService) {
 		this(timeStampService, revocationDataService, DigestAlgo.SHA1);
@@ -156,19 +154,16 @@ public class XAdESXLSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Main constructor.
-	 * 
-	 * @param timeStampService
-	 *            the time-stamp service used for XAdES-T and XAdES-X.
-	 * @param revocationDataService
-	 *            the optional revocation data service used for XAdES-C and
-	 *            XAdES-X-L. When <code>null</code> the signature will be
-	 *            limited to XAdES-T only.
-	 * @param digestAlgorithm
-	 *            the digest algorithm to be used for construction of the
-	 *            XAdES-X-L elements.
+	 *
+	 * @param timeStampService      the time-stamp service used for XAdES-T and XAdES-X.
+	 * @param revocationDataService the optional revocation data service used for XAdES-C and
+	 *                              XAdES-X-L. When <code>null</code> the signature will be
+	 *                              limited to XAdES-T only.
+	 * @param digestAlgorithm       the digest algorithm to be used for construction of the
+	 *                              XAdES-X-L elements.
 	 */
 	public XAdESXLSignatureFacet(TimeStampService timeStampService, RevocationDataService revocationDataService,
-			DigestAlgo digestAlgorithm) {
+								 DigestAlgo digestAlgorithm) {
 		this.objectFactory = new ObjectFactory();
 		this.c14nAlgoId = CanonicalizationMethod.EXCLUSIVE;
 		this.digestAlgorithm = digestAlgorithm;
@@ -482,7 +477,7 @@ public class XAdESXLSignatureFacet implements SignatureFacet {
 	}
 
 	public void preSign(XMLSignatureFactory signatureFactory, Document document, String signatureId,
-			List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects) {
+						List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects) {
 		// nothing to do here
 	}
 
@@ -503,8 +498,8 @@ public class XAdESXLSignatureFacet implements SignatureFacet {
 	}
 
 	public static XAdESTimeStampType createXAdESTimeStamp(List<Node> nodeList, RevocationData revocationData,
-			String c14nAlgoId, TimeStampService timeStampService, ObjectFactory objectFactory,
-			be.fedict.eid.applet.service.signer.jaxb.xmldsig.ObjectFactory xmldsigObjectFactory) {
+														  String c14nAlgoId, TimeStampService timeStampService, ObjectFactory objectFactory,
+														  be.fedict.eid.applet.service.signer.jaxb.xmldsig.ObjectFactory xmldsigObjectFactory) {
 		byte[] c14nSignatureValueElement = getC14nValue(nodeList, c14nAlgoId);
 
 		return createXAdESTimeStamp(c14nSignatureValueElement, revocationData, c14nAlgoId, timeStampService,
@@ -512,8 +507,8 @@ public class XAdESXLSignatureFacet implements SignatureFacet {
 	}
 
 	public static XAdESTimeStampType createXAdESTimeStamp(byte[] data, RevocationData revocationData, String c14nAlgoId,
-			TimeStampService timeStampService, ObjectFactory objectFactory,
-			be.fedict.eid.applet.service.signer.jaxb.xmldsig.ObjectFactory xmldsigObjectFactory) {
+														  TimeStampService timeStampService, ObjectFactory objectFactory,
+														  be.fedict.eid.applet.service.signer.jaxb.xmldsig.ObjectFactory xmldsigObjectFactory) {
 		// create the time-stamp
 		byte[] timeStampToken;
 		try {

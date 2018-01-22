@@ -76,7 +76,7 @@ import java.util.zip.ZipInputStream;
  * <p/>
  * Implementation according to: Office Open XML - Part 2: Open Packaging
  * Conventions - ECMA-376-2
- * 
+ *
  * @author Frank Cornelis
  */
 public class OOXMLSignatureVerifier {
@@ -100,7 +100,7 @@ public class OOXMLSignatureVerifier {
 
 	/**
 	 * Checks whether the file referred by the given URL is an OOXML document.
-	 * 
+	 *
 	 * @param url
 	 * @return
 	 * @throws IOException
@@ -209,9 +209,9 @@ public class OOXMLSignatureVerifier {
 						if (targetMode == STTargetMode.EXTERNAL) {
 							/*
 							 * ECMA-376 Part 2 - 3rd edition
-							 * 
+							 *
 							 * 13.2.4.16 Manifest Element
-							 * 
+							 *
 							 * "The producer shall not create a Manifest element that references any data outside of the package."
 							 */
 							continue;
@@ -716,5 +716,5 @@ public class OOXMLSignatureVerifier {
 	public static String[] excludedStreams = {
 
 			"0x05Bagaaqy23kudbhchAaq5u2chNd", "0x06DataSpaces", "Xmlsignatures", "MsoDataStore", "0x09DRMContent",
-			"_signatures", "_xmlsignatures", "0x05SummaryInformation", "0x05DocumentSummaryInformation" };
+			"_signatures", "_xmlsignatures", "0x05SummaryInformation", "0x05DocumentSummaryInformation"};
 }

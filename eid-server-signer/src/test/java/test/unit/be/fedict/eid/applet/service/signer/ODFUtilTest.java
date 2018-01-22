@@ -29,7 +29,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- *
  * @author Bart Hanssens
  */
 public class ODFUtilTest {

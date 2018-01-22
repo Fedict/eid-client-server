@@ -44,9 +44,8 @@ import java.net.URLDecoder;
 /**
  * JSR105 URI dereferencer implementation using an ODF file as resource
  * repository.
- * 
+ *
  * @author fcorneli
- * 
  */
 public class ODFURIDereferencer implements URIDereferencer {
 
@@ -133,7 +132,7 @@ public class ODFURIDereferencer implements URIDereferencer {
 
 	/**
 	 * Find a given file / zip entry in the ODF package
-	 * 
+	 *
 	 * @param uri
 	 * @return inputstream of the file
 	 * @throws IOException

@@ -49,9 +49,8 @@ import java.util.UUID;
 
 /**
  * Signature Facet implementation doing an eID identity ds:Object.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class IdentitySignatureFacet implements SignatureFacet {
 
@@ -79,8 +78,8 @@ public class IdentitySignatureFacet implements SignatureFacet {
 	}
 
 	public void preSign(XMLSignatureFactory signatureFactory, Document document, String signatureId,
-			List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
-					throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+						List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
+			throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 		// construct identity document
 		IdentityType identity = this.objectFactory.createIdentityType();
 		String identityId = "identity-" + UUID.randomUUID().toString();

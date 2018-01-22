@@ -43,7 +43,7 @@ import java.util.zip.ZipInputStream;
 
 /**
  * ODF Signature Verifier.
- * 
+ *
  * @author fcorneli
  */
 public class ODFSignatureVerifier {

@@ -32,17 +32,16 @@ import java.util.List;
 
 /**
  * Work-around for Office2010 to accept the XAdES-BES/EPES signature.
- * 
+ * <p>
  * xades:UnsignedProperties/xades:UnsignedSignatureProperties needs to be
  * present.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class Office2010SignatureFacet implements SignatureFacet {
 
 	public void preSign(XMLSignatureFactory signatureFactory, Document document, String signatureId,
-			List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects) {
+						List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects) {
 	}
 
 	public void postSign(Element signatureElement, List<X509Certificate> signingCertificateChain) {

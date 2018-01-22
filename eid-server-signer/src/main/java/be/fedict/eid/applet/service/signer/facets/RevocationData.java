@@ -24,9 +24,8 @@ import java.util.List;
 
 /**
  * Container class for PKI revocation data.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class RevocationData {
 
@@ -44,7 +43,7 @@ public class RevocationData {
 
 	/**
 	 * Adds a CRL to this revocation data set.
-	 * 
+	 *
 	 * @param encodedCrl
 	 */
 	public void addCRL(byte[] encodedCrl) {
@@ -53,7 +52,7 @@ public class RevocationData {
 
 	/**
 	 * Adds a CRL to this revocation data set.
-	 * 
+	 *
 	 * @param crl
 	 */
 	public void addCRL(X509CRL crl) {
@@ -68,7 +67,7 @@ public class RevocationData {
 
 	/**
 	 * Adds an OCSP response to this revocation data set.
-	 * 
+	 *
 	 * @param encodedOcsp
 	 */
 	public void addOCSP(byte[] encodedOcsp) {
@@ -77,7 +76,7 @@ public class RevocationData {
 
 	/**
 	 * Gives back a list of all CRLs.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<byte[]> getCRLs() {
@@ -86,7 +85,7 @@ public class RevocationData {
 
 	/**
 	 * Gives back a list of all OCSP responses.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<byte[]> getOCSPs() {
@@ -96,7 +95,7 @@ public class RevocationData {
 	/**
 	 * Returns <code>true</code> if this revocation data set holds OCSP
 	 * responses.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasOCSPs() {
@@ -105,7 +104,7 @@ public class RevocationData {
 
 	/**
 	 * Returns <code>true</code> if this revocation data set holds CRLs.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasCRLs() {
@@ -114,7 +113,7 @@ public class RevocationData {
 
 	/**
 	 * Returns <code>true</code> if this revocation data is not empty.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasRevocationDataEntries() {

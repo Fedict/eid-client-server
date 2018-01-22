@@ -72,7 +72,7 @@ import java.util.zip.ZipInputStream;
 
 /**
  * Office OpenXML Signature Facet implementation.
- * 
+ *
  * @author fcorneli
  * @see <a href=-"http://msdn.microsoft.com/en-us/library/cc313071.aspx">http://msdn.microsoft.com/en-us/library/cc313071.aspx</a>
  */
@@ -106,8 +106,8 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 	}
 
 	public void preSign(XMLSignatureFactory signatureFactory, Document document, String signatureId,
-			List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
-					throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+						List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
+			throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 		LOG.debug("pre sign");
 		addManifestObject(signatureFactory, document, signatureId, references, objects);
 
@@ -115,8 +115,8 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 	}
 
 	private void addManifestObject(XMLSignatureFactory signatureFactory, Document document, String signatureId,
-			List<Reference> references, List<XMLObject> objects)
-					throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+								   List<Reference> references, List<XMLObject> objects)
+			throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 		Manifest manifest = constructManifest(signatureFactory, document);
 		String objectId = "idPackageObject"; // really has to be this value.
 		List<XMLStructure> objectContent = new LinkedList<XMLStructure>();
@@ -145,8 +145,8 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 	}
 
 	private void addManifestReferences(XMLSignatureFactory signatureFactory, Document document,
-			List<Reference> manifestReferences)
-					throws IOException, JAXBException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+									   List<Reference> manifestReferences)
+			throws IOException, JAXBException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 		CTTypes contentTypes = getContentTypes();
 		List<String> relsEntryNames = getRelsEntryNames();
 		DigestMethod digestMethod = signatureFactory.newDigestMethod(this.digestAlgo.getXmlAlgoId(), null);
@@ -163,9 +163,9 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 					if (targetMode == STTargetMode.EXTERNAL) {
 						/*
 						 * ECMA-376 Part 2 - 3rd edition
-						 * 
+						 *
 						 * 13.2.4.16 Manifest Element
-						 * 
+						 *
 						 * "The producer shall not create a Manifest element that references any data outside of the package."
 						 */
 						continue;
@@ -214,7 +214,7 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 
 	/**
 	 * According to ECMA-376, Part 2. 10.1.2 Mapping Content Types.
-	 * 
+	 *
 	 * @param contentTypes
 	 * @param partName
 	 * @return
@@ -303,7 +303,7 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 	}
 
 	private void addSignatureTime(XMLSignatureFactory signatureFactory, Document document, String signatureId,
-			List<XMLStructure> objectContent) {
+								  List<XMLStructure> objectContent) {
 		/*
 		 * SignatureTime
 		 */
@@ -331,8 +331,8 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 	}
 
 	private void addSignatureInfo(XMLSignatureFactory signatureFactory, Document document, String signatureId,
-			List<Reference> references, List<XMLObject> objects)
-					throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+								  List<Reference> references, List<XMLObject> objects)
+			throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 		List<XMLStructure> objectContent = new LinkedList<XMLStructure>();
 
 		Element signatureInfoElement = document.createElementNS(OFFICE_DIGSIG_NS, "SignatureInfoV1");
@@ -449,7 +449,7 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 			 * Powerpoint 2010
 			 */
 			"application/vnd.openxmlformats-officedocument.presentationml.viewProps+xml",
-			"application/vnd.openxmlformats-officedocument.presentationml.presProps+xml" };
+			"application/vnd.openxmlformats-officedocument.presentationml.presProps+xml"};
 
 	public static boolean isSignedRelationship(String relationshipType) {
 		LOG.debug("relationship type: " + relationshipType);
@@ -468,7 +468,7 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 	/**
 	 * Office 2010 list of signed types (extensions).
 	 */
-	public static String[] signed = { "powerPivotData", //
+	public static String[] signed = {"powerPivotData", //
 			"activeXControlBinary", //
 			"attachedToolbars", //
 			"connectorXml", //

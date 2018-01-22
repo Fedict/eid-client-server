@@ -55,12 +55,11 @@ import java.util.List;
 
 /**
  * Simple signature verifier for the Open XML Paper Specification.
- * 
+ * <p>
  * Implementation according to: Office Open XML - Part 2: Open Packaging
  * Conventions - ECMA-376-2
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class XPSSignatureVerifier {
 

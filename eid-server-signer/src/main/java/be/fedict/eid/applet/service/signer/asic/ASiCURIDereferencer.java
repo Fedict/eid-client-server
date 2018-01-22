@@ -39,9 +39,8 @@ import java.net.URLDecoder;
 
 /**
  * JSR105 URI dereferencer implementation for ASiC documents.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class ASiCURIDereferencer implements URIDereferencer {
 
