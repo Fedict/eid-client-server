@@ -119,8 +119,7 @@ public class ODFURIDereferencer implements URIDereferencer {
 				}
 				Document document = documentBuilder.parse(new ByteArrayInputStream(data));
 				XMLSignatureInput xmlSignatureInput = new XMLSignatureInput(document);
-				ApacheNodeSetData apacheNodeSetData = new ApacheNodeSetData(xmlSignatureInput);
-				return apacheNodeSetData;
+				return new ApacheNodeSetData(xmlSignatureInput);
 			}
 			return new OctetStreamData(dataInputStream, uri, null);
 		} catch (IOException e) {
@@ -133,9 +132,7 @@ public class ODFURIDereferencer implements URIDereferencer {
 	/**
 	 * Find a given file / zip entry in the ODF package
 	 *
-	 * @param uri
 	 * @return inputstream of the file
-	 * @throws IOException
 	 */
 	private InputStream findDataInputStream(String uri) throws IOException {
 		InputStream odfInputStream;

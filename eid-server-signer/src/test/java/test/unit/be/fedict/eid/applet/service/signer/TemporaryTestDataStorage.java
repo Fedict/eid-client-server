@@ -35,13 +35,12 @@ class TemporaryTestDataStorage implements TemporaryDataStorage {
 
 	public TemporaryTestDataStorage() {
 		this.outputStream = new ByteArrayOutputStream();
-		this.attributes = new HashMap<String, Serializable>();
+		this.attributes = new HashMap<>();
 	}
 
 	public InputStream getTempInputStream() {
 		byte[] data = this.outputStream.toByteArray();
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
-		return inputStream;
+		return new ByteArrayInputStream(data);
 	}
 
 	public OutputStream getTempOutputStream() {

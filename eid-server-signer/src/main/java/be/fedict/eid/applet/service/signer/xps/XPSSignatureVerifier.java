@@ -45,7 +45,6 @@ import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -77,8 +76,8 @@ public class XPSSignatureVerifier {
 	}
 
 	public List<X509Certificate> getSigners(URL url) throws IOException, ParserConfigurationException, SAXException,
-			TransformerException, MarshalException, XMLSignatureException, JAXBException {
-		List<X509Certificate> signers = new LinkedList<X509Certificate>();
+			MarshalException, XMLSignatureException, JAXBException {
+		List<X509Certificate> signers = new LinkedList<>();
 		List<String> signatureResourceNames = getSignatureResourceNames(url);
 		for (String signatureResourceName : signatureResourceNames) {
 			LOG.debug("signature resource name: " + signatureResourceName);
@@ -105,7 +104,7 @@ public class XPSSignatureVerifier {
 			XMLSignature xmlSignature = xmlSignatureFactory.unmarshalXMLSignature(domValidateContext);
 			boolean validity = xmlSignature.validate(domValidateContext);
 
-			if (false == validity) {
+			if (!validity) {
 				LOG.debug("not a valid signature");
 				continue;
 			}
@@ -122,18 +121,17 @@ public class XPSSignatureVerifier {
 		ZipArchiveInputStream zipInputStream = new ZipArchiveInputStream(url.openStream(), "UTF8", true, true);
 		ZipArchiveEntry zipEntry;
 		while (null != (zipEntry = zipInputStream.getNextZipEntry())) {
-			if (false == signatureResourceName.equals(zipEntry.getName())) {
+			if (!signatureResourceName.equals(zipEntry.getName())) {
 				continue;
 			}
-			Document document = loadDocument(zipInputStream);
-			return document;
+			return loadDocument(zipInputStream);
 		}
 		return null;
 	}
 
 	private List<String> getSignatureResourceNames(URL url)
 			throws IOException, JAXBException {
-		List<String> signatureResourceNames = new LinkedList<String>();
+		List<String> signatureResourceNames = new LinkedList<>();
 		ZipArchiveInputStream zipInputStream = new ZipArchiveInputStream(url.openStream(), "UTF8", true, true);
 		ZipArchiveEntry zipEntry;
 		while (null != (zipEntry = zipInputStream.getNextZipEntry())) {
@@ -212,7 +210,6 @@ public class XPSSignatureVerifier {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		Document document = documentBuilder.parse(inputSource);
-		return document;
+		return documentBuilder.parse(inputSource);
 	}
 }

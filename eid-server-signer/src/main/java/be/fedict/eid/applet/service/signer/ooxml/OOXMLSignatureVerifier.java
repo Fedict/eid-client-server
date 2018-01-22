@@ -100,16 +100,12 @@ public class OOXMLSignatureVerifier {
 
 	/**
 	 * Checks whether the file referred by the given URL is an OOXML document.
-	 *
-	 * @param url
-	 * @return
-	 * @throws IOException
 	 */
 	public static boolean isOOXML(URL url) throws IOException {
 		ZipInputStream zipInputStream = new ZipInputStream(url.openStream());
 		ZipEntry zipEntry;
 		while (null != (zipEntry = zipInputStream.getNextEntry())) {
-			if (false == "[Content_Types].xml".equals(zipEntry.getName())) {
+			if (!"[Content_Types].xml".equals(zipEntry.getName())) {
 				continue;
 			}
 			return true;
@@ -118,8 +114,8 @@ public class OOXMLSignatureVerifier {
 	}
 
 	public List<X509Certificate> getSigners(URL url) throws IOException, ParserConfigurationException, SAXException,
-			TransformerException, MarshalException, XMLSignatureException, JAXBException {
-		List<X509Certificate> signers = new LinkedList<X509Certificate>();
+			MarshalException, XMLSignatureException, JAXBException {
+		List<X509Certificate> signers = new LinkedList<>();
 		List<String> signatureResourceNames = getSignatureResourceNames(url);
 		if (signatureResourceNames.isEmpty()) {
 			LOG.debug("no signature resources");
@@ -187,8 +183,8 @@ public class OOXMLSignatureVerifier {
 			}
 			LOG.debug("ds:Manifest present within idPackageObject ds:Object");
 			List<Reference> idPackageObjectReferences = idPackageObjectManifest.getReferences();
-			Set<String> idPackageObjectReferenceUris = new HashSet<String>();
-			Set<String> remainingIdPackageObjectReferenceUris = new HashSet<String>();
+			Set<String> idPackageObjectReferenceUris = new HashSet<>();
+			Set<String> remainingIdPackageObjectReferenceUris = new HashSet<>();
 			for (Reference idPackageObjectReference : idPackageObjectReferences) {
 				idPackageObjectReferenceUris.add(idPackageObjectReference.getURI());
 				remainingIdPackageObjectReferenceUris.add(idPackageObjectReference.getURI());
@@ -217,7 +213,7 @@ public class OOXMLSignatureVerifier {
 							continue;
 						}
 					}
-					if (false == OOXMLSignatureFacet.isSignedRelationship(relationshipType)) {
+					if (!OOXMLSignatureFacet.isSignedRelationship(relationshipType)) {
 						continue;
 					}
 					String relationshipTarget = relationship.getTarget();
@@ -228,7 +224,7 @@ public class OOXMLSignatureVerifier {
 					LOG.debug("normalized stream entry: " + streamEntry);
 					String contentType = getContentType(contentTypes, streamEntry);
 					if (relationshipType.endsWith("customXml")) {
-						if (false == contentType.equals("inkml+xml") && false == contentType.equals("text/xml")) {
+						if (!contentType.equals("inkml+xml") && !contentType.equals("text/xml")) {
 							LOG.debug("skipping customXml with content type: " + contentType);
 							continue;
 						}
@@ -237,7 +233,7 @@ public class OOXMLSignatureVerifier {
 					LOG.debug("content type: " + contentType);
 					String referenceUri = streamEntry + "?ContentType=" + contentType;
 					LOG.debug("reference URI: " + referenceUri);
-					if (false == idPackageObjectReferenceUris.contains(referenceUri)) {
+					if (!idPackageObjectReferenceUris.contains(referenceUri)) {
 						throw new RuntimeException(
 								"no reference in idPackageObject ds:Object for relationship target: " + streamEntry);
 					}
@@ -246,13 +242,13 @@ public class OOXMLSignatureVerifier {
 				String relsReferenceUri = "/" + relsEntryName
 						+ "?ContentType=application/vnd.openxmlformats-package.relationships+xml";
 				if (includeRelationshipInSignature
-						&& false == idPackageObjectReferenceUris.contains(relsReferenceUri)) {
+						&& !idPackageObjectReferenceUris.contains(relsReferenceUri)) {
 					LOG.debug("missing ds:Reference for: " + relsEntryName);
 					throw new RuntimeException("missing ds:Reference for: " + relsEntryName);
 				}
 				remainingIdPackageObjectReferenceUris.remove(relsReferenceUri);
 			}
-			if (false == remainingIdPackageObjectReferenceUris.isEmpty()) {
+			if (!remainingIdPackageObjectReferenceUris.isEmpty()) {
 				LOG.debug("remaining idPackageObject reference URIs" + idPackageObjectReferenceUris);
 				throw new RuntimeException("idPackageObject manifest contains unknown ds:References: "
 						+ remainingIdPackageObjectReferenceUris);
@@ -290,7 +286,7 @@ public class OOXMLSignatureVerifier {
 		ZipEntry zipEntry;
 		InputStream relationshipsInputStream = null;
 		while (null != (zipEntry = zipInputStream.getNextEntry())) {
-			if (false == relationshipsEntryName.equals(zipEntry.getName())) {
+			if (!relationshipsEntryName.equals(zipEntry.getName())) {
 				continue;
 			}
 			relationshipsInputStream = zipInputStream;
@@ -308,7 +304,7 @@ public class OOXMLSignatureVerifier {
 	}
 
 	private List<String> getRelsEntryNames(URL url) throws IOException {
-		List<String> relsEntryNames = new LinkedList<String>();
+		List<String> relsEntryNames = new LinkedList<>();
 		ZipInputStream zipInputStream = new ZipInputStream(url.openStream());
 		ZipEntry zipEntry;
 		while (null != (zipEntry = zipInputStream.getNextEntry())) {
@@ -363,7 +359,7 @@ public class OOXMLSignatureVerifier {
 
 	@SuppressWarnings("unchecked")
 	public List<String> getSignatureResourceNames(byte[] document) throws IOException, JAXBException {
-		List<String> signatureResourceNames = new LinkedList<String>();
+		List<String> signatureResourceNames = new LinkedList<>();
 		ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(document));
 		ZipEntry zipEntry;
 		while (null != (zipEntry = zipInputStream.getNextEntry())) {
@@ -526,7 +522,7 @@ public class OOXMLSignatureVerifier {
 
 	@SuppressWarnings("unchecked")
 	private boolean isIdPackageObjectValid(String signatureId, XMLObject idPackageObject, byte[] document)
-			throws IOException, TransformerException, SAXException, ParserConfigurationException {
+			throws IOException, SAXException, ParserConfigurationException {
 
 		Manifest manifest;
 		SignatureProperties signatureProperties;
@@ -655,7 +651,7 @@ public class OOXMLSignatureVerifier {
 	private Map<String, String> getResources(byte[] document)
 			throws IOException, ParserConfigurationException, SAXException {
 
-		Map<String, String> signatureResources = new HashMap<String, String>();
+		Map<String, String> signatureResources = new HashMap<>();
 
 		ByteArrayInputStream bais = new ByteArrayInputStream(document);
 		ZipInputStream zipInputStream = new ZipInputStream(bais);

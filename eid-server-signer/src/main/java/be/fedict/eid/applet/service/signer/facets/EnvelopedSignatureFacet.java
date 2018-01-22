@@ -70,7 +70,7 @@ public class EnvelopedSignatureFacet implements SignatureFacet {
 			throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 		DigestMethod digestMethod = signatureFactory.newDigestMethod(this.digestAlgo.getXmlAlgoId(), null);
 
-		List<Transform> transforms = new LinkedList<Transform>();
+		List<Transform> transforms = new LinkedList<>();
 		Transform envelopedTransform = signatureFactory.newTransform(CanonicalizationMethod.ENVELOPED,
 				(TransformParameterSpec) null);
 		transforms.add(envelopedTransform);

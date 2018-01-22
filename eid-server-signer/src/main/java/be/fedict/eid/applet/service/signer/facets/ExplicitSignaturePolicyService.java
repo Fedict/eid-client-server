@@ -36,7 +36,6 @@ public class ExplicitSignaturePolicyService implements SignaturePolicyService {
 	 * Main constructor.
 	 *
 	 * @param signaturePolicyIdentifier  the identifier URI.
-	 * @param signaturePolicyDocument
 	 * @param signaturePolicyDescription the optional description.
 	 * @param signaturePolicyDownloadUrl the optional download URL.
 	 */

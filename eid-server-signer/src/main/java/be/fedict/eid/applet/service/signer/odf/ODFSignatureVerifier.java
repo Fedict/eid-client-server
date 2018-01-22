@@ -20,7 +20,6 @@ import be.fedict.eid.applet.service.signer.KeyInfoKeySelector;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -57,38 +56,22 @@ public class ODFSignatureVerifier {
 	/**
 	 * Checks whether the ODF document available via the given URL has been
 	 * signed.
-	 *
-	 * @param odfUrl
-	 * @return
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws org.apache.xml.security.signature.XMLSignatureException
-	 * @throws XMLSecurityException
-	 * @throws MarshalException
-	 * @throws XMLSignatureException
 	 */
 	public static boolean hasOdfSignature(URL odfUrl) throws IOException, ParserConfigurationException, SAXException,
 			MarshalException,
 			XMLSignatureException {
 		List<X509Certificate> signers = getSigners(odfUrl);
-		return false == signers.isEmpty();
+		return !signers.isEmpty();
 	}
 
 	/**
 	 * return list of signers for the document available via the given URL.
 	 *
-	 * @param odfUrl
 	 * @return list of X509 certificates
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws MarshalException
-	 * @throws XMLSignatureException
 	 */
 	public static List<X509Certificate> getSigners(URL odfUrl)
 			throws IOException, ParserConfigurationException, SAXException, MarshalException, XMLSignatureException {
-		List<X509Certificate> signers = new LinkedList<X509Certificate>();
+		List<X509Certificate> signers = new LinkedList<>();
 		if (null == odfUrl) {
 			throw new IllegalArgumentException("odfUrl is null");
 		}
@@ -134,7 +117,7 @@ public class ODFSignatureVerifier {
 		 */
 		XMLSignature xmlSignature = xmlSignatureFactory.unmarshalXMLSignature(domValidateContext);
 		boolean validity = xmlSignature.validate(domValidateContext);
-		if (false == validity) {
+		if (!validity) {
 			LOG.debug("invalid signature");
 			return null;
 		}
@@ -151,10 +134,6 @@ public class ODFSignatureVerifier {
 	/**
 	 * Checks whether the document available on the given URL is an ODF document
 	 * or not.
-	 *
-	 * @param url
-	 * @return
-	 * @throws IOException
 	 */
 	public static boolean isODF(URL url) throws IOException {
 		InputStream resStream = ODFUtil.findDataInputStream(url.openStream(), ODFUtil.MIMETYPE_FILE);

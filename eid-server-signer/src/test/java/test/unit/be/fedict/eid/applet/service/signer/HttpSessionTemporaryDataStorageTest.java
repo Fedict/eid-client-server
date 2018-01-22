@@ -83,7 +83,7 @@ public class HttpSessionTemporaryDataStorageTest {
 		}
 
 		public Object getContext(String key, Object data) {
-			if (false == KEY.equals(key)) {
+			if (!KEY.equals(key)) {
 				return null;
 			}
 			return this.httpServletRequest;

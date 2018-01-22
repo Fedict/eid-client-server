@@ -37,14 +37,12 @@ public class RevocationData {
 	 * Default constructor.
 	 */
 	public RevocationData() {
-		this.crls = new LinkedList<byte[]>();
-		this.ocsps = new LinkedList<byte[]>();
+		this.crls = new LinkedList<>();
+		this.ocsps = new LinkedList<>();
 	}
 
 	/**
 	 * Adds a CRL to this revocation data set.
-	 *
-	 * @param encodedCrl
 	 */
 	public void addCRL(byte[] encodedCrl) {
 		this.crls.add(encodedCrl);
@@ -52,8 +50,6 @@ public class RevocationData {
 
 	/**
 	 * Adds a CRL to this revocation data set.
-	 *
-	 * @param crl
 	 */
 	public void addCRL(X509CRL crl) {
 		byte[] encodedCrl;
@@ -67,8 +63,6 @@ public class RevocationData {
 
 	/**
 	 * Adds an OCSP response to this revocation data set.
-	 *
-	 * @param encodedOcsp
 	 */
 	public void addOCSP(byte[] encodedOcsp) {
 		this.ocsps.add(encodedOcsp);
@@ -76,8 +70,6 @@ public class RevocationData {
 
 	/**
 	 * Gives back a list of all CRLs.
-	 *
-	 * @return
 	 */
 	public List<byte[]> getCRLs() {
 		return this.crls;
@@ -85,8 +77,6 @@ public class RevocationData {
 
 	/**
 	 * Gives back a list of all OCSP responses.
-	 *
-	 * @return
 	 */
 	public List<byte[]> getOCSPs() {
 		return this.ocsps;
@@ -95,26 +85,20 @@ public class RevocationData {
 	/**
 	 * Returns <code>true</code> if this revocation data set holds OCSP
 	 * responses.
-	 *
-	 * @return
 	 */
 	public boolean hasOCSPs() {
-		return false == this.ocsps.isEmpty();
+		return !this.ocsps.isEmpty();
 	}
 
 	/**
 	 * Returns <code>true</code> if this revocation data set holds CRLs.
-	 *
-	 * @return
 	 */
 	public boolean hasCRLs() {
-		return false == this.crls.isEmpty();
+		return !this.crls.isEmpty();
 	}
 
 	/**
 	 * Returns <code>true</code> if this revocation data is not empty.
-	 *
-	 * @return
 	 */
 	public boolean hasRevocationDataEntries() {
 		return hasOCSPs() || hasCRLs();

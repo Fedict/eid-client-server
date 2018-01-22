@@ -156,7 +156,7 @@ public class XAdESSignatureFacetTest {
 		DateTime notAfter = notBefore.plusYears(1);
 		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", notBefore,
 				notAfter, null, keyPair.getPrivate(), true, 0, null, null, new KeyUsage(KeyUsage.nonRepudiation));
-		List<X509Certificate> certificateChain = new LinkedList<X509Certificate>();
+		List<X509Certificate> certificateChain = new LinkedList<>();
 		/*
 		 * We need at least 2 certificates for the XAdES-C complete certificate
 		 * refs construction.
@@ -301,7 +301,7 @@ public class XAdESSignatureFacetTest {
 		DateTime notAfter = notBefore.plusYears(1);
 		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", notBefore,
 				notAfter, null, keyPair.getPrivate(), true, 0, null, null, new KeyUsage(KeyUsage.nonRepudiation));
-		List<X509Certificate> certificateChain = new LinkedList<X509Certificate>();
+		List<X509Certificate> certificateChain = new LinkedList<>();
 		/*
 		 * We need at least 2 certificates for the XAdES-C complete certificate
 		 * refs construction.
@@ -470,8 +470,7 @@ public class XAdESSignatureFacetTest {
 		}
 
 		public InputStream getByteStream() {
-			InputStream inputStream = XAdESSignatureFacetTest.class.getResourceAsStream(this.schemaResourceName);
-			return inputStream;
+			return XAdESSignatureFacetTest.class.getResourceAsStream(this.schemaResourceName);
 		}
 
 		public boolean getCertifiedText() {
@@ -480,8 +479,7 @@ public class XAdESSignatureFacetTest {
 
 		public Reader getCharacterStream() {
 			InputStream inputStream = getByteStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-			return reader;
+			return new BufferedReader(new InputStreamReader(inputStream));
 		}
 
 		public String getEncoding() {

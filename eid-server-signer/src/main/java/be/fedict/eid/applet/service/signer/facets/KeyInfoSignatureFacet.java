@@ -61,10 +61,6 @@ public class KeyInfoSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Main constructor.
-	 *
-	 * @param includeEntireCertificateChain
-	 * @param includeIssuerSerial
-	 * @param includeKeyValue
 	 */
 	public KeyInfoSignatureFacet(boolean includeEntireCertificateChain, boolean includeIssuerSerial,
 								 boolean includeKeyValue) {
@@ -95,10 +91,10 @@ public class KeyInfoSignatureFacet implements SignatureFacet {
 		 * Construct the ds:KeyInfo element using JSR 105.
 		 */
 		KeyInfoFactory keyInfoFactory = KeyInfoFactory.getInstance("DOM", new XMLDSigRI());
-		List<Object> x509DataObjects = new LinkedList<Object>();
+		List<Object> x509DataObjects = new LinkedList<>();
 		X509Certificate signingCertificate = signingCertificateChain.get(0);
 
-		List<Object> keyInfoContent = new LinkedList<Object>();
+		List<Object> keyInfoContent = new LinkedList<>();
 
 		if (this.includeKeyValue) {
 			KeyValue keyValue;
@@ -116,14 +112,12 @@ public class KeyInfoSignatureFacet implements SignatureFacet {
 		}
 
 		if (this.includeEntireCertificateChain) {
-			for (X509Certificate certificate : signingCertificateChain) {
-				x509DataObjects.add(certificate);
-			}
+			x509DataObjects.addAll(signingCertificateChain);
 		} else {
 			x509DataObjects.add(signingCertificate);
 		}
 
-		if (false == x509DataObjects.isEmpty()) {
+		if (!x509DataObjects.isEmpty()) {
 			X509Data x509Data = keyInfoFactory.newX509Data(x509DataObjects);
 			keyInfoContent.add(x509Data);
 		}

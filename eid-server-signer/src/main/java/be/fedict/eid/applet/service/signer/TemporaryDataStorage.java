@@ -30,32 +30,22 @@ public interface TemporaryDataStorage {
 
 	/**
 	 * Gives back the temporary output stream that can be used for data storage.
-	 *
-	 * @return
 	 */
 	OutputStream getTempOutputStream();
 
 	/**
 	 * Gives back the temporary input stream for retrieval of the previously
 	 * stored data.
-	 *
-	 * @return
 	 */
 	InputStream getTempInputStream();
 
 	/**
 	 * Stores an attribute to the temporary data storage.
-	 *
-	 * @param attributeName
-	 * @param attributeValue
 	 */
 	void setAttribute(String attributeName, Serializable attributeValue);
 
 	/**
 	 * Retrieves an attribute from the temporary data storage.
-	 *
-	 * @param attributeName
-	 * @return
 	 */
 	Serializable getAttribute(String attributeName);
 }

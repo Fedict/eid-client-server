@@ -28,8 +28,6 @@ public interface Clock {
 
 	/**
 	 * Gives back the current time.
-	 *
-	 * @return
 	 */
 	Date getTime();
 }

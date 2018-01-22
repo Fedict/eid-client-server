@@ -102,7 +102,7 @@ public class AbstractCMSSignatureServiceTest {
 		DateTime notAfter = notBefore.plusYears(1);
 		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", notBefore,
 				notAfter, null, keyPair.getPrivate(), true, 0, null, null, new KeyUsage(KeyUsage.nonRepudiation));
-		List<X509Certificate> signingCertificateChain = new LinkedList<X509Certificate>();
+		List<X509Certificate> signingCertificateChain = new LinkedList<>();
 		signingCertificateChain.add(certificate);
 
 		// operate

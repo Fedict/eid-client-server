@@ -55,11 +55,6 @@ public class ASiCSignatureVerifier {
 	 *
 	 * @param asicDocument the ASiC document as byte array.
 	 * @return the list of signatories.
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws MarshalException
-	 * @throws XMLSignatureException
 	 */
 	public static List<X509Certificate> verifySignatures(byte[] asicDocument)
 			throws IOException, ParserConfigurationException, SAXException, MarshalException, XMLSignatureException {
@@ -70,7 +65,7 @@ public class ASiCSignatureVerifier {
 				break;
 			}
 		}
-		List<X509Certificate> signatories = new LinkedList<X509Certificate>();
+		List<X509Certificate> signatories = new LinkedList<>();
 		if (null == zipEntry) {
 			return signatories;
 		}

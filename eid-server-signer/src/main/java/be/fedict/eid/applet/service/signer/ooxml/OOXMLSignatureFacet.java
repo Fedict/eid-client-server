@@ -119,7 +119,7 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 			throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 		Manifest manifest = constructManifest(signatureFactory, document);
 		String objectId = "idPackageObject"; // really has to be this value.
-		List<XMLStructure> objectContent = new LinkedList<XMLStructure>();
+		List<XMLStructure> objectContent = new LinkedList<>();
 		objectContent.add(manifest);
 
 		addSignatureTime(signatureFactory, document, signatureId, objectContent);
@@ -133,7 +133,7 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 	}
 
 	private Manifest constructManifest(XMLSignatureFactory signatureFactory, Document document) {
-		List<Reference> manifestReferences = new LinkedList<Reference>();
+		List<Reference> manifestReferences = new LinkedList<>();
 
 		try {
 			addManifestReferences(signatureFactory, document, manifestReferences);
@@ -150,7 +150,7 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 		CTTypes contentTypes = getContentTypes();
 		List<String> relsEntryNames = getRelsEntryNames();
 		DigestMethod digestMethod = signatureFactory.newDigestMethod(this.digestAlgo.getXmlAlgoId(), null);
-		Set<String> digestedPartNames = new HashSet<String>();
+		Set<String> digestedPartNames = new HashSet<>();
 		for (String relsEntryName : relsEntryNames) {
 			CTRelationships relationships = getRelationships(relsEntryName);
 			List<CTRelationship> relationshipList = relationships.getRelationship();
@@ -171,7 +171,7 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 						continue;
 					}
 				}
-				if (false == OOXMLSignatureFacet.isSignedRelationship(relationshipType)) {
+				if (!OOXMLSignatureFacet.isSignedRelationship(relationshipType)) {
 					continue;
 				}
 				String baseUri = "/" + relsEntryName.substring(0, relsEntryName.indexOf("_rels/"));
@@ -182,12 +182,12 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 				parameterSpec.addRelationshipReference(relationshipId);
 				String contentType = getContentType(contentTypes, partName);
 				if (relationshipType.endsWith("customXml")) {
-					if (false == contentType.equals("inkml+xml") && false == contentType.equals("text/xml")) {
+					if (!contentType.equals("inkml+xml") && !contentType.equals("text/xml")) {
 						LOG.debug("skipping customXml with content type: " + contentType);
 						continue;
 					}
 				}
-				if (false == digestedPartNames.contains(partName)) {
+				if (!digestedPartNames.contains(partName)) {
 					/*
 					 * We only digest a part once.
 					 */
@@ -197,8 +197,8 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 					digestedPartNames.add(partName);
 				}
 			}
-			if (false == parameterSpec.getSourceIds().isEmpty()) {
-				List<Transform> transforms = new LinkedList<Transform>();
+			if (!parameterSpec.getSourceIds().isEmpty()) {
+				List<Transform> transforms = new LinkedList<>();
 				transforms
 						.add(signatureFactory.newTransform(RelationshipTransformService.TRANSFORM_URI, parameterSpec));
 				transforms.add(
@@ -214,10 +214,6 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 
 	/**
 	 * According to ECMA-376, Part 2. 10.1.2 Mapping Content Types.
-	 *
-	 * @param contentTypes
-	 * @param partName
-	 * @return
 	 */
 	private String getContentType(CTTypes contentTypes, String partName) {
 		List<Object> defaultOrOverrideList = contentTypes.getDefaultOrOverride();
@@ -246,7 +242,7 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 		ZipEntry zipEntry;
 		InputStream relationshipsInputStream = null;
 		while (null != (zipEntry = zipInputStream.getNextEntry())) {
-			if (false == relsEntryName.equals(zipEntry.getName())) {
+			if (!relsEntryName.equals(zipEntry.getName())) {
 				continue;
 			}
 			relationshipsInputStream = zipInputStream;
@@ -287,14 +283,14 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 	}
 
 	private List<String> getRelsEntryNames() throws IOException {
-		List<String> relsEntryNames = new LinkedList<String>();
+		List<String> relsEntryNames = new LinkedList<>();
 		URL ooxmlUrl = this.signatureService.getOfficeOpenXMLDocumentURL();
 		InputStream inputStream = ooxmlUrl.openStream();
 		ZipInputStream zipInputStream = new ZipInputStream(inputStream);
 		ZipEntry zipEntry;
 		while (null != (zipEntry = zipInputStream.getNextEntry())) {
 			String zipEntryName = zipEntry.getName();
-			if (false == zipEntryName.endsWith(".rels")) {
+			if (!zipEntryName.endsWith(".rels")) {
 				continue;
 			}
 			relsEntryNames.add(zipEntryName);
@@ -319,11 +315,11 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 		valueElement.setTextContent(nowStr);
 		signatureTimeElement.appendChild(valueElement);
 
-		List<XMLStructure> signatureTimeContent = new LinkedList<XMLStructure>();
+		List<XMLStructure> signatureTimeContent = new LinkedList<>();
 		signatureTimeContent.add(new DOMStructure(signatureTimeElement));
 		SignatureProperty signatureTimeSignatureProperty = signatureFactory.newSignatureProperty(signatureTimeContent,
 				"#" + signatureId, "idSignatureTime");
-		List<SignatureProperty> signaturePropertyContent = new LinkedList<SignatureProperty>();
+		List<SignatureProperty> signaturePropertyContent = new LinkedList<>();
 		signaturePropertyContent.add(signatureTimeSignatureProperty);
 		SignatureProperties signatureProperties = signatureFactory.newSignatureProperties(signaturePropertyContent,
 				"id-signature-time-" + UUID.randomUUID().toString());
@@ -333,7 +329,7 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 	private void addSignatureInfo(XMLSignatureFactory signatureFactory, Document document, String signatureId,
 								  List<Reference> references, List<XMLObject> objects)
 			throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
-		List<XMLStructure> objectContent = new LinkedList<XMLStructure>();
+		List<XMLStructure> objectContent = new LinkedList<>();
 
 		Element signatureInfoElement = document.createElementNS(OFFICE_DIGSIG_NS, "SignatureInfoV1");
 		signatureInfoElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns", OFFICE_DIGSIG_NS);
@@ -342,12 +338,12 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 		manifestHashAlgorithmElement.setTextContent("http://www.w3.org/2000/09/xmldsig#sha1");
 		signatureInfoElement.appendChild(manifestHashAlgorithmElement);
 
-		List<XMLStructure> signatureInfoContent = new LinkedList<XMLStructure>();
+		List<XMLStructure> signatureInfoContent = new LinkedList<>();
 		signatureInfoContent.add(new DOMStructure(signatureInfoElement));
 		SignatureProperty signatureInfoSignatureProperty = signatureFactory.newSignatureProperty(signatureInfoContent,
 				"#" + signatureId, "idOfficeV1Details");
 
-		List<SignatureProperty> signaturePropertyContent = new LinkedList<SignatureProperty>();
+		List<SignatureProperty> signaturePropertyContent = new LinkedList<>();
 		signaturePropertyContent.add(signatureInfoSignatureProperty);
 		SignatureProperties signatureProperties = signatureFactory.newSignatureProperties(signaturePropertyContent,
 				null);
@@ -378,11 +374,10 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 		ZipInputStream zipInputStream = new ZipInputStream(inputStream);
 		ZipEntry zipEntry;
 		while (null != (zipEntry = zipInputStream.getNextEntry())) {
-			if (false == zipEntryName.equals(zipEntry.getName())) {
+			if (!zipEntryName.equals(zipEntry.getName())) {
 				continue;
 			}
-			Document document = loadDocument(zipInputStream);
-			return document;
+			return loadDocument(zipInputStream);
 		}
 		return null;
 	}

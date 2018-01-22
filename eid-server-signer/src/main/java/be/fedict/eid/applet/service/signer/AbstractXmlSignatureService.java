@@ -27,12 +27,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jcp.xml.dsig.internal.dom.DOMReference;
 import org.apache.jcp.xml.dsig.internal.dom.DOMSignedInfo;
-import org.apache.jcp.xml.dsig.internal.dom.DOMXMLSignature;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.Constants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -40,7 +38,6 @@ import org.xml.sax.SAXException;
 import javax.xml.crypto.MarshalException;
 import javax.xml.crypto.URIDereferencer;
 import javax.xml.crypto.XMLStructure;
-import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.DigestMethod;
 import javax.xml.crypto.dsig.Manifest;
@@ -103,7 +100,7 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 	 * Main constructor.
 	 */
 	public AbstractXmlSignatureService(DigestAlgo digestAlgo) {
-		this.signatureFacets = new LinkedList<SignatureFacet>();
+		this.signatureFacets = new LinkedList<>();
 		this.signatureNamespacePrefix = null;
 		this.signatureId = null;
 		this.digestAlgo = digestAlgo;
@@ -113,8 +110,6 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 	 * Sets the signature Id attribute value used to create the XML signature. A
 	 * <code>null</code> value will trigger an automatically generated signature
 	 * Id.
-	 *
-	 * @param signatureId
 	 */
 	protected void setSignatureId(String signatureId) {
 		this.signatureId = signatureId;
@@ -123,8 +118,6 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 	/**
 	 * Sets the XML Signature namespace prefix to be used for signature
 	 * creation. A <code>null</code> value will omit the prefixing.
-	 *
-	 * @param signatureNamespacePrefix
 	 */
 	protected void setSignatureNamespacePrefix(String signatureNamespacePrefix) {
 		this.signatureNamespacePrefix = signatureNamespacePrefix;
@@ -132,8 +125,6 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 
 	/**
 	 * Adds a signature facet to this XML signature service.
-	 *
-	 * @param signatureFacet
 	 */
 	protected void addSignatureFacet(SignatureFacet signatureFacet) {
 		this.signatureFacets.add(signatureFacet);
@@ -143,8 +134,6 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 	 * Gives back the signature digest algorithm. Allowed values are SHA-1,
 	 * SHA-256, SHA-384, SHA-512, RIPEND160. The default algorithm is SHA-1.
 	 * Override this method to select another signature digest algorithm.
-	 *
-	 * @return
 	 */
 	protected DigestAlgo getSignatureDigestAlgorithm() {
 
@@ -155,10 +144,6 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 	 * Gives back the enveloping document. Return <code>null</code> in case
 	 * ds:Signature should be the top-level element. Implementations can
 	 * override this method to provide a custom enveloping document.
-	 *
-	 * @return
-	 * @throws SAXException
-	 * @throws IOException
 	 */
 	protected Document getEnvelopingDocument() throws ParserConfigurationException, IOException, SAXException {
 		return null;
@@ -167,8 +152,6 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 	/**
 	 * Override this method to change the URI dereferener used by the signing
 	 * engine.
-	 *
-	 * @return
 	 */
 	protected URIDereferencer getURIDereferencer() {
 		return null;
@@ -178,8 +161,6 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 	 * Gives back the human-readable description of what the citizen will be
 	 * signing. The default value is "XML Document". Override this method to
 	 * provide the citizen with another description.
-	 *
-	 * @return
 	 */
 	protected String getSignatureDescription() {
 		return "XML Document";
@@ -188,15 +169,11 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 	/**
 	 * Gives back a temporary data storage component. This component is used for
 	 * temporary storage of the XML signature documents.
-	 *
-	 * @return
 	 */
 	protected abstract TemporaryDataStorage getTemporaryDataStorage();
 
 	/**
 	 * Gives back the output stream to which to write the signed XML document.
-	 *
-	 * @return
 	 */
 	protected abstract OutputStream getSignedDocumentOutputStream();
 
@@ -334,7 +311,7 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 		/*
 		 * Add ds:References that come from signing client local files.
 		 */
-		List<Reference> references = new LinkedList<Reference>();
+		List<Reference> references = new LinkedList<>();
 		addDigestInfosAsReferences(digestInfos, signatureFactory, references);
 
 		/*
@@ -346,7 +323,7 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 		} else {
 			localSignatureId = this.signatureId;
 		}
-		List<XMLObject> objects = new LinkedList<XMLObject>();
+		List<XMLObject> objects = new LinkedList<>();
 		for (SignatureFacet signatureFacet : this.signatureFacets) {
 			LOG.debug("invoking signature facet: " + signatureFacet.getClass().getSimpleName());
 			signatureFacet.preSign(signatureFactory, document, localSignatureId, signingCertificateChain, references,
@@ -371,15 +348,7 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 		/*
 		 * ds:Signature Marshalling.
 		 */
-		DOMXMLSignature domXmlSignature = (DOMXMLSignature) xmlSignature;
-		Node documentNode = document.getDocumentElement();
-		if (null == documentNode) {
-			/*
-			 * In case of an empty DOM document.
-			 */
-			documentNode = document;
-		}
-		domXmlSignature.marshal(documentNode, this.signatureNamespacePrefix, (DOMCryptoContext) xmlSignContext);
+		xmlSignature.sign(xmlSignContext);
 
 		/*
 		 * Completion of undigested ds:References in the ds:Manifests.
@@ -389,7 +358,7 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 			List<XMLStructure> objectContentList = object.getContent();
 			for (XMLStructure objectContent : objectContentList) {
 				LOG.debug("object content java type: " + objectContent.getClass().getName());
-				if (false == objectContent instanceof Manifest) {
+				if (!(objectContent instanceof Manifest)) {
 					continue;
 				}
 				Manifest manifest = (Manifest) objectContent;
@@ -439,8 +408,7 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 		 */
 
 		MessageDigest jcaMessageDigest = MessageDigest.getInstance(digestAlgo.getAlgoId());
-		byte[] digestValue = jcaMessageDigest.digest(octets);
-		return digestValue;
+		return jcaMessageDigest.digest(octets);
 	}
 
 	private void addDigestInfosAsReferences(List<DigestInfo> digestInfos, XMLSignatureFactory signatureFactory,
@@ -532,8 +500,7 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		Document document = documentBuilder.parse(inputSource);
-		return document;
+		return documentBuilder.parse(inputSource);
 	}
 
 	protected Document loadDocumentNoClose(InputStream documentInputStream)
@@ -543,7 +510,6 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		Document document = documentBuilder.parse(inputSource);
-		return document;
+		return documentBuilder.parse(inputSource);
 	}
 }

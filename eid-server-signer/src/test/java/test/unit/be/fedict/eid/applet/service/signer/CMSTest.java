@@ -101,8 +101,6 @@ public class CMSTest {
 	/**
 	 * CMS signature with external data and external certificate. The CMS only
 	 * contains the signature and some certificate selector.
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testBasicCmsSignature() throws Exception {
@@ -139,8 +137,6 @@ public class CMSTest {
 	/**
 	 * CMS signature with embedded data and external certificate. The CMS only
 	 * contains the original content, signature and some certificate selector.
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testCmsSignatureWithContent() throws Exception {
@@ -180,8 +176,6 @@ public class CMSTest {
 	 * CMS signature with external data and embedded certificate. The CMS only
 	 * contains the signature, signing certificate and some certificate
 	 * selector.
-	 *
-	 * @throws Exception
 	 */
 	@Test
 	public void testCmsSignatureWithCertificate() throws Exception {
@@ -199,7 +193,7 @@ public class CMSTest {
 		 * selector.
 		 */
 		generator.addSigner(keyPair.getPrivate(), certificate, CMSSignedDataGenerator.DIGEST_SHA1);
-		List<X509Certificate> certList = new LinkedList<X509Certificate>();
+		List<X509Certificate> certList = new LinkedList<>();
 		certList.add(certificate);
 		CertStore certStore = CertStore.getInstance("Collection", new CollectionCertStoreParameters(certList));
 		generator.addCertificatesAndCRLs(certStore);
@@ -230,9 +224,9 @@ public class CMSTest {
 
 		private static final Log LOG = LogFactory.getLog(SHA1WithRSASignature.class);
 
-		private static final ThreadLocal<byte[]> digestValues = new ThreadLocal<byte[]>();
+		private static final ThreadLocal<byte[]> digestValues = new ThreadLocal<>();
 
-		private static final ThreadLocal<byte[]> signatureValues = new ThreadLocal<byte[]>();
+		private static final ThreadLocal<byte[]> signatureValues = new ThreadLocal<>();
 
 		private final MessageDigest messageDigest;
 

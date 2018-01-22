@@ -36,9 +36,6 @@ public class ODFNamespaceContext implements NamespaceContext {
 
 	/**
 	 * Get namespace URI for a given prefix
-	 *
-	 * @param prefix
-	 * @return
 	 */
 	public String getNamespaceURI(String prefix) {
 		/*

@@ -36,7 +36,7 @@ public class SignatureTestFacet implements SignatureFacet {
 	private final List<String> uris;
 
 	public SignatureTestFacet() {
-		this.uris = new LinkedList<String>();
+		this.uris = new LinkedList<>();
 	}
 
 	public void postSign(Element signatureElement, List<X509Certificate> signingCertificateChain) {

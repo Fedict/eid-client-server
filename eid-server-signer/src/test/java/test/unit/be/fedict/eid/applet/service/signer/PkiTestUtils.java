@@ -99,8 +99,7 @@ public class PkiTestUtils {
 		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
 		SecureRandom random = new SecureRandom();
 		keyPairGenerator.initialize(new RSAKeyGenParameterSpec(1024, RSAKeyGenParameterSpec.F4), random);
-		KeyPair keyPair = keyPairGenerator.generateKeyPair();
-		return keyPair;
+		return keyPairGenerator.generateKeyPair();
 	}
 
 	private static SubjectKeyIdentifier createSubjectKeyId(PublicKey publicKey) {
@@ -195,8 +194,7 @@ public class PkiTestUtils {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		Document document = documentBuilder.parse(inputSource);
-		return document;
+		return documentBuilder.parse(inputSource);
 	}
 
 	static String toString(Node dom) throws TransformerException {
@@ -263,8 +261,7 @@ public class PkiTestUtils {
 
 		// response generation
 		OCSPRespGenerator ocspRespGenerator = new OCSPRespGenerator();
-		OCSPResp ocspResp = ocspRespGenerator.generate(OCSPRespGenerator.SUCCESSFUL, basicOCSPResp);
 
-		return ocspResp;
+		return ocspRespGenerator.generate(OCSPRespGenerator.SUCCESSFUL, basicOCSPResp);
 	}
 }

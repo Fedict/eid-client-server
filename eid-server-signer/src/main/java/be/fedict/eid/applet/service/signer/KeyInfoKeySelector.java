@@ -55,13 +55,13 @@ public class KeyInfoKeySelector extends KeySelector implements KeySelectorResult
 		List<XMLStructure> keyInfoContent = keyInfo.getContent();
 		this.certificate = null;
 		for (XMLStructure keyInfoStructure : keyInfoContent) {
-			if (false == (keyInfoStructure instanceof X509Data)) {
+			if (!(keyInfoStructure instanceof X509Data)) {
 				continue;
 			}
 			X509Data x509Data = (X509Data) keyInfoStructure;
 			List<Object> x509DataList = x509Data.getContent();
 			for (Object x509DataObject : x509DataList) {
-				if (false == (x509DataObject instanceof X509Certificate)) {
+				if (!(x509DataObject instanceof X509Certificate)) {
 					continue;
 				}
 				X509Certificate certificate = (X509Certificate) x509DataObject;
@@ -88,8 +88,6 @@ public class KeyInfoKeySelector extends KeySelector implements KeySelectorResult
 	/**
 	 * Gives back the X509 certificate used during the last signature
 	 * verification operation.
-	 *
-	 * @return
 	 */
 	public X509Certificate getCertificate() {
 		return this.certificate;

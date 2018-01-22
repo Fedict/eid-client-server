@@ -84,23 +84,19 @@ public class RelationshipTransformService extends TransformService {
 	public RelationshipTransformService() {
 		super();
 		LOG.debug("constructor");
-		this.sourceIds = new LinkedList<String>();
-		this.sourceTypes = new LinkedList<String>();
+		this.sourceIds = new LinkedList<>();
+		this.sourceTypes = new LinkedList<>();
 	}
 
 	@Override
 	public void init(TransformParameterSpec params) throws InvalidAlgorithmParameterException {
 		LOG.debug("init(params)");
-		if (false == params instanceof RelationshipTransformParameterSpec) {
+		if (!(params instanceof RelationshipTransformParameterSpec)) {
 			throw new InvalidAlgorithmParameterException();
 		}
 		RelationshipTransformParameterSpec relParams = (RelationshipTransformParameterSpec) params;
-		for (String sourceId : relParams.getSourceIds()) {
-			this.sourceIds.add(sourceId);
-		}
-		for (String sourceType : relParams.getSourceTypes()) {
-			this.sourceTypes.add(sourceType);
-		}
+		this.sourceIds.addAll(relParams.getSourceIds());
+		this.sourceTypes.addAll(relParams.getSourceTypes());
 	}
 
 	@Override
@@ -207,7 +203,7 @@ public class RelationshipTransformService extends TransformService {
 			String typeAttribute = childElement.getAttribute("Type");
 			LOG.debug("Relationship id attribute: " + idAttribute);
 			LOG.debug("Relationship type attribute: " + typeAttribute);
-			if (false == this.sourceIds.contains(idAttribute) && false == this.sourceTypes.contains(typeAttribute)) {
+			if (!this.sourceIds.contains(idAttribute) && !this.sourceTypes.contains(typeAttribute)) {
 				LOG.debug("removing Relationship element: " + idAttribute);
 				relationshipsElement.removeChild(childNode);
 				nodeIdx--;
@@ -230,7 +226,7 @@ public class RelationshipTransformService extends TransformService {
 	}
 
 	private void sortRelationshipElements(Element relationshipsElement) {
-		List<Element> relationshipElements = new LinkedList<Element>();
+		List<Element> relationshipElements = new LinkedList<>();
 		NodeList relationshipNodes = relationshipsElement.getElementsByTagName("*");
 		int nodeCount = relationshipNodes.getLength();
 		for (int nodeIdx = 0; nodeIdx < nodeCount; nodeIdx++) {
@@ -280,8 +276,7 @@ public class RelationshipTransformService extends TransformService {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		Document document = documentBuilder.parse(inputSource);
-		return document;
+		return documentBuilder.parse(inputSource);
 	}
 
 	public Data transform(Data data, XMLCryptoContext context, OutputStream os) {

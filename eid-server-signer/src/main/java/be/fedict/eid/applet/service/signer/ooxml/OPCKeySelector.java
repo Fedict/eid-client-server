@@ -128,7 +128,7 @@ public class OPCKeySelector extends KeyInfoKeySelector {
 		}
 		CTRelationships signatureRelationships = signatureRelationshipsElement.getValue();
 		List<CTRelationship> signatureRelationshipList = signatureRelationships.getRelationship();
-		List<String> certificateResourceNames = new LinkedList<String>();
+		List<String> certificateResourceNames = new LinkedList<>();
 		for (CTRelationship signatureRelationship : signatureRelationshipList) {
 			if (DIGITAL_SIGNATURE_CERTIFICATE_REL_TYPE.equals(signatureRelationship.getType())) {
 				String certificateResourceName = signatureRelationship.getTarget().substring(1);

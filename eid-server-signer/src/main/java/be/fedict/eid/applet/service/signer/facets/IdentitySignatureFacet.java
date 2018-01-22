@@ -115,14 +115,14 @@ public class IdentitySignatureFacet implements SignatureFacet {
 		// ds:Object
 		String objectId = "identity-object-" + UUID.randomUUID().toString();
 
-		List<XMLStructure> identityObjectContent = new LinkedList<XMLStructure>();
+		List<XMLStructure> identityObjectContent = new LinkedList<>();
 		identityObjectContent.add(new DOMStructure(identityNode));
 		XMLObject identityObject = signatureFactory.newXMLObject(identityObjectContent, objectId, null, null);
 		objects.add(identityObject);
 
 		// ds:Reference
 		DigestMethod digestMethod = signatureFactory.newDigestMethod(this.digestAlgo.getXmlAlgoId(), null);
-		List<Transform> transforms = new LinkedList<Transform>();
+		List<Transform> transforms = new LinkedList<>();
 		Transform exclusiveTransform = signatureFactory.newTransform(CanonicalizationMethod.INCLUSIVE,
 				(TransformParameterSpec) null);
 		transforms.add(exclusiveTransform);

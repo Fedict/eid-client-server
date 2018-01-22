@@ -58,8 +58,7 @@ public class HttpSessionTemporaryDataStorage implements TemporaryDataStorage {
 			return null;
 		}
 		byte[] tempData = tempOutputStream.toByteArray();
-		ByteArrayInputStream tempInputStream = new ByteArrayInputStream(tempData);
-		return tempInputStream;
+		return new ByteArrayInputStream(tempData);
 	}
 
 	public OutputStream getTempOutputStream() {
@@ -72,8 +71,6 @@ public class HttpSessionTemporaryDataStorage implements TemporaryDataStorage {
 
 	/**
 	 * Gives back the current HTTP session using JACC.
-	 *
-	 * @return
 	 */
 	public static HttpSession getHttpSession() {
 		HttpServletRequest httpServletRequest;
@@ -83,8 +80,7 @@ public class HttpSessionTemporaryDataStorage implements TemporaryDataStorage {
 			throw new RuntimeException("JACC error: " + e.getMessage());
 		}
 
-		HttpSession httpSession = httpServletRequest.getSession();
-		return httpSession;
+		return httpServletRequest.getSession();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -95,7 +91,7 @@ public class HttpSessionTemporaryDataStorage implements TemporaryDataStorage {
 		if (null != attributes) {
 			return attributes;
 		}
-		attributes = new HashMap<String, Serializable>();
+		attributes = new HashMap<>();
 		httpSession.setAttribute(TEMP_ATTRIBUTES_ATTRIBUTE, attributes);
 		return attributes;
 	}

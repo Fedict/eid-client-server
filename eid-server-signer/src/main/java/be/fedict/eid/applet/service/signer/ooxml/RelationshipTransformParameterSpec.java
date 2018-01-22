@@ -36,14 +36,12 @@ public class RelationshipTransformParameterSpec implements TransformParameterSpe
 	 * Main constructor.
 	 */
 	public RelationshipTransformParameterSpec() {
-		this.sourceIds = new LinkedList<String>();
-		this.sourceTypes = new LinkedList<String>();
+		this.sourceIds = new LinkedList<>();
+		this.sourceTypes = new LinkedList<>();
 	}
 
 	/**
 	 * Adds a relationship reference for the given source identifier.
-	 *
-	 * @param sourceId
 	 */
 	public void addRelationshipReference(String sourceId) {
 		this.sourceIds.add(sourceId);
@@ -51,8 +49,6 @@ public class RelationshipTransformParameterSpec implements TransformParameterSpe
 
 	/**
 	 * Adds a relationship group reference for the given source type.
-	 *
-	 * @param sourceType
 	 */
 	public void addRelationshipGroupReference(String sourceType) {
 		this.sourceTypes.add(sourceType);

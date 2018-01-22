@@ -67,8 +67,7 @@ public abstract class AbstractCMSSignatureService implements SignatureService {
 		}
 		byte[] digestValue = SHA1WithRSAProxySignature.getDigestValue();
 		String description = getSignatureDescription();
-		DigestInfo digestInfo = new DigestInfo(digestValue, "SHA1", description);
-		return digestInfo;
+		return new DigestInfo(digestValue, "SHA1", description);
 	}
 
 	public void postSign(byte[] signatureValue, List<X509Certificate> signingCertificateChain) {
@@ -109,7 +108,7 @@ public abstract class AbstractCMSSignatureService implements SignatureService {
 			X509Certificate signerCertificate = signingCertificateChain.get(0);
 			PrivateKey dummyPrivateKey = new DummyPrivateKey();
 			generator.addSigner(dummyPrivateKey, signerCertificate, CMSSignedDataGenerator.DIGEST_SHA1);
-			List<X509Certificate> certList = new LinkedList<X509Certificate>();
+			List<X509Certificate> certList = new LinkedList<>();
 			certList.add(signerCertificate);
 			CertStore certStore;
 			try {

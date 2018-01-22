@@ -262,7 +262,7 @@ public class AbstractXmlSignatureServiceTest {
 		private final Map<String, byte[]> resources;
 
 		public UriTestDereferencer() {
-			this.resources = new HashMap<String, byte[]>();
+			this.resources = new HashMap<>();
 		}
 
 		public void addResource(String uri, byte[] data) {
@@ -616,7 +616,7 @@ public class AbstractXmlSignatureServiceTest {
 
 		DigestMethod digestMethod = signatureFactory.newDigestMethod(DigestMethod.SHA1, null);
 
-		List<Transform> transforms = new LinkedList<Transform>();
+		List<Transform> transforms = new LinkedList<>();
 		Transform transform = signatureFactory.newTransform(CanonicalizationMethod.INCLUSIVE,
 				(TransformParameterSpec) null);
 		transforms.add(transform);
@@ -673,7 +673,7 @@ public class AbstractXmlSignatureServiceTest {
 
 		DigestMethod digestMethod = signatureFactory.newDigestMethod(DigestMethod.SHA1, null);
 
-		List<Transform> transforms = new LinkedList<Transform>();
+		List<Transform> transforms = new LinkedList<>();
 		Transform transform = signatureFactory.newTransform(CanonicalizationMethod.INCLUSIVE,
 				(TransformParameterSpec) null);
 		LOG.debug("transform type: " + transform.getClass().getName());
@@ -731,8 +731,7 @@ public class AbstractXmlSignatureServiceTest {
 			LOG.debug("systemId: " + systemId);
 			if ("http://webserver/bookstore.dtd".equals(systemId)) {
 				InputStream dtdInputStream = MyEntityResolver.class.getResourceAsStream("/bookstore.dtd");
-				InputSource inputSource = new InputSource(dtdInputStream);
-				return inputSource;
+				return new InputSource(dtdInputStream);
 			}
 			return null;
 		}
@@ -941,8 +940,7 @@ public class AbstractXmlSignatureServiceTest {
 					throw new URIReferenceException(e);
 				}
 				XMLSignatureInput xmlSignatureInput = new XMLSignatureInput(document);
-				ApacheNodeSetData apacheNodeSetData = new ApacheNodeSetData(xmlSignatureInput);
-				return apacheNodeSetData;
+				return new ApacheNodeSetData(xmlSignatureInput);
 			}
 			throw new URIReferenceException("cannot dereference: " + uri);
 		}
@@ -1066,7 +1064,7 @@ public class AbstractXmlSignatureServiceTest {
 
 		public boolean hasChanged() {
 			try {
-				return false == verify();
+				return !verify();
 			} catch (ReferenceNotInitializedException e) {
 				return false;
 			} catch (XMLSecurityException e) {
@@ -1123,7 +1121,7 @@ public class AbstractXmlSignatureServiceTest {
 					VerifyReference reference = references[referenceIdx];
 					changed |= reference.hasChanged();
 				}
-				if (false == changed) {
+				if (!changed) {
 					return false;
 				}
 				node.setNodeValue(originalTextValue);
@@ -1149,7 +1147,7 @@ public class AbstractXmlSignatureServiceTest {
 			} else {
 				throw new RuntimeException("unsupported node type: " + node.getNodeType());
 			}
-			if (false == changed) {
+			if (!changed) {
 				return false;
 			}
 		}

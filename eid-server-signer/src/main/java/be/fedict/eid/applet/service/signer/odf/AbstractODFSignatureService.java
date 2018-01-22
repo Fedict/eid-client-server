@@ -66,8 +66,6 @@ abstract public class AbstractODFSignatureService extends AbstractXmlSignatureSe
 	/**
 	 * Gives back the used XAdES signature facet. Allows for extra configuration
 	 * of the XAdES elements.
-	 *
-	 * @return
 	 */
 	protected XAdESSignatureFacet getXAdESSignatureFacet() {
 		return this.xadesSignatureFacet;
@@ -75,8 +73,6 @@ abstract public class AbstractODFSignatureService extends AbstractXmlSignatureSe
 
 	/**
 	 * Returns the URL of the ODF to be signed.
-	 *
-	 * @return
 	 */
 	abstract protected URL getOpenDocumentURL();
 
@@ -98,8 +94,7 @@ abstract public class AbstractODFSignatureService extends AbstractXmlSignatureSe
 		 * Create each time a new object; we want an empty output stream to
 		 * start with.
 		 */
-		OutputStream signedDocumentOutputStream = new ODFSignedDocumentOutputStream();
-		return signedDocumentOutputStream;
+		return new ODFSignedDocumentOutputStream();
 	}
 
 	private class ODFSignedDocumentOutputStream extends ByteArrayOutputStream {
@@ -142,8 +137,6 @@ abstract public class AbstractODFSignatureService extends AbstractXmlSignatureSe
 
 	/**
 	 * The output stream to which to write the signed ODF file.
-	 *
-	 * @return
 	 */
 	abstract protected OutputStream getSignedOpenDocumentOutputStream();
 
@@ -169,11 +162,6 @@ abstract public class AbstractODFSignatureService extends AbstractXmlSignatureSe
 
 	/**
 	 * Get the XML signature file from the ODF package
-	 *
-	 * @return
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
 	 */
 	private Document getODFSignatureDocument() throws IOException, ParserConfigurationException, SAXException {
 		URL odfUrl = this.getOpenDocumentURL();

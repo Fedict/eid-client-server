@@ -40,14 +40,7 @@ public interface SignatureFacet {
 	 * pre-sign phase. Via this method a signature facet implementation can add
 	 * signature facets to an XML signature.
 	 *
-	 * @param signatureFactory
-	 * @param document
-	 * @param signatureId
 	 * @param signingCertificateChain the optional signing certificate chain
-	 * @param references
-	 * @param objects
-	 * @throws InvalidAlgorithmParameterException
-	 * @throws NoSuchAlgorithmException
 	 */
 	void preSign(XMLSignatureFactory signatureFactory, Document document, String signatureId,
 				 List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects)
@@ -57,9 +50,6 @@ public interface SignatureFacet {
 	 * This method is being invoked by the XML signature service engine during
 	 * the post-sign phase. Via this method a signature facet can extend the XML
 	 * signatures with for example key information.
-	 *
-	 * @param signatureElement
-	 * @param signingCertificateChain
 	 */
 	void postSign(Element signatureElement, List<X509Certificate> signingCertificateChain);
 }

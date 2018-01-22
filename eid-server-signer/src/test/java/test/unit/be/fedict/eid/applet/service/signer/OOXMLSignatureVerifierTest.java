@@ -455,7 +455,7 @@ public class OOXMLSignatureVerifierTest {
 		ZipInputStream zipInputStream = new ZipInputStream(url.openStream());
 		ZipEntry zipEntry;
 		while (null != (zipEntry = zipInputStream.getNextEntry())) {
-			if (false == signatureResourceName.equals(zipEntry.getName())) {
+			if (!signatureResourceName.equals(zipEntry.getName())) {
 				continue;
 			}
 			Document signatureDocument = loadDocument(zipInputStream);
@@ -488,7 +488,7 @@ public class OOXMLSignatureVerifierTest {
 		ZipInputStream zipInputStream = new ZipInputStream(inputStream);
 		ZipEntry zipEntry;
 		while (null != (zipEntry = zipInputStream.getNextEntry())) {
-			if (false == "[Content_Types].xml".equals(zipEntry.getName())) {
+			if (!"[Content_Types].xml".equals(zipEntry.getName())) {
 				continue;
 			}
 			Document contentTypesDocument = loadDocument(zipInputStream);
@@ -515,7 +515,6 @@ public class OOXMLSignatureVerifierTest {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		Document document = documentBuilder.parse(inputSource);
-		return document;
+		return documentBuilder.parse(inputSource);
 	}
 }

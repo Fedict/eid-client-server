@@ -83,8 +83,6 @@ public abstract class AbstractOOXMLSignatureService extends AbstractXmlSignature
 
 	/**
 	 * Gives back the used XAdES signature facet.
-	 *
-	 * @return
 	 */
 	protected XAdESSignatureFacet getXAdESSignatureFacet() {
 		return this.xadesSignatureFacet;
@@ -126,15 +124,11 @@ public abstract class AbstractOOXMLSignatureService extends AbstractXmlSignature
 
 	/**
 	 * The output stream to which to write the signed Office OpenXML file.
-	 *
-	 * @return
 	 */
 	abstract protected OutputStream getSignedOfficeOpenXMLDocumentOutputStream();
 
 	/**
 	 * Gives back the URL of the OOXML to be signed.
-	 *
-	 * @return
 	 */
 	abstract protected URL getOfficeOpenXMLDocumentURL();
 
@@ -246,7 +240,7 @@ public abstract class AbstractOOXMLSignatureService extends AbstractXmlSignature
 			}
 		}
 
-		if (false == hasOriginSigsRels) {
+		if (!hasOriginSigsRels) {
 			/*
 			 * Add signature relationships document.
 			 */
@@ -301,7 +295,6 @@ public abstract class AbstractOOXMLSignatureService extends AbstractXmlSignature
 		 * Create each time a new object; we want an empty output stream to
 		 * start with.
 		 */
-		OutputStream signedDocumentOutputStream = new OOXMLSignedDocumentOutputStream();
-		return signedDocumentOutputStream;
+		return new OOXMLSignedDocumentOutputStream();
 	}
 }

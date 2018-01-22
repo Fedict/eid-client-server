@@ -137,11 +137,9 @@ public class AbstractASiCSignatureService extends AbstractXmlSignatureService im
 		ZipEntry zipEntry;
 		while (null != (zipEntry = zipInputStream.getNextEntry())) {
 			if (ASiCUtil.isSignatureZipEntry(zipEntry)) {
-				Document documentSignaturesDocument = ODFUtil.loadDocument(zipInputStream);
-				return documentSignaturesDocument;
+				return ODFUtil.loadDocument(zipInputStream);
 			}
 		}
-		Document document = ASiCUtil.createNewSignatureDocument();
-		return document;
+		return ASiCUtil.createNewSignatureDocument();
 	}
 }

@@ -38,9 +38,9 @@ public class SHA1WithRSAProxySignature extends Signature {
 
 	private static final Log LOG = LogFactory.getLog(SHA1WithRSAProxySignature.class);
 
-	private static final ThreadLocal<byte[]> digestValues = new ThreadLocal<byte[]>();
+	private static final ThreadLocal<byte[]> digestValues = new ThreadLocal<>();
 
-	private static final ThreadLocal<byte[]> signatureValues = new ThreadLocal<byte[]>();
+	private static final ThreadLocal<byte[]> signatureValues = new ThreadLocal<>();
 
 	private final MessageDigest messageDigest;
 
@@ -102,7 +102,7 @@ public class SHA1WithRSAProxySignature extends Signature {
 		if (null == expectedDigestValue) {
 			SHA1WithRSAProxySignature.digestValues.set(digestValue);
 		} else {
-			if (false == Arrays.areEqual(expectedDigestValue, digestValue)) {
+			if (!Arrays.areEqual(expectedDigestValue, digestValue)) {
 				throw new IllegalStateException("digest value has changed");
 			}
 		}

@@ -207,7 +207,7 @@ public class XAdESSignatureFacet implements SignatureFacet {
 		} catch (JAXBException e) {
 			throw new RuntimeException("JAXB error: " + e.getMessage(), e);
 		}
-		this.dataObjectFormatMimeTypes = new HashMap<String, String>();
+		this.dataObjectFormatMimeTypes = new HashMap<>();
 	}
 
 	public void postSign(Element signatureElement, List<X509Certificate> signingCertificateChain) {
@@ -259,7 +259,7 @@ public class XAdESSignatureFacet implements SignatureFacet {
 		signedSignatureProperties.setSigningCertificate(signingCertificates);
 
 		// ClaimedRole
-		if (null != this.role && false == this.role.isEmpty()) {
+		if (null != this.role && !this.role.isEmpty()) {
 			SignerRoleType signerRole = this.xadesObjectFactory.createSignerRoleType();
 			signedSignatureProperties.setSignerRole(signerRole);
 			ClaimedRolesListType claimedRolesList = this.xadesObjectFactory.createClaimedRolesListType();
@@ -311,7 +311,7 @@ public class XAdESSignatureFacet implements SignatureFacet {
 		}
 
 		// DataObjectFormat
-		if (false == this.dataObjectFormatMimeTypes.isEmpty()) {
+		if (!this.dataObjectFormatMimeTypes.isEmpty()) {
 			SignedDataObjectPropertiesType signedDataObjectProperties = this.xadesObjectFactory
 					.createSignedDataObjectPropertiesType();
 			signedProperties.setSignedDataObjectProperties(signedDataObjectProperties);
@@ -330,14 +330,14 @@ public class XAdESSignatureFacet implements SignatureFacet {
 				qualifyingProperties);
 
 		// add XAdES ds:Object
-		List<XMLStructure> xadesObjectContent = new LinkedList<XMLStructure>();
+		List<XMLStructure> xadesObjectContent = new LinkedList<>();
 		xadesObjectContent.add(new DOMStructure(qualifyingPropertiesNode));
 		XMLObject xadesObject = signatureFactory.newXMLObject(xadesObjectContent, null, null, null);
 		objects.add(xadesObject);
 
 		// add XAdES ds:Reference
 		DigestMethod digestMethod = signatureFactory.newDigestMethod(digestAlgorithm.getXmlAlgoId(), null);
-		List<Transform> transforms = new LinkedList<Transform>();
+		List<Transform> transforms = new LinkedList<>();
 		Transform exclusiveTransform = signatureFactory.newTransform(CanonicalizationMethod.INCLUSIVE,
 				(TransformParameterSpec) null);
 		transforms.add(exclusiveTransform);
@@ -363,12 +363,6 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Gives back the JAXB DigestAlgAndValue data structure.
-	 *
-	 * @param data
-	 * @param xadesObjectFactory
-	 * @param xmldsigObjectFactory
-	 * @param digestAlgorithm
-	 * @return
 	 */
 	public static DigestAlgAndValueType getDigestAlgAndValue(byte[] data, ObjectFactory xadesObjectFactory,
 															 be.fedict.eid.applet.service.signer.jaxb.xmldsig.ObjectFactory xmldsigObjectFactory,
@@ -393,12 +387,6 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Gives back the JAXB CertID data structure.
-	 *
-	 * @param certificate
-	 * @param xadesObjectFactory
-	 * @param xmldsigObjectFactory
-	 * @param digestAlgorithm
-	 * @return
 	 */
 	public static CertIDType getCertID(X509Certificate certificate, ObjectFactory xadesObjectFactory,
 									   be.fedict.eid.applet.service.signer.jaxb.xmldsig.ObjectFactory xmldsigObjectFactory,
@@ -443,9 +431,6 @@ public class XAdESSignatureFacet implements SignatureFacet {
 	/**
 	 * Adds a mime-type for the given ds:Reference (referred via its @URI). This
 	 * information is added via the xades:DataObjectFormat element.
-	 *
-	 * @param dsReferenceUri
-	 * @param mimetype
 	 */
 	public void addMimeType(String dsReferenceUri, String mimetype) {
 		this.dataObjectFormatMimeTypes.put(dsReferenceUri, mimetype);
@@ -453,8 +438,6 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Sets the Id that will be used on the SignedProperties element;
-	 *
-	 * @param idSignedProperties
 	 */
 	public void setIdSignedProperties(String idSignedProperties) {
 		this.idSignedProperties = idSignedProperties;
@@ -462,8 +445,6 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Sets the signature policy to implied.
-	 *
-	 * @param signaturePolicyImplied
 	 */
 	public void setSignaturePolicyImplied(boolean signaturePolicyImplied) {
 		this.signaturePolicyImplied = signaturePolicyImplied;
@@ -471,8 +452,6 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Sets the XAdES XML namespace prefix.
-	 *
-	 * @param xadesNamespacePrefix
 	 */
 	public void setXadesNamespacePrefix(String xadesNamespacePrefix) {
 		this.xadesNamespacePrefixMapper.setXAdESNamespacePrefix(xadesNamespacePrefix);
@@ -480,8 +459,6 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Sets the XAdES claimed role.
-	 *
-	 * @param role
 	 */
 	public void setRole(String role) {
 		this.role = role;
@@ -489,8 +466,6 @@ public class XAdESSignatureFacet implements SignatureFacet {
 
 	/**
 	 * Work-around for Office 2010 IssuerName encoding.
-	 *
-	 * @param reverseOrder
 	 */
 	public void setIssuerNameNoReverseOrder(boolean reverseOrder) {
 		this.issuerNameNoReverseOrder = reverseOrder;

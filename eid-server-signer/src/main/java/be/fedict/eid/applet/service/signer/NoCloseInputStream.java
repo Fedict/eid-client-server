@@ -34,8 +34,6 @@ public class NoCloseInputStream extends ProxyInputStream {
 
 	/**
 	 * Main constructor.
-	 *
-	 * @param proxy
 	 */
 	public NoCloseInputStream(InputStream proxy) {
 		super(proxy);

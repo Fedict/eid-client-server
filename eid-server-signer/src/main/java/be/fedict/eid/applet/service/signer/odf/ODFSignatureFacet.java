@@ -86,7 +86,7 @@ public class ODFSignatureFacet implements SignatureFacet {
 					Reference reference;
 					if (name.endsWith(".xml") && !isEmpty(odfZipInputStream)) {
 						/* apply transformation on non-empty XML files only */
-						List<Transform> transforms = new LinkedList<Transform>();
+						List<Transform> transforms = new LinkedList<>();
 						Transform transform = signatureFactory.newTransform(CanonicalizationMethod.INCLUSIVE,
 								(TransformParameterSpec) null);
 						transforms.add(transform);
@@ -108,10 +108,6 @@ public class ODFSignatureFacet implements SignatureFacet {
 	/**
 	 * Unfortunately zipEntry.getSize() often returns -1/size unknown, so this
 	 * is a quick hack to see if the file is empty or not
-	 *
-	 * @param inputStream
-	 * @return
-	 * @throws IOException
 	 */
 	private boolean isEmpty(InputStream inputStream) throws IOException {
 		return 0 == inputStream.skip(1);

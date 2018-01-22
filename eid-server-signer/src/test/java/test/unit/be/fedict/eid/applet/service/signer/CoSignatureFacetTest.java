@@ -66,7 +66,7 @@ public class CoSignatureFacetTest {
 		signContext.putNamespacePrefix(javax.xml.crypto.dsig.XMLSignature.XMLNS, "ds");
 
 		CoSignatureFacet testedInstance = new CoSignatureFacet();
-		List<Reference> references = new LinkedList<Reference>();
+		List<Reference> references = new LinkedList<>();
 		testedInstance.preSign(signatureFactory, document, "foo-bar", null, references, null);
 
 		SignatureMethod signatureMethod = signatureFactory.newSignatureMethod(SignatureMethod.RSA_SHA1, null);
@@ -110,7 +110,7 @@ public class CoSignatureFacetTest {
 		signContext.putNamespacePrefix(javax.xml.crypto.dsig.XMLSignature.XMLNS, "ds");
 
 		CoSignatureFacet testedInstance = new CoSignatureFacet(DigestAlgo.SHA1, "ref-1234");
-		List<Reference> references = new LinkedList<Reference>();
+		List<Reference> references = new LinkedList<>();
 		testedInstance.preSign(signatureFactory, document, "foo-bar", null, references, null);
 
 		SignatureMethod signatureMethod = signatureFactory.newSignatureMethod(SignatureMethod.RSA_SHA1, null);
@@ -168,7 +168,7 @@ public class CoSignatureFacetTest {
 		KeyPair keyPair2 = PkiTestUtils.generateKeyPair();
 
 		XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance("DOM", new XMLDSigRI());
-		List<Reference> references = new LinkedList<Reference>();
+		List<Reference> references = new LinkedList<>();
 
 		CoSignatureFacet testedInstance = new CoSignatureFacet();
 		testedInstance.preSign(signatureFactory, document, "foo-bar", null, references, null);

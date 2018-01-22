@@ -97,13 +97,13 @@ public class AbstractODFSignatureServiceTest {
 		ZipEntry zipEntry;
 		while (null != (zipEntry = odfZipInputStream.getNextEntry())) {
 			LOG.debug(zipEntry.getName());
-			if (true == "META-INF/documentsignatures.xml".equals(zipEntry.getName())) {
+			if ("META-INF/documentsignatures.xml".equals(zipEntry.getName())) {
 				Document documentSignatures = loadDocument(odfZipInputStream);
 				NodeList signatureNodeList = documentSignatures.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
 				assertEquals(signatureCount, signatureNodeList.getLength());
 				for (int idx = 0; idx < signatureNodeList.getLength(); idx++) {
 					Node signatureNode = signatureNodeList.item(idx);
-					if (false == verifySignature(odfUrl, signatureNode)) {
+					if (!verifySignature(odfUrl, signatureNode)) {
 						LOG.debug("JSR105 says invalid signature");
 						return false;
 					}
@@ -222,11 +222,6 @@ public class AbstractODFSignatureServiceTest {
 	/**
 	 * Verification via the default JSR105 implementation triggers some
 	 * canonicalization errors.
-	 *
-	 * @param odfUrl
-	 * @param signatureNode
-	 * @throws MarshalException
-	 * @throws XMLSignatureException
 	 */
 	private boolean verifySignature(URL odfUrl, Node signatureNode) throws MarshalException, XMLSignatureException {
 
@@ -247,8 +242,7 @@ public class AbstractODFSignatureServiceTest {
 		 * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6696582
 		 */
 		XMLSignature xmlSignature = xmlSignatureFactory.unmarshalXMLSignature(domValidateContext);
-		boolean validity = xmlSignature.validate(domValidateContext);
-		return validity;
+		return xmlSignature.validate(domValidateContext);
 	}
 
 	private Document loadDocument(InputStream documentInputStream)
@@ -257,7 +251,6 @@ public class AbstractODFSignatureServiceTest {
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		documentBuilderFactory.setNamespaceAware(true);
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		Document document = documentBuilder.parse(inputSource);
-		return document;
+		return documentBuilder.parse(inputSource);
 	}
 }

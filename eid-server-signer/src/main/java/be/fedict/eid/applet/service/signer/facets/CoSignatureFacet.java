@@ -86,8 +86,8 @@ public class CoSignatureFacet implements SignatureFacet {
 			throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 		DigestMethod digestMethod = signatureFactory.newDigestMethod(this.digestAlgo.getXmlAlgoId(), null);
 
-		List<Transform> transforms = new LinkedList<Transform>();
-		Map<String, String> xpathNamespaceMap = new HashMap<String, String>();
+		List<Transform> transforms = new LinkedList<>();
+		Map<String, String> xpathNamespaceMap = new HashMap<>();
 		xpathNamespaceMap.put("ds", "http://www.w3.org/2000/09/xmldsig#");
 
 		// XPath v1 - slow...
@@ -97,7 +97,7 @@ public class CoSignatureFacet implements SignatureFacet {
 		// xpathNamespaceMap));
 
 		// XPath v2 - fast...
-		List<XPathType> types = new ArrayList<XPathType>(1);
+		List<XPathType> types = new ArrayList<>(1);
 		types.add(new XPathType("/descendant::*[name()='ds:Signature']", XPathType.Filter.SUBTRACT, xpathNamespaceMap));
 		Transform envelopedTransform = signatureFactory.newTransform(CanonicalizationMethod.XPATH2,
 				new XPathFilter2ParameterSpec(types));

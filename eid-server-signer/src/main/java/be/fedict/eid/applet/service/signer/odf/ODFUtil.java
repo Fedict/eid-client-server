@@ -56,25 +56,15 @@ public class ODFUtil {
 
 	/**
 	 * Load an XML file from ODF package as a DOM Document
-	 *
-	 * @param documentInputStream
-	 * @return
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws IOException
 	 */
 	public static Document loadDocument(InputStream documentInputStream)
 			throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilder documentBuilder = getNewDocumentBuilder();
-		Document document = documentBuilder.parse(documentInputStream);
-		return document;
+		return documentBuilder.parse(documentInputStream);
 	}
 
 	/**
 	 * Return a new DOM Document
-	 *
-	 * @return DOM Document
-	 * @throws ParserConfigurationException
 	 */
 	public static Document getNewDocument() throws ParserConfigurationException {
 		return getNewDocumentBuilder().newDocument();
@@ -82,9 +72,6 @@ public class ODFUtil {
 
 	/**
 	 * Return a new DOM Document Builder
-	 *
-	 * @return DOM Document Builder
-	 * @throws ParserConfigurationException
 	 */
 	public static DocumentBuilder getNewDocumentBuilder() throws ParserConfigurationException {
 		LOG.debug("new DOM document builder");
@@ -97,10 +84,7 @@ public class ODFUtil {
 	 * Read the zipped data in the ODF package and return the inputstream for a
 	 * given file / zip entry
 	 *
-	 * @param inputStream
-	 * @param uri
 	 * @return inputstream for the file / zip entry
-	 * @throws IOException
 	 */
 	public static InputStream findDataInputStream(InputStream inputStream, String uri) throws IOException {
 		ZipInputStream zipInputStream = new ZipInputStream(inputStream);
@@ -116,7 +100,6 @@ public class ODFUtil {
 	/**
 	 * Checks if a file / zip entry is a content file
 	 *
-	 * @param zipEntry
 	 * @return true if zip entry is a content file
 	 */
 	public static boolean isContentFile(ZipEntry zipEntry) {
@@ -130,7 +113,6 @@ public class ODFUtil {
 	/**
 	 * Checks if a file / zip entry is a signature file
 	 *
-	 * @param zipEntry
 	 * @return true if zip entry is a signature file
 	 */
 	public static boolean isSignatureFile(ZipEntry zipEntry) {
@@ -144,7 +126,6 @@ public class ODFUtil {
 	/**
 	 * Check if a file / zip entry is to be signed
 	 *
-	 * @param zipEntry
 	 * @return true if zip entry is to be signed
 	 */
 	public static boolean isToBeSigned(ZipEntry zipEntry) {
@@ -162,10 +143,6 @@ public class ODFUtil {
 
 	/**
 	 * Get a list of all the files / zip entries in an ODF package
-	 *
-	 * @param odfInputStream
-	 * @return
-	 * @throws IOException
 	 */
 	public static List getZipEntriesAsList(InputStream odfInputStream) throws IOException {
 		ArrayList list = new ArrayList();
@@ -182,13 +159,6 @@ public class ODFUtil {
 	/**
 	 * Check if an ODF package is self-contained, i.e. content files don't have
 	 * OLE objects linked to external files
-	 *
-	 * @param odfUrl
-	 * @return
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws XPathExpressionException
 	 */
 	public static boolean isSelfContained(URL odfUrl)
 			throws IOException, ParserConfigurationException, SAXException, XPathExpressionException {

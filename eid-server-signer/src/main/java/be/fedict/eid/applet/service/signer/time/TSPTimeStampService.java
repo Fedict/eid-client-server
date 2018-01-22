@@ -36,6 +36,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DEROctetString;
@@ -102,7 +103,7 @@ public class TSPTimeStampService implements TimeStampService {
 
 	private String digestAlgo;
 
-	private String digestAlgoOid;
+	private ASN1ObjectIdentifier digestAlgoOid;
 
 	public TSPTimeStampService(String tspServiceUrl, TimeStampServiceValidator validator) {
 		this(tspServiceUrl, validator, null, null);
@@ -143,8 +144,6 @@ public class TSPTimeStampService implements TimeStampService {
 
 	/**
 	 * Sets the request policy OID.
-	 *
-	 * @param policyOid
 	 */
 	public void setRequestPolicy(String policyOid) {
 		this.requestPolicy = policyOid;
@@ -153,9 +152,6 @@ public class TSPTimeStampService implements TimeStampService {
 	/**
 	 * Sets the credentials used in case the TSP service requires
 	 * authentication.
-	 *
-	 * @param username
-	 * @param password
 	 */
 	public void setAuthenticationCredentials(String username, String password) {
 		this.username = username;
@@ -173,8 +169,6 @@ public class TSPTimeStampService implements TimeStampService {
 	/**
 	 * Sets the digest algorithm used for time-stamping data. Example value:
 	 * "SHA-1".
-	 *
-	 * @param digestAlgo
 	 */
 	public void setDigestAlgo(String digestAlgo) {
 		if ("SHA-1".equals(digestAlgo)) {
@@ -194,9 +188,6 @@ public class TSPTimeStampService implements TimeStampService {
 	/**
 	 * Configures the HTTP proxy settings to be used to connect to the TSP
 	 * service.
-	 *
-	 * @param proxyHost
-	 * @param proxyPort
 	 */
 	public void setProxy(String proxyHost, int proxyPort) {
 		this.proxyHost = proxyHost;
@@ -283,7 +274,7 @@ public class TSPTimeStampService implements TimeStampService {
 		CertStore certStore = timeStampToken.getCertificatesAndCRLs("Collection", BouncyCastleProvider.PROVIDER_NAME);
 		Collection<? extends Certificate> certificates = certStore.getCertificates(null);
 		X509Certificate signerCert = null;
-		Map<String, X509Certificate> certificateMap = new HashMap<String, X509Certificate>();
+		Map<String, X509Certificate> certificateMap = new HashMap<>();
 		for (Certificate certificate : certificates) {
 			X509Certificate x509Certificate = (X509Certificate) certificate;
 			if (signerCertIssuer.equals(x509Certificate.getIssuerX500Principal())
@@ -299,7 +290,7 @@ public class TSPTimeStampService implements TimeStampService {
 		if (null == signerCert) {
 			throw new RuntimeException("TSP response token has no signer certificate");
 		}
-		List<X509Certificate> tspCertificateChain = new LinkedList<X509Certificate>();
+		List<X509Certificate> tspCertificateChain = new LinkedList<>();
 		X509Certificate certificate = signerCert;
 		do {
 			LOG.debug("adding to certificate chain: " + certificate.getSubjectX500Principal());
@@ -319,8 +310,7 @@ public class TSPTimeStampService implements TimeStampService {
 
 		LOG.debug("time-stamp token time: " + timeStampToken.getTimeStampInfo().getGenTime());
 
-		byte[] timestamp = timeStampToken.getEncoded();
-		return timestamp;
+		return timeStampToken.getEncoded();
 	}
 
 	private HttpClient createHttpClient() {

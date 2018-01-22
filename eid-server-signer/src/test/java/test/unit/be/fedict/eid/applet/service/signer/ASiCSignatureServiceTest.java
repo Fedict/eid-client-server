@@ -130,7 +130,7 @@ public class ASiCSignatureServiceTest {
 		ASiCSignatureService testedInstance = new ASiCSignatureService(asicInputStream, DigestAlgo.SHA256,
 				revocationDataService, timeStampService, temporaryDataStorage, identity, photo, resultOutputStream);
 
-		List<X509Certificate> signingCertificateChain = new LinkedList<X509Certificate>();
+		List<X509Certificate> signingCertificateChain = new LinkedList<>();
 		signingCertificateChain.add(certificate);
 		signingCertificateChain.add(caCertificate);
 
