@@ -35,7 +35,6 @@ import be.fedict.eid.applet.service.signer.jaxb.xades132.OCSPRefType;
 import be.fedict.eid.applet.service.signer.jaxb.xades132.OCSPRefsType;
 import be.fedict.eid.applet.service.signer.jaxb.xades132.OCSPValuesType;
 import be.fedict.eid.applet.service.signer.jaxb.xades132.ObjectFactory;
-import be.fedict.eid.applet.service.signer.jaxb.xades132.ResponderIDType;
 import be.fedict.eid.applet.service.signer.jaxb.xades132.RevocationValuesType;
 import be.fedict.eid.applet.service.signer.jaxb.xades132.XAdESTimeStampType;
 import be.fedict.eid.applet.service.signer.jaxb.xades141.ValidationDataType;
@@ -51,16 +50,15 @@ import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.utils.Constants;
 import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1OctetString;
-import org.bouncycastle.asn1.DERInteger;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.ocsp.ResponderID;
-import org.bouncycastle.asn1.x509.X509Extensions;
-import org.bouncycastle.asn1.x509.X509Name;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPResp;
-import org.bouncycastle.cert.ocsp.RespID;
 import org.bouncycastle.jce.PrincipalUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -86,7 +84,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -354,20 +351,17 @@ public class XAdESXLSignatureFacet implements SignatureFacet {
 					throw new RuntimeException("OCSP error: " + e.getMessage(), e);
 				}
 				BasicOCSPResp basicOcspResp = (BasicOCSPResp) ocspResponseObject;
-				Date producedAt = basicOcspResp.getProducedAt();
 				ocspIdentifier.setProducedAt(this.datatypeFactory.newXMLGregorianCalendar(new GregorianCalendar()));
 
-				ResponderIDType responderId = this.objectFactory.createResponderIDType();
-				ocspIdentifier.setResponderID(responderId);
-				RespID respId = basicOcspResp.getResponderId();
-				ResponderID ocspResponderId = respId.toASN1Object();
-				DERTaggedObject derTaggedObject = (DERTaggedObject) ocspResponderId.toASN1Object();
-				if (2 == derTaggedObject.getTagNo()) {
+				ocspIdentifier.setResponderID(this.objectFactory.createResponderIDType());
+				ResponderID ocspResponderId = basicOcspResp.getResponderId().toASN1Primitive();
+				DERTaggedObject derTaggedObject = (DERTaggedObject) ocspResponderId.toASN1Primitive();
+				if (derTaggedObject.getTagNo() == 2) {
 					ASN1OctetString keyHashOctetString = (ASN1OctetString) derTaggedObject.getObject();
-					responderId.setByKey(keyHashOctetString.getOctets());
+					this.objectFactory.createResponderIDType().setByKey(keyHashOctetString.getOctets());
 				} else {
-					X509Name name = X509Name.getInstance(derTaggedObject.getObject());
-					responderId.setByName(name.toString());
+					X500Name name = X500Name.getInstance(derTaggedObject.getObject());
+					this.objectFactory.createResponderIDType().setByName(name.toString());
 				}
 			}
 		}
@@ -386,7 +380,7 @@ public class XAdESXLSignatureFacet implements SignatureFacet {
 		}
 
 		// XAdES-X Type 1 timestamp
-		List<Node> timeStampNodesXadesX1 = new LinkedList<Node>();
+		List<Node> timeStampNodesXadesX1 = new LinkedList<>();
 		timeStampNodesXadesX1.add(signatureValueNode);
 		Node signatureTimeStampNode = findSingleNode(unsignedSignaturePropertiesNode, "xades:SignatureTimeStamp");
 		timeStampNodesXadesX1.add(signatureTimeStampNode);
@@ -482,7 +476,7 @@ public class XAdESXLSignatureFacet implements SignatureFacet {
 	}
 
 	private BigInteger getCrlNumber(X509CRL crl) {
-		byte[] crlNumberExtensionValue = crl.getExtensionValue(X509Extensions.CRLNumber.getId());
+		byte[] crlNumberExtensionValue = crl.getExtensionValue(Extension.cRLNumber.getId());
 		if (null == crlNumberExtensionValue) {
 			return null;
 		}
@@ -490,7 +484,7 @@ public class XAdESXLSignatureFacet implements SignatureFacet {
 			ASN1InputStream asn1InputStream = new ASN1InputStream(crlNumberExtensionValue);
 			ASN1OctetString octetString = (ASN1OctetString) asn1InputStream.readObject();
 			byte[] octets = octetString.getOctets();
-			DERInteger integer = (DERInteger) new ASN1InputStream(octets).readObject();
+			ASN1Integer integer = (ASN1Integer) new ASN1InputStream(octets).readObject();
 			return integer.getPositiveValue();
 		} catch (IOException e) {
 			throw new RuntimeException("I/O error: " + e.getMessage(), e);

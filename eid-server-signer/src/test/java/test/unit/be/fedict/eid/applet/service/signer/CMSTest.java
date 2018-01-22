@@ -26,9 +26,9 @@ import org.bouncycastle.asn1.ASN1StreamParser;
 import org.bouncycastle.asn1.util.ASN1Dump;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.BasicConstraints;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.cms.CMSProcessable;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
@@ -45,7 +45,6 @@ import org.junit.Test;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.InvalidParameterException;
 import java.security.KeyPair;
@@ -364,7 +363,7 @@ public class CMSTest {
 	}
 
 	private X509Certificate generateSelfSignedCertificate(KeyPair keyPair, String subjectDn, DateTime notBefore,
-														  DateTime notAfter) throws IOException, IllegalStateException,
+														  DateTime notAfter) throws IllegalStateException,
 			CertificateException {
 		PublicKey subjectPublicKey = keyPair.getPublic();
 		PrivateKey issuerPrivateKey = keyPair.getPrivate();
@@ -380,14 +379,14 @@ public class CMSTest {
 		certificateGenerator.setSubjectDN(new X509Principal(subjectDn));
 		certificateGenerator.setSerialNumber(new BigInteger(128, new SecureRandom()));
 
-		certificateGenerator.addExtension(X509Extensions.SubjectKeyIdentifier, false,
+		certificateGenerator.addExtension(Extension.subjectKeyIdentifier, false,
 				createSubjectKeyId(subjectPublicKey));
 		PublicKey issuerPublicKey;
 		issuerPublicKey = subjectPublicKey;
-		certificateGenerator.addExtension(X509Extensions.AuthorityKeyIdentifier, false,
+		certificateGenerator.addExtension(Extension.authorityKeyIdentifier, false,
 				createAuthorityKeyId(issuerPublicKey));
 
-		certificateGenerator.addExtension(X509Extensions.BasicConstraints, false, new BasicConstraints(true));
+		certificateGenerator.addExtension(Extension.basicConstraints, false, new BasicConstraints(true));
 
 		X509Certificate certificate;
 		certificate = certificateGenerator.generate(issuerPrivateKey);

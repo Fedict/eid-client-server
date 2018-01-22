@@ -26,11 +26,11 @@ import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.DistributionPoint;
 import org.bouncycastle.asn1.x509.DistributionPointName;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
@@ -87,16 +87,16 @@ public class MiscTestUtils {
 		certificateGenerator.setSubjectDN(new X509Principal(subjectDn));
 		certificateGenerator.setSerialNumber(new BigInteger(128, new SecureRandom()));
 
-		certificateGenerator.addExtension(X509Extensions.SubjectKeyIdentifier, false, createSubjectKeyId(subjectPublicKey));
+		certificateGenerator.addExtension(Extension.subjectKeyIdentifier, false, createSubjectKeyId(subjectPublicKey));
 		PublicKey issuerPublicKey;
 		issuerPublicKey = subjectPublicKey;
-		certificateGenerator.addExtension(X509Extensions.AuthorityKeyIdentifier, false, createAuthorityKeyId(issuerPublicKey));
+		certificateGenerator.addExtension(Extension.authorityKeyIdentifier, false, createAuthorityKeyId(issuerPublicKey));
 
 		if (caFlag) {
 			if (-1 == pathLength) {
-				certificateGenerator.addExtension(X509Extensions.BasicConstraints, false, new BasicConstraints(true));
+				certificateGenerator.addExtension(Extension.basicConstraints, false, new BasicConstraints(true));
 			} else {
-				certificateGenerator.addExtension(X509Extensions.BasicConstraints, false, new BasicConstraints(pathLength));
+				certificateGenerator.addExtension(Extension.basicConstraints, false, new BasicConstraints(pathLength));
 			}
 		}
 
@@ -105,13 +105,13 @@ public class MiscTestUtils {
 			GeneralNames gns = new GeneralNames(gn);
 			DistributionPointName dpn = new DistributionPointName(0, gns);
 			DistributionPoint distp = new DistributionPoint(dpn, null, null);
-			certificateGenerator.addExtension(X509Extensions.CRLDistributionPoints, false, new DERSequence(distp));
+			certificateGenerator.addExtension(Extension.cRLDistributionPoints, false, new DERSequence(distp));
 		}
 
 		if (null != ocspUri) {
 			GeneralName ocspName = new GeneralName(GeneralName.uniformResourceIdentifier, ocspUri);
 			AuthorityInformationAccess authorityInformationAccess = new AuthorityInformationAccess(X509ObjectIdentifiers.ocspAccessMethod, ocspName);
-			certificateGenerator.addExtension(X509Extensions.AuthorityInfoAccess.getId(), false, authorityInformationAccess);
+			certificateGenerator.addExtension(Extension.authorityInfoAccess.getId(), false, authorityInformationAccess);
 		}
 
 		X509Certificate certificate;

@@ -41,8 +41,8 @@ import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.cmp.PKIFailureInfo;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
-import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.tsp.TSPAlgorithms;
@@ -338,7 +338,7 @@ public class TSPTimeStampService implements TimeStampService {
 	}
 
 	private byte[] getSubjectKeyId(X509Certificate cert) {
-		byte[] extvalue = cert.getExtensionValue(X509Extensions.SubjectKeyIdentifier.getId());
+		byte[] extvalue = cert.getExtensionValue(Extension.subjectKeyIdentifier.getId());
 		if (extvalue == null) {
 			return null;
 		}
@@ -350,7 +350,7 @@ public class TSPTimeStampService implements TimeStampService {
 	}
 
 	private byte[] getAuthorityKeyId(X509Certificate cert) {
-		byte[] extvalue = cert.getExtensionValue(X509Extensions.AuthorityKeyIdentifier.getId());
+		byte[] extvalue = cert.getExtensionValue(Extension.authorityKeyIdentifier.getId());
 		if (extvalue == null) {
 			return null;
 		}

@@ -28,12 +28,12 @@ import org.bouncycastle.asn1.x509.CRLNumber;
 import org.bouncycastle.asn1.x509.CRLReason;
 import org.bouncycastle.asn1.x509.DistributionPoint;
 import org.bouncycastle.asn1.x509.DistributionPointName;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
 import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -119,7 +119,7 @@ public class PkiTestUtils {
 
 	static X509Certificate generateCertificate(PublicKey subjectPublicKey, String subjectDn, DateTime notBefore,
 											   DateTime notAfter, X509Certificate issuerCertificate, PrivateKey issuerPrivateKey, boolean caFlag,
-											   int pathLength, String crlUri, String ocspUri, KeyUsage keyUsage) throws IOException,
+											   int pathLength, String crlUri, String ocspUri, KeyUsage keyUsage) throws
 			IllegalStateException, CertificateException {
 		String signatureAlgorithm = "SHA1withRSA";
 		X509V3CertificateGenerator certificateGenerator = new X509V3CertificateGenerator();
@@ -138,18 +138,18 @@ public class PkiTestUtils {
 		certificateGenerator.setSubjectDN(new X509Principal(subjectDn));
 		certificateGenerator.setSerialNumber(new BigInteger(128, new SecureRandom()));
 
-		certificateGenerator.addExtension(X509Extensions.SubjectKeyIdentifier, false,
+		certificateGenerator.addExtension(Extension.aubjectKeyIdentifier, false,
 				createSubjectKeyId(subjectPublicKey));
 		PublicKey issuerPublicKey;
 		issuerPublicKey = subjectPublicKey;
-		certificateGenerator.addExtension(X509Extensions.AuthorityKeyIdentifier, false,
+		certificateGenerator.addExtension(Extension.authorityKeyIdentifier, false,
 				createAuthorityKeyId(issuerPublicKey));
 
 		if (caFlag) {
 			if (-1 == pathLength) {
-				certificateGenerator.addExtension(X509Extensions.BasicConstraints, false, new BasicConstraints(true));
+				certificateGenerator.addExtension(Extension.basicConstraints, false, new BasicConstraints(true));
 			} else {
-				certificateGenerator.addExtension(X509Extensions.BasicConstraints, false,
+				certificateGenerator.addExtension(Extension.basicConstraints, false,
 						new BasicConstraints(pathLength));
 			}
 		}
@@ -159,19 +159,19 @@ public class PkiTestUtils {
 			GeneralNames gns = new GeneralNames(new DERSequence(gn));
 			DistributionPointName dpn = new DistributionPointName(0, gns);
 			DistributionPoint distp = new DistributionPoint(dpn, null, null);
-			certificateGenerator.addExtension(X509Extensions.CRLDistributionPoints, false, new DERSequence(distp));
+			certificateGenerator.addExtension(Extension.cRLDistributionPoints, false, new DERSequence(distp));
 		}
 
 		if (null != ocspUri) {
 			GeneralName ocspName = new GeneralName(GeneralName.uniformResourceIdentifier, ocspUri);
 			AuthorityInformationAccess authorityInformationAccess = new AuthorityInformationAccess(
 					X509ObjectIdentifiers.ocspAccessMethod, ocspName);
-			certificateGenerator.addExtension(X509Extensions.AuthorityInfoAccess.getId(), false,
+			certificateGenerator.addExtension(Extension.authorityInfoAccess.getId(), false,
 					authorityInformationAccess);
 		}
 
 		if (null != keyUsage) {
-			certificateGenerator.addExtension(X509Extensions.KeyUsage, true, keyUsage);
+			certificateGenerator.addExtension(Extension.keyUsage, true, keyUsage);
 		}
 
 		X509Certificate certificate;
@@ -222,9 +222,8 @@ public class PkiTestUtils {
 		crlGenerator.setThisUpdate(now);
 		crlGenerator.setNextUpdate(new Date(now.getTime() + 100000));
 		crlGenerator.setSignatureAlgorithm("SHA1withRSA");
-		crlGenerator.addExtension(X509Extensions.CRLNumber, false, new CRLNumber(new BigInteger("1234")));
-		X509CRL x509Crl = crlGenerator.generate(issuerPrivateKey);
-		return x509Crl;
+		crlGenerator.addExtension(Extension.cRLNumber, false, new CRLNumber(new BigInteger("1234")));
+		return crlGenerator.generate(issuerPrivateKey);
 	}
 
 	public static OCSPResp createOcspResp(X509Certificate certificate, boolean revoked,

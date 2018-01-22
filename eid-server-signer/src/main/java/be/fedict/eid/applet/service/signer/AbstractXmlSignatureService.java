@@ -29,7 +29,6 @@ import org.apache.jcp.xml.dsig.internal.dom.DOMReference;
 import org.apache.jcp.xml.dsig.internal.dom.DOMSignedInfo;
 import org.apache.jcp.xml.dsig.internal.dom.DOMXMLSignature;
 import org.apache.xml.security.signature.XMLSignature;
-import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -76,6 +75,7 @@ import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -254,7 +254,7 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 		NodeList signatureValueNodeList = signatureElement
 				.getElementsByTagNameNS(javax.xml.crypto.dsig.XMLSignature.XMLNS, "SignatureValue");
 		Element signatureValueElement = (Element) signatureValueNodeList.item(0);
-		signatureValueElement.setTextContent(Base64.encode(signatureValue));
+		signatureValueElement.setTextContent(Base64.getEncoder().encodeToString(signatureValue));
 
 		/*
 		 * Allow signature facets to inject their own stuff.
