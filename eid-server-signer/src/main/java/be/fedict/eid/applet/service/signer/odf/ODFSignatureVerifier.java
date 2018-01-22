@@ -166,7 +166,7 @@ public class ODFSignatureVerifier {
 			LOG.debug("mimetype stream not found in ODF package");
 			return false;
 		}
-		String mimetypeContent = IOUtils.toString(resStream);
+		String mimetypeContent = IOUtils.toString(resStream, "UTF-8");
 		return mimetypeContent.startsWith(ODFUtil.MIMETYPE_START);
 	}
 }

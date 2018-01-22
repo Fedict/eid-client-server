@@ -15,8 +15,21 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package test.be.fedict.eid.applet.model;
+package be.fedict.eid.applet.service.signer.util;
 
-public interface AuthenticationService extends be.bosa.eid.server.spi.AuthenticationService {
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
+public class DateUtil {
+
+	public static String getNowAsIso8601DateTimeStringWithTimeZoneUtc() {
+		return getAsIso8601DateTimeStringWithTimeZoneUtc(new Date());
+	}
+
+	public static String getAsIso8601DateTimeStringWithTimeZoneUtc(Date time) {
+		ZonedDateTime dateTime = ZonedDateTime.ofInstant(time.toInstant(), ZoneId.systemDefault());
+		return DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime);
+	}
 }

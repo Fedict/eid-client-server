@@ -27,14 +27,11 @@ import be.fedict.eid.applet.service.signer.jaxb.opc.relationships.CTRelationship
 import be.fedict.eid.applet.service.signer.jaxb.opc.relationships.STTargetMode;
 import be.fedict.eid.applet.service.signer.time.Clock;
 import be.fedict.eid.applet.service.signer.time.LocalClock;
+import be.fedict.eid.applet.service.signer.util.DateUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -65,7 +62,6 @@ import java.net.URL;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -78,7 +74,7 @@ import java.util.zip.ZipInputStream;
  * Office OpenXML Signature Facet implementation.
  * 
  * @author fcorneli
- * @see http://msdn.microsoft.com/en-us/library/cc313071.aspx
+ * @see <a href=-"http://msdn.microsoft.com/en-us/library/cc313071.aspx">http://msdn.microsoft.com/en-us/library/cc313071.aspx</a>
  */
 public class OOXMLSignatureFacet implements SignatureFacet {
 
@@ -317,10 +313,8 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 		formatElement.setTextContent("YYYY-MM-DDThh:mm:ssTZD");
 		signatureTimeElement.appendChild(formatElement);
 		Element valueElement = document.createElementNS(OOXML_DIGSIG_NS, "mdssi:Value");
-		Date now = this.clock.getTime();
-		DateTime dateTime = new DateTime(now.getTime(), DateTimeZone.UTC);
-		DateTimeFormatter fmt = ISODateTimeFormat.dateTimeNoMillis();
-		String nowStr = fmt.print(dateTime);
+		String nowStr = DateUtil.getAsIso8601DateTimeStringWithTimeZoneUtc(this.clock.getTime());
+
 		LOG.debug("now: " + nowStr);
 		valueElement.setTextContent(nowStr);
 		signatureTimeElement.appendChild(valueElement);

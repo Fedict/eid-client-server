@@ -17,6 +17,10 @@
 
 package be.fedict.eid.applet.service.signer.asic;
 
+import be.bosa.eid.server.spi.AddressDTO;
+import be.bosa.eid.server.spi.DigestInfo;
+import be.bosa.eid.server.spi.IdentityDTO;
+import be.bosa.eid.server.spi.SignatureService;
 import be.fedict.eid.applet.service.signer.AbstractXmlSignatureService;
 import be.fedict.eid.applet.service.signer.CloseActionOutputStream;
 import be.fedict.eid.applet.service.signer.DigestAlgo;
@@ -28,10 +32,6 @@ import be.fedict.eid.applet.service.signer.facets.XAdESSignatureFacet;
 import be.fedict.eid.applet.service.signer.facets.XAdESXLSignatureFacet;
 import be.fedict.eid.applet.service.signer.odf.ODFUtil;
 import be.fedict.eid.applet.service.signer.time.TimeStampService;
-import be.fedict.eid.applet.service.spi.AddressDTO;
-import be.fedict.eid.applet.service.spi.DigestInfo;
-import be.fedict.eid.applet.service.spi.IdentityDTO;
-import be.fedict.eid.applet.service.spi.SignatureService;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;

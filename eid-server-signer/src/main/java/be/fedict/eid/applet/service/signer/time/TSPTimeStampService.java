@@ -19,17 +19,22 @@ package be.fedict.eid.applet.service.signer.time;
 
 import be.fedict.eid.applet.service.signer.facets.RevocationData;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.Header;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -64,9 +69,8 @@ import java.util.Map;
 
 /**
  * A TSP time-stamp service implementation.
- * 
+ *
  * @author Frank Cornelis
- * 
  */
 public class TSPTimeStampService implements TimeStampService {
 
@@ -106,19 +110,15 @@ public class TSPTimeStampService implements TimeStampService {
 
 	/**
 	 * Main constructor.
-	 * 
-	 * @param tspServiceUrl
-	 *            the URL of the TSP service.
-	 * @param validator
-	 *            the trust validator used to validate incoming TSP response
-	 *            signatures.
-	 * @param requestPolicy
-	 *            the optional TSP request policy.
-	 * @param userAgent
-	 *            the optional User-Agent TSP request header value.
+	 *
+	 * @param tspServiceUrl the URL of the TSP service.
+	 * @param validator     the trust validator used to validate incoming TSP response
+	 *                      signatures.
+	 * @param requestPolicy the optional TSP request policy.
+	 * @param userAgent     the optional User-Agent TSP request header value.
 	 */
 	public TSPTimeStampService(String tspServiceUrl, TimeStampServiceValidator validator, String requestPolicy,
-			String userAgent) {
+							   String userAgent) {
 		if (null == tspServiceUrl) {
 			throw new IllegalArgumentException("TSP service URL required");
 		}
@@ -143,7 +143,7 @@ public class TSPTimeStampService implements TimeStampService {
 
 	/**
 	 * Sets the request policy OID.
-	 * 
+	 *
 	 * @param policyOid
 	 */
 	public void setRequestPolicy(String policyOid) {
@@ -153,7 +153,7 @@ public class TSPTimeStampService implements TimeStampService {
 	/**
 	 * Sets the credentials used in case the TSP service requires
 	 * authentication.
-	 * 
+	 *
 	 * @param username
 	 * @param password
 	 */
@@ -173,7 +173,7 @@ public class TSPTimeStampService implements TimeStampService {
 	/**
 	 * Sets the digest algorithm used for time-stamping data. Example value:
 	 * "SHA-1".
-	 * 
+	 *
 	 * @param digestAlgo
 	 */
 	public void setDigestAlgo(String digestAlgo) {
@@ -194,7 +194,7 @@ public class TSPTimeStampService implements TimeStampService {
 	/**
 	 * Configures the HTTP proxy settings to be used to connect to the TSP
 	 * service.
-	 * 
+	 *
 	 * @param proxyHost
 	 * @param proxyPort
 	 */
@@ -227,44 +227,36 @@ public class TSPTimeStampService implements TimeStampService {
 		byte[] encodedRequest = request.getEncoded();
 
 		// create the HTTP client
-		HttpClient httpClient = new HttpClient();
-		if (null != this.username) {
-			Credentials credentials = new UsernamePasswordCredentials(this.username, this.password);
-			httpClient.getState().setCredentials(AuthScope.ANY, credentials);
-		}
-		if (null != this.proxyHost) {
-			httpClient.getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
-		}
+		HttpClient httpClient = createHttpClient();
 
 		// create the HTTP POST request
-		PostMethod postMethod = new PostMethod(this.tspServiceUrl);
-		RequestEntity requestEntity = new ByteArrayRequestEntity(encodedRequest, "application/timestamp-query");
-		postMethod.addRequestHeader("User-Agent", this.userAgent);
-		postMethod.setRequestEntity(requestEntity);
+		HttpPost httpPost = new HttpPost(this.tspServiceUrl);
+		httpPost.addHeader("User-Agent", this.userAgent);
+		httpPost.setEntity(new ByteArrayEntity(encodedRequest, ContentType.create("application/timestamp-query")));
 
 		// invoke TSP service
-		int statusCode = httpClient.executeMethod(postMethod);
-		if (HttpStatus.SC_OK != statusCode) {
+		HttpResponse response = httpClient.execute(httpPost);
+		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
 			LOG.error("Error contacting TSP server " + this.tspServiceUrl);
 			throw new Exception("Error contacting TSP server " + this.tspServiceUrl);
 		}
 
 		// HTTP input validation
-		Header responseContentTypeHeader = postMethod.getResponseHeader("Content-Type");
-		if (null == responseContentTypeHeader) {
-			throw new RuntimeException("missing Content-Type header");
+		Header responseContentTypeHeader = response.getFirstHeader("Content-Type");
+		if (responseContentTypeHeader == null) {
+			throw new RuntimeException("Missing Content-Type header");
 		}
 		String contentType = responseContentTypeHeader.getValue();
 		if (!contentType.startsWith("application/timestamp-reply")) {
-			LOG.debug("response content: " + postMethod.getResponseBodyAsString());
-			throw new RuntimeException("invalid Content-Type: " + contentType);
+			LOG.debug("Response content: " + EntityUtils.toString(response.getEntity()));
+			throw new RuntimeException("Invalid Content-Type: " + contentType);
 		}
-		if (0 == postMethod.getResponseContentLength()) {
+		if (response.getEntity().getContentLength() == 0) {
 			throw new RuntimeException("Content-Length is zero");
 		}
 
 		// TSP response parsing and validation
-		InputStream inputStream = postMethod.getResponseBodyAsStream();
+		InputStream inputStream = response.getEntity().getContent();
 		TimeStampResponse timeStampResponse = new TimeStampResponse(inputStream);
 		timeStampResponse.validate(request);
 
@@ -329,6 +321,20 @@ public class TSPTimeStampService implements TimeStampService {
 
 		byte[] timestamp = timeStampToken.getEncoded();
 		return timestamp;
+	}
+
+	private HttpClient createHttpClient() {
+		HttpClientBuilder builder = HttpClients.custom();
+		if (null != this.username) {
+			BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+			credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(this.username, this.password));
+			builder.setDefaultCredentialsProvider(credentialsProvider);
+		}
+		if (null != this.proxyHost) {
+			builder.setProxy(new HttpHost(this.proxyHost, this.proxyPort));
+		}
+
+		return builder.build();
 	}
 
 	private byte[] getSubjectKeyId(X509Certificate cert) {

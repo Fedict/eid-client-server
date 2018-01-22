@@ -17,13 +17,13 @@
 
 package be.fedict.eid.applet.service.signer.facets;
 
+import be.bosa.eid.server.spi.IdentityDTO;
 import be.fedict.eid.applet.service.signer.DigestAlgo;
 import be.fedict.eid.applet.service.signer.SignatureFacet;
 import be.fedict.eid.applet.service.signer.jaxb.identity.GenderType;
 import be.fedict.eid.applet.service.signer.jaxb.identity.IdentityType;
 import be.fedict.eid.applet.service.signer.jaxb.identity.ObjectFactory;
 import be.fedict.eid.applet.service.signer.jaxb.identity.PhotoType;
-import be.fedict.eid.applet.service.spi.IdentityDTO;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

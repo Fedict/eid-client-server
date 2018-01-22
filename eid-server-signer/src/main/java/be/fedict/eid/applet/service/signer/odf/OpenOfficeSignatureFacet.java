@@ -19,13 +19,10 @@ package be.fedict.eid.applet.service.signer.odf;
 
 import be.fedict.eid.applet.service.signer.DigestAlgo;
 import be.fedict.eid.applet.service.signer.SignatureFacet;
+import be.fedict.eid.applet.service.signer.util.DateUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -66,21 +63,20 @@ public class OpenOfficeSignatureFacet implements SignatureFacet {
 
 		Element dateElement = document.createElementNS("", "dc:date");
 		dateElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:dc", "http://purl.org/dc/elements/1.1/");
-		DateTime dateTime = new DateTime(DateTimeZone.UTC);
-		DateTimeFormatter fmt = ISODateTimeFormat.dateTimeNoMillis();
-		String now = fmt.print(dateTime);
+
+		String now = DateUtil.getNowAsIso8601DateTimeStringWithTimeZoneUtc();
 		now = now.substring(0, now.indexOf("Z"));
 		LOG.debug("now: " + now);
 		dateElement.setTextContent(now);
 
 		String signaturePropertyId = "sign-prop-" + UUID.randomUUID().toString();
-		List<XMLStructure> signaturePropertyContent = new LinkedList<XMLStructure>();
+		List<XMLStructure> signaturePropertyContent = new LinkedList<>();
 		signaturePropertyContent.add(new DOMStructure(dateElement));
 		SignatureProperty signatureProperty = signatureFactory.newSignatureProperty(signaturePropertyContent,
 				"#" + signatureId, signaturePropertyId);
 
-		List<XMLStructure> objectContent = new LinkedList<XMLStructure>();
-		List<SignatureProperty> signaturePropertiesContent = new LinkedList<SignatureProperty>();
+		List<XMLStructure> objectContent = new LinkedList<>();
+		List<SignatureProperty> signaturePropertiesContent = new LinkedList<>();
 		signaturePropertiesContent.add(signatureProperty);
 		SignatureProperties signatureProperties = signatureFactory.newSignatureProperties(signaturePropertiesContent,
 				null);

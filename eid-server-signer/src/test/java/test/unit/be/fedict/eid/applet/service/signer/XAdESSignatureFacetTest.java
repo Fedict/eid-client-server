@@ -17,6 +17,7 @@
 
 package test.unit.be.fedict.eid.applet.service.signer;
 
+import be.bosa.eid.server.spi.DigestInfo;
 import be.fedict.eid.applet.service.signer.AbstractXmlSignatureService;
 import be.fedict.eid.applet.service.signer.DigestAlgo;
 import be.fedict.eid.applet.service.signer.SignatureFacet;
@@ -31,7 +32,6 @@ import be.fedict.eid.applet.service.signer.facets.XAdESSignatureFacet;
 import be.fedict.eid.applet.service.signer.facets.XAdESXLSignatureFacet;
 import be.fedict.eid.applet.service.signer.ooxml.Office2010SignatureFacet;
 import be.fedict.eid.applet.service.signer.time.TimeStampService;
-import be.fedict.eid.applet.service.spi.DigestInfo;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;

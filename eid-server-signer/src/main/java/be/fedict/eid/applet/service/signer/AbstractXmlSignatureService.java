@@ -17,11 +17,11 @@
 
 package be.fedict.eid.applet.service.signer;
 
+import be.bosa.eid.server.spi.AddressDTO;
+import be.bosa.eid.server.spi.DigestInfo;
+import be.bosa.eid.server.spi.IdentityDTO;
+import be.bosa.eid.server.spi.SignatureService;
 import be.fedict.eid.applet.service.signer.util.XPathUtil;
-import be.fedict.eid.applet.service.spi.AddressDTO;
-import be.fedict.eid.applet.service.spi.DigestInfo;
-import be.fedict.eid.applet.service.spi.IdentityDTO;
-import be.fedict.eid.applet.service.spi.SignatureService;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -508,8 +508,7 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 	}
 
 	protected void writeDocumentNoClosing(Document document, OutputStream documentOutputStream)
-			throws TransformerFactoryConfigurationError, TransformerException,
-			IOException {
+			throws TransformerFactoryConfigurationError, TransformerException {
 		// we need the XML processing initial line for OOXML
 		writeDocumentNoClosing(document, documentOutputStream, false);
 	}

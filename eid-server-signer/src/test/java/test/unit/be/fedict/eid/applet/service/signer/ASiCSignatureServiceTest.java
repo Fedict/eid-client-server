@@ -17,6 +17,9 @@
 
 package test.unit.be.fedict.eid.applet.service.signer;
 
+import be.bosa.eid.server.spi.AddressDTO;
+import be.bosa.eid.server.spi.DigestInfo;
+import be.bosa.eid.server.spi.IdentityDTO;
 import be.fedict.eid.applet.service.signer.DigestAlgo;
 import be.fedict.eid.applet.service.signer.TemporaryDataStorage;
 import be.fedict.eid.applet.service.signer.asic.ASiCSignatureVerifier;
@@ -24,9 +27,6 @@ import be.fedict.eid.applet.service.signer.asic.AbstractASiCSignatureService;
 import be.fedict.eid.applet.service.signer.facets.RevocationData;
 import be.fedict.eid.applet.service.signer.facets.RevocationDataService;
 import be.fedict.eid.applet.service.signer.time.TimeStampService;
-import be.fedict.eid.applet.service.spi.AddressDTO;
-import be.fedict.eid.applet.service.spi.DigestInfo;
-import be.fedict.eid.applet.service.spi.IdentityDTO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;

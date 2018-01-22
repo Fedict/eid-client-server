@@ -42,7 +42,7 @@ import be.fedict.eid.applet.service.signer.jaxb.xades141.ValidationDataType;
 import be.fedict.eid.applet.service.signer.jaxb.xmldsig.CanonicalizationMethodType;
 import be.fedict.eid.applet.service.signer.time.TimeStampService;
 import be.fedict.eid.applet.service.signer.util.XPathUtil;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.Init;
@@ -57,12 +57,11 @@ import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.ocsp.ResponderID;
 import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.asn1.x509.X509Name;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.OCSPException;
+import org.bouncycastle.cert.ocsp.OCSPResp;
+import org.bouncycastle.cert.ocsp.RespID;
 import org.bouncycastle.jce.PrincipalUtil;
-import org.bouncycastle.ocsp.BasicOCSPResp;
-import org.bouncycastle.ocsp.OCSPException;
-import org.bouncycastle.ocsp.OCSPResp;
-import org.bouncycastle.ocsp.RespID;
-import org.joda.time.DateTime;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -88,6 +87,7 @@ import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -323,8 +323,7 @@ public class XAdESXLSignatureFacet implements SignatureFacet {
 					throw new RuntimeException("CRL encoding error: " + e.getMessage(), e);
 				}
 				crlIdentifier.setIssuer(issuerName);
-				crlIdentifier.setIssueTime(this.datatypeFactory
-						.newXMLGregorianCalendar(new DateTime(crl.getThisUpdate()).toGregorianCalendar()));
+				crlIdentifier.setIssueTime(this.datatypeFactory.newXMLGregorianCalendar(new GregorianCalendar()));
 				crlIdentifier.setNumber(getCrlNumber(crl));
 
 				DigestAlgAndValueType digestAlgAndValue = XAdESSignatureFacet.getDigestAlgAndValue(encodedCrl,
@@ -361,8 +360,7 @@ public class XAdESXLSignatureFacet implements SignatureFacet {
 				}
 				BasicOCSPResp basicOcspResp = (BasicOCSPResp) ocspResponseObject;
 				Date producedAt = basicOcspResp.getProducedAt();
-				ocspIdentifier.setProducedAt(
-						this.datatypeFactory.newXMLGregorianCalendar(new DateTime(producedAt).toGregorianCalendar()));
+				ocspIdentifier.setProducedAt(this.datatypeFactory.newXMLGregorianCalendar(new GregorianCalendar()));
 
 				ResponderIDType responderId = this.objectFactory.createResponderIDType();
 				ocspIdentifier.setResponderID(responderId);
@@ -498,8 +496,7 @@ public class XAdESXLSignatureFacet implements SignatureFacet {
 			ASN1OctetString octetString = (ASN1OctetString) asn1InputStream.readObject();
 			byte[] octets = octetString.getOctets();
 			DERInteger integer = (DERInteger) new ASN1InputStream(octets).readObject();
-			BigInteger crlNumber = integer.getPositiveValue();
-			return crlNumber;
+			return integer.getPositiveValue();
 		} catch (IOException e) {
 			throw new RuntimeException("I/O error: " + e.getMessage(), e);
 		}

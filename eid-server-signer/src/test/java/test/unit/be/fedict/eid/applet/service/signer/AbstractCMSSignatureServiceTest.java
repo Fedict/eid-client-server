@@ -17,8 +17,8 @@
 
 package test.unit.be.fedict.eid.applet.service.signer;
 
+import be.bosa.eid.server.spi.DigestInfo;
 import be.fedict.eid.applet.service.signer.cms.AbstractCMSSignatureService;
-import be.fedict.eid.applet.service.spi.DigestInfo;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;

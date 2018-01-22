@@ -89,6 +89,7 @@
 		<version.org.apache.httpcomponents>4.5.4</version.org.apache.httpcomponents>
 
 		<version.org.eclipse.jetty>9.4.8.v20171121</version.org.eclipse.jetty>
+		<version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
 	</properties>
 
 	<modules>
@@ -234,7 +235,7 @@
 						<dependency>
 							<groupId>com.sun.xml.bind</groupId>
 							<artifactId>jaxb-impl</artifactId>
-							<version>2.3.0</version>
+							<version>${version.com.sun.xml.bind}</version>
 						</dependency>
 					</dependencies>
 				</plugin>
@@ -325,6 +326,12 @@
 				<groupId>javax.security.jacc</groupId>
 				<artifactId>javax.security.jacc-api</artifactId>
 				<version>${version.javax.security.jacc}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sun.xml.bind</groupId>
+				<artifactId>jaxb-impl</artifactId>
+				<version>${version.com.sun.xml.bind}</version>
 			</dependency>
 
 			<dependency>

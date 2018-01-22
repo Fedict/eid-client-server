@@ -17,12 +17,12 @@
 
 package test.unit.be.fedict.eid.applet.service.signer;
 
+import be.bosa.eid.server.spi.DigestInfo;
 import be.fedict.eid.applet.service.signer.DigestAlgo;
 import be.fedict.eid.applet.service.signer.TemporaryDataStorage;
 import be.fedict.eid.applet.service.signer.ooxml.AbstractOOXMLSignatureService;
 import be.fedict.eid.applet.service.signer.ooxml.OOXMLProvider;
 import be.fedict.eid.applet.service.signer.ooxml.OOXMLSignatureVerifier;
-import be.fedict.eid.applet.service.spi.DigestInfo;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;

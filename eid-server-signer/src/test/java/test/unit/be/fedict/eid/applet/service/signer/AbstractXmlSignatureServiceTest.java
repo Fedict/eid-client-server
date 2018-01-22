@@ -17,13 +17,13 @@
 
 package test.unit.be.fedict.eid.applet.service.signer;
 
+import be.bosa.eid.server.spi.DigestInfo;
 import be.fedict.eid.applet.service.signer.AbstractXmlSignatureService;
 import be.fedict.eid.applet.service.signer.DigestAlgo;
 import be.fedict.eid.applet.service.signer.SignatureFacet;
 import be.fedict.eid.applet.service.signer.TemporaryDataStorage;
 import be.fedict.eid.applet.service.signer.facets.EnvelopedSignatureFacet;
 import be.fedict.eid.applet.service.signer.odf.ApacheNodeSetData;
-import be.fedict.eid.applet.service.spi.DigestInfo;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

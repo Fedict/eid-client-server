@@ -17,12 +17,12 @@
 
 package be.fedict.eid.applet.service.signer.cms;
 
+import be.bosa.eid.server.spi.AddressDTO;
+import be.bosa.eid.server.spi.DigestInfo;
+import be.bosa.eid.server.spi.IdentityDTO;
+import be.bosa.eid.server.spi.SignatureService;
 import be.fedict.eid.applet.service.signer.DummyPrivateKey;
 import be.fedict.eid.applet.service.signer.SHA1WithRSAProxySignature;
-import be.fedict.eid.applet.service.spi.AddressDTO;
-import be.fedict.eid.applet.service.spi.DigestInfo;
-import be.fedict.eid.applet.service.spi.IdentityDTO;
-import be.fedict.eid.applet.service.spi.SignatureService;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessable;
 import org.bouncycastle.cms.CMSProcessableByteArray;

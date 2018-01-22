@@ -1,19 +1,18 @@
 /*
- * eID Applet Project.
- * Copyright (C) 2014-2015 e-Contract.be BVBA.
+ * eID Client - Server Project.
+ * Copyright (C) 2018 - 2018 BOSA.
  *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License version
- * 3.0 as published by the Free Software Foundation.
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License version 3.0 as published by
+ * the Free Software Foundation.
  *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, see 
- * http://www.gnu.org/licenses/.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
 package test.be.fedict.eid.applet;
@@ -47,11 +46,11 @@ import be.fedict.eid.applet.service.cdi.StartEvent;
 import be.fedict.eid.applet.service.cdi.StartEvent.AuthenticationRequest;
 import be.fedict.eid.applet.service.cdi.StartEvent.IdentificationRequest;
 import be.fedict.eid.applet.service.cdi.StartEvent.SigningRequest;
-import be.fedict.eid.applet.service.spi.AuthorizationException;
-import be.fedict.eid.applet.service.spi.CertificateSecurityException;
-import be.fedict.eid.applet.service.spi.ExpiredCertificateSecurityException;
-import be.fedict.eid.applet.service.spi.RevokedCertificateSecurityException;
-import be.fedict.eid.applet.service.spi.TrustCertificateSecurityException;
+import be.bosa.eid.server.spi.AuthorizationException;
+import be.bosa.eid.server.spi.CertificateSecurityException;
+import be.bosa.eid.server.spi.ExpiredCertificateSecurityException;
+import be.bosa.eid.server.spi.RevokedCertificateSecurityException;
+import be.bosa.eid.server.spi.TrustCertificateSecurityException;
 
 @Named("cdiTest")
 @SessionScoped
