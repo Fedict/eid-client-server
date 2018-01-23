@@ -333,6 +333,12 @@
 
 			<dependency>
 				<groupId>com.sun.xml.bind</groupId>
+				<artifactId>jaxb-core</artifactId>
+				<version>${version.com.sun.xml.bind}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sun.xml.bind</groupId>
 				<artifactId>jaxb-impl</artifactId>
 				<version>${version.com.sun.xml.bind}</version>
 			</dependency>

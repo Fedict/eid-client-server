@@ -30,6 +30,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.crypto.Cipher;
@@ -40,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.KeyPair;
+import java.security.Security;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.time.OffsetDateTime;
@@ -65,6 +68,11 @@ public class ASiCSignatureServiceTest {
 					photo, temporaryDataStorage, documentOutputStream);
 			setSignatureNamespacePrefix("ds");
 		}
+	}
+
+	@BeforeClass
+	public static void beforeClass() {
+		Security.addProvider(new BouncyCastleProvider());
 	}
 
 	@Test

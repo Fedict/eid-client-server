@@ -98,9 +98,9 @@ public abstract class AbstractCMSSignatureService implements SignatureService {
 			X509Certificate signingCertificate = signingCertificateChain.get(0);
 			JcaCertStore certs = new JcaCertStore(Collections.singletonList(signingCertificate));
 
-			ContentSigner sha1Signer = new JcaContentSignerBuilder(CMSSignedDataGenerator.DIGEST_SHA1)
+			ContentSigner sha1Signer = new JcaContentSignerBuilder("SHA1WithRSA")
 					.setProvider(new CMSProvider())
-					.build(new DummyPrivateKey());
+					.build(DummyPrivateKey.INSTANCE);
 			SignerInfoGenerator signerInfoGenerator = new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder().setProvider("BC").build())
 					.build(sha1Signer, signingCertificate);
 

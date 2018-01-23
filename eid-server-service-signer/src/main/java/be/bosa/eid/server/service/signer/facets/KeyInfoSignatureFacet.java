@@ -25,8 +25,11 @@ import org.apache.jcp.xml.dsig.internal.dom.DOMKeyInfo;
 import org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.xml.crypto.MarshalException;
+import javax.xml.crypto.dom.DOMStructure;
 import javax.xml.crypto.dsig.Reference;
 import javax.xml.crypto.dsig.XMLObject;
 import javax.xml.crypto.dsig.XMLSignContext;
@@ -106,10 +109,17 @@ public class KeyInfoSignatureFacet implements SignatureFacet {
 		KeyInfo keyInfo = keyInfoFactory.newKeyInfo(keyInfoContent);
 		DOMKeyInfo domKeyInfo = (DOMKeyInfo) keyInfo;
 
-		XMLSignContext xmlSignContext = new DOMSignContext(new DummyKey(), signatureElement);
+		XMLSignContext xmlSignContext;
+		NodeList objectNodeList = signatureElement.getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "Object");
+		if (objectNodeList.getLength() != 0) {
+			Node nextSibling = objectNodeList.item(0);
+			xmlSignContext = new DOMSignContext(new DummyKey(), signatureElement, nextSibling);
+		} else {
+			xmlSignContext = new DOMSignContext(new DummyKey(), signatureElement);
+		}
 
 		try {
-			domKeyInfo.marshal(keyInfo, xmlSignContext);
+			domKeyInfo.marshal(new DOMStructure(signatureElement), xmlSignContext);
 		} catch (MarshalException e) {
 			throw new RuntimeException("marshall error: " + e.getMessage(), e);
 		}

@@ -311,11 +311,11 @@ public class CMSTest {
 				Date.from(notBefore.toInstant()),
 				Date.from(notAfter.toInstant()),
 				new X500Name(SUBJECT_DN),
-				SubjectPublicKeyInfo.getInstance(keyPair.getPublic()))
+				SubjectPublicKeyInfo.getInstance(keyPair.getPublic().getEncoded()))
 				.addExtension(Extension.subjectKeyIdentifier, false, new JcaX509ExtensionUtils().createSubjectKeyIdentifier(subjectPublicKey))
 				.addExtension(Extension.authorityKeyIdentifier, false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(subjectPublicKey))
 				.addExtension(Extension.basicConstraints, false, new BasicConstraints(true))
-				.build(new JcaContentSignerBuilder(BouncyCastleProvider.PROVIDER_NAME).build(issuerPrivateKey));
+				.build(new JcaContentSignerBuilder("SHA1withRSA").build(issuerPrivateKey));
 
 		return new JcaX509CertificateConverter().setProvider("BC").getCertificate(certificateHolder);
 	}

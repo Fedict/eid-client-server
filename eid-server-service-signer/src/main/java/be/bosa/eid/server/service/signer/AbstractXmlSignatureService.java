@@ -17,7 +17,7 @@
 
 package be.bosa.eid.server.service.signer;
 
-import be.bosa.eid.server.service.signer.util.DummyKey;
+import be.bosa.eid.server.service.signer.util.DummyPrivateKey;
 import be.bosa.eid.server.service.signer.util.XPathUtil;
 import be.bosa.eid.server.service.signer.util.XmlUtil;
 import be.bosa.eid.server.spi.AddressDTO;
@@ -69,7 +69,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.security.InvalidAlgorithmParameterException;
-import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
@@ -268,7 +267,7 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 		 * DOM Document construction.
 		 */
 		Document document = getEnvelopingDocument();
-		if (null == document) {
+		if (document == null) {
 			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			documentBuilderFactory.setNamespaceAware(true);
 			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -278,8 +277,7 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 		/*
 		 * Signature context construction.
 		 */
-		Key key = new DummyKey();
-		XMLSignContext xmlSignContext = new DOMSignContext(key, document);
+		XMLSignContext xmlSignContext = new DOMSignContext(DummyPrivateKey.INSTANCE, document);
 		URIDereferencer uriDereferencer = getURIDereferencer();
 		if (null != uriDereferencer) {
 			xmlSignContext.setURIDereferencer(uriDereferencer);

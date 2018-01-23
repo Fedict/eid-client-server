@@ -17,6 +17,8 @@
 
 package be.bosa.eid.server.service.signer.util;
 
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 
 /**
@@ -24,17 +26,17 @@ import java.security.PrivateKey;
  *
  * @author Frank Cornelis
  */
-public class DummyPrivateKey implements PrivateKey {
+public class DummyPrivateKey {
 
-	public String getAlgorithm() {
-		return "RSA";
-	}
+	public static final PrivateKey INSTANCE = generateDummyPrivateKey();
 
-	public byte[] getEncoded() {
-		return null;
-	}
-
-	public String getFormat() {
-		return null;
+	private static PrivateKey generateDummyPrivateKey() {
+		try {
+			KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+			keyGen.initialize(512);
+			return keyGen.genKeyPair().getPrivate();
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
