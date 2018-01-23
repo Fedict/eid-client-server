@@ -50,7 +50,7 @@ public class Office2010SignatureFacet implements SignatureFacet {
 		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", Constants.SignatureSpecNS);
 		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:xades", XAdESXLSignatureFacet.XADES_NAMESPACE);
 
-		Element qualifyingPropertiesElement = (Element) XPathUtil.getNodeByXPath(signatureElement, nsElement, "ds:Object/xades:QualifyingProperties");
+		Element qualifyingPropertiesElement = (Element) XPathUtil.getNodeByXPath(signatureElement, "ds:Object/xades:QualifyingProperties", nsElement);
 		String namespacePrefix = qualifyingPropertiesElement.getPrefix();
 		if (null == namespacePrefix || namespacePrefix.isEmpty()) {
 			namespacePrefix = "";

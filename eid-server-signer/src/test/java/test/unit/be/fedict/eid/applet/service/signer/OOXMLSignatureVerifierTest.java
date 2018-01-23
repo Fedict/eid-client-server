@@ -21,29 +21,28 @@ import be.fedict.eid.applet.service.signer.KeyInfoKeySelector;
 import be.fedict.eid.applet.service.signer.ooxml.OOXMLProvider;
 import be.fedict.eid.applet.service.signer.ooxml.OOXMLSignatureVerifier;
 import be.fedict.eid.applet.service.signer.ooxml.OOXMLURIDereferencer;
+import be.fedict.eid.applet.service.signer.util.XPathUtil;
+import be.fedict.eid.applet.service.signer.util.XmlUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.poi.POIXMLDocument;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackagePart;
-import org.apache.poi.openxml4j.opc.signature.PackageDigitalSignatureManager;
+import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xpath.XPathAPI;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -52,6 +51,7 @@ import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -107,19 +107,19 @@ public class OOXMLSignatureVerifierTest {
 	}
 
 	@Test
-	public void testPOI() {
+	public void testPOI() throws IOException {
 		// setup
 		InputStream inputStream = OOXMLSignatureVerifierTest.class.getResourceAsStream("/hello-world-unsigned.docx");
 
 		// operate
-		boolean result = POIXMLDocument.hasOOXMLHeader(inputStream);
+		boolean result = FileMagic.valueOf(inputStream) == FileMagic.OOXML;
 
 		// verify
 		assertTrue(result);
 	}
 
 	@Test
-	public void testOPC() {
+	public void testOPC() throws IOException, InvalidFormatException {
 		// setup
 		InputStream inputStream = OOXMLSignatureVerifierTest.class.getResourceAsStream("/hello-world-signed.docx");
 
@@ -139,8 +139,7 @@ public class OOXMLSignatureVerifierTest {
 		PackagePart signaturePart = signatureParts.get(0);
 		LOG.debug("signature part class type: " + signaturePart.getClass().getName());
 
-		PackageDigitalSignatureManager packageDigitalSignatureManager = new PackageDigitalSignatureManager();
-		// yeah... POI implementation still missing
+		// TODO... POI implementation still missing
 	}
 
 	@Test
@@ -346,7 +345,8 @@ public class OOXMLSignatureVerifierTest {
 		LOG.debug("signer: " + signer.getSubjectX500Principal());
 	}
 
-	// @Test
+	@Test
+	@Ignore
 	public void testOffice2010TechnicalPreview() throws Exception {
 		// setup
 		URL url = OOXMLSignatureVerifierTest.class.getResource("/hello-world-office-2010-technical-preview.docx");
@@ -362,7 +362,8 @@ public class OOXMLSignatureVerifierTest {
 		LOG.debug("signer: " + signer.getSubjectX500Principal());
 	}
 
-	// @Test
+	@Test
+	@Ignore
 	public void testGetSignerPowerpoint() throws Exception {
 		// setup
 		URL url = OOXMLSignatureVerifierTest.class.getResource("/hello-world-signed.pptx");
@@ -455,10 +456,10 @@ public class OOXMLSignatureVerifierTest {
 		ZipInputStream zipInputStream = new ZipInputStream(url.openStream());
 		ZipEntry zipEntry;
 		while (null != (zipEntry = zipInputStream.getNextEntry())) {
-			if (!signatureResourceName.equals(zipEntry.getName())) {
+			if (!Objects.equals(signatureResourceName, zipEntry.getName())) {
 				continue;
 			}
-			Document signatureDocument = loadDocument(zipInputStream);
+			Document signatureDocument = XmlUtil.loadDocument(zipInputStream);
 			LOG.debug("signature loaded");
 			NodeList signatureNodeList = signatureDocument.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
 			assertEquals(1, signatureNodeList.getLength());
@@ -491,13 +492,12 @@ public class OOXMLSignatureVerifierTest {
 			if (!"[Content_Types].xml".equals(zipEntry.getName())) {
 				continue;
 			}
-			Document contentTypesDocument = loadDocument(zipInputStream);
+			Document contentTypesDocument = XmlUtil.loadDocument(zipInputStream);
 			Element nsElement = contentTypesDocument.createElement("ns");
 			nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:tns",
 					"http://schemas.openxmlformats.org/package/2006/content-types");
-			NodeList nodeList = XPathAPI.selectNodeList(contentTypesDocument,
-					"/tns:Types/tns:Override[@ContentType='application/vnd.openxmlformats-package.digital-signature-xmlsignature+xml']/@PartName",
-					nsElement);
+
+			NodeList nodeList = XPathUtil.getNodeListByXPath(contentTypesDocument, nsElement, "/tns:Types/tns:Override[@ContentType='application/vnd.openxmlformats-package.digital-signature-xmlsignature+xml']/@PartName");
 			if (nodeList.getLength() == 0) {
 				return null;
 			}
@@ -507,14 +507,5 @@ public class OOXMLSignatureVerifierTest {
 			return partName;
 		}
 		return null;
-	}
-
-	private Document loadDocument(InputStream documentInputStream)
-			throws ParserConfigurationException, SAXException, IOException {
-		InputSource inputSource = new InputSource(documentInputStream);
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		return documentBuilder.parse(inputSource);
 	}
 }

@@ -21,7 +21,9 @@ import be.bosa.eid.server.spi.AddressDTO;
 import be.bosa.eid.server.spi.DigestInfo;
 import be.bosa.eid.server.spi.IdentityDTO;
 import be.bosa.eid.server.spi.SignatureService;
+import be.fedict.eid.applet.service.signer.util.DummyKey;
 import be.fedict.eid.applet.service.signer.util.XPathUtil;
+import be.fedict.eid.applet.service.signer.util.XmlUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -210,7 +212,7 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 		 */
 		Document document;
 		try {
-			document = loadDocument(documentInputStream);
+			document = XmlUtil.loadDocument(documentInputStream);
 		} catch (Exception e) {
 			throw new RuntimeException("DOM error: " + e.getMessage(), e);
 		}
@@ -220,7 +222,7 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 		 */
 		Element nsElement = document.createElement("ns");
 		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", Constants.SignatureSpecNS);
-		Element signatureElement = (Element) XPathUtil.getNodeByXPath(document, nsElement, "//ds:Signature[@Id='" + signatureId + "']");
+		Element signatureElement = (Element) XPathUtil.getNodeByXPath(document, "//ds:Signature[@Id='" + signatureId + "']", nsElement);
 		if (signatureElement == null) {
 			throw new RuntimeException("ds:Signature not found for @Id: " + signatureId);
 		}
@@ -277,21 +279,7 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 		/*
 		 * Signature context construction.
 		 */
-		Key key = new Key() {
-			private static final long serialVersionUID = 1L;
-
-			public String getAlgorithm() {
-				return null;
-			}
-
-			public byte[] getEncoded() {
-				return null;
-			}
-
-			public String getFormat() {
-				return null;
-			}
-		};
+		Key key = new DummyKey();
 		XMLSignContext xmlSignContext = new DOMSignContext(key, document);
 		URIDereferencer uriDereferencer = getURIDereferencer();
 		if (null != uriDereferencer) {
@@ -492,15 +480,6 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 		}
 		Source source = new DOMSource(document);
 		xformer.transform(source, result);
-	}
-
-	protected Document loadDocument(InputStream documentInputStream)
-			throws ParserConfigurationException, SAXException, IOException {
-		InputSource inputSource = new InputSource(documentInputStream);
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		return documentBuilder.parse(inputSource);
 	}
 
 	protected Document loadDocumentNoClose(InputStream documentInputStream)

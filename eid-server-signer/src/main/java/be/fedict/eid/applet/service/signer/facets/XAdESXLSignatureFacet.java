@@ -200,7 +200,7 @@ public class XAdESXLSignatureFacet implements SignatureFacet {
 		if (null == this.nsElement) {
 			this.nsElement = createNamespaceElement(baseNode);
 		}
-		return XPathUtil.getNodeByXPath(baseNode, this.nsElement, xpathExpression);
+		return XPathUtil.getNodeByXPath(baseNode, xpathExpression, this.nsElement);
 	}
 
 	public void postSign(Element signatureElement, List<X509Certificate> signingCertificateChain) {

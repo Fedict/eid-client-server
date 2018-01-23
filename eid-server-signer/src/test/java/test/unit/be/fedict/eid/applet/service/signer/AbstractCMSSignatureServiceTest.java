@@ -20,16 +20,13 @@ package test.unit.be.fedict.eid.applet.service.signer;
 import be.bosa.eid.server.spi.DigestInfo;
 import be.fedict.eid.applet.service.signer.cms.AbstractCMSSignatureService;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.SignerId;
-import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -37,14 +34,13 @@ import javax.crypto.Cipher;
 import java.security.KeyPair;
 import java.security.Security;
 import java.security.cert.X509Certificate;
-import java.util.Iterator;
+import java.time.OffsetDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class AbstractCMSSignatureServiceTest {
 
@@ -98,10 +94,10 @@ public class AbstractCMSSignatureServiceTest {
 		CMSTestSignatureService signatureService = new CMSTestSignatureService(toBeSigned, signatureDescription);
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusYears(1);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusYears(1);
 		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", notBefore,
-				notAfter, null, keyPair.getPrivate(), true, 0, null, null, new KeyUsage(KeyUsage.nonRepudiation));
+				notAfter, null, keyPair.getPrivate(), true, new KeyUsage(KeyUsage.nonRepudiation));
 		List<X509Certificate> signingCertificateChain = new LinkedList<>();
 		signingCertificateChain.add(certificate);
 
@@ -129,13 +125,7 @@ public class AbstractCMSSignatureServiceTest {
 		byte[] cmsSignature = signatureService.getCMSSignature();
 		CMSSignedData signedData = new CMSSignedData(cmsSignature);
 		SignerInformationStore signers = signedData.getSignerInfos();
-		Iterator<SignerInformation> iter = signers.getSigners().iterator();
-		while (iter.hasNext()) {
-			SignerInformation signer = iter.next();
-			SignerId signerId = signer.getSID();
-			assertTrue(signerId.match(certificate));
-			assertTrue(signer.verify(keyPair.getPublic(), BouncyCastleProvider.PROVIDER_NAME));
-		}
+		PkiTestUtils.verifySignatures(certificate, signers);
 		byte[] data = (byte[]) signedData.getSignedContent().getContent();
 		assertArrayEquals(toBeSigned, data);
 	}

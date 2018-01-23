@@ -28,13 +28,13 @@ import be.fedict.eid.applet.service.signer.jaxb.opc.relationships.STTargetMode;
 import be.fedict.eid.applet.service.signer.time.Clock;
 import be.fedict.eid.applet.service.signer.time.LocalClock;
 import be.fedict.eid.applet.service.signer.util.DateUtil;
+import be.fedict.eid.applet.service.signer.util.XmlUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
@@ -53,8 +53,6 @@ import javax.xml.crypto.dsig.Transform;
 import javax.xml.crypto.dsig.XMLObject;
 import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.spec.TransformParameterSpec;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -377,18 +375,9 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 			if (!zipEntryName.equals(zipEntry.getName())) {
 				continue;
 			}
-			return loadDocument(zipInputStream);
+			return XmlUtil.loadDocument(zipInputStream);
 		}
 		return null;
-	}
-
-	public static Document loadDocument(InputStream documentInputStream)
-			throws ParserConfigurationException, SAXException, IOException {
-		InputSource inputSource = new InputSource(documentInputStream);
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		return documentBuilder.parse(inputSource);
 	}
 
 	public void postSign(Element signatureElement, List<X509Certificate> signingCertificateChain) {

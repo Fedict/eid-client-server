@@ -23,6 +23,7 @@ import be.fedict.eid.applet.service.signer.jaxb.opc.relationships.ObjectFactory;
 import be.fedict.eid.applet.service.signer.ooxml.OOXMLSignatureVerifier;
 import be.fedict.eid.applet.service.signer.ooxml.OOXMLURIDereferencer;
 import be.fedict.eid.applet.service.signer.ooxml.OPCKeySelector;
+import be.fedict.eid.applet.service.signer.util.XmlUtil;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.logging.Log;
@@ -30,7 +31,6 @@ import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
@@ -42,11 +42,8 @@ import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.crypto.dsig.XMLSignatureException;
 import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.LinkedList;
@@ -124,7 +121,7 @@ public class XPSSignatureVerifier {
 			if (!signatureResourceName.equals(zipEntry.getName())) {
 				continue;
 			}
-			return loadDocument(zipInputStream);
+			return XmlUtil.loadDocument(zipInputStream);
 		}
 		return null;
 	}
@@ -181,8 +178,7 @@ public class XPSSignatureVerifier {
 			return signatureResourceNames;
 		}
 
-		JAXBElement<CTRelationships> dsoRelationshipsElement = (JAXBElement<CTRelationships>) this.relationshipsUnmarshaller
-				.unmarshal(zipInputStream);
+		JAXBElement<CTRelationships> dsoRelationshipsElement = (JAXBElement<CTRelationships>) this.relationshipsUnmarshaller.unmarshal(zipInputStream);
 		CTRelationships dsoRelationships = dsoRelationshipsElement.getValue();
 		List<CTRelationship> dsoRelationshipList = dsoRelationships.getRelationship();
 		for (CTRelationship dsoRelationship : dsoRelationshipList) {
@@ -204,12 +200,4 @@ public class XPSSignatureVerifier {
 		return signatureResourceNames;
 	}
 
-	private Document loadDocument(InputStream documentInputStream)
-			throws ParserConfigurationException, SAXException, IOException {
-		InputSource inputSource = new InputSource(documentInputStream);
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		return documentBuilder.parse(inputSource);
-	}
 }

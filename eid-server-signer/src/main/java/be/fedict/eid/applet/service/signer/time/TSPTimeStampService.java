@@ -35,32 +35,30 @@ import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.ASN1OctetString;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.cmp.PKIFailureInfo;
+import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
-import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cms.SignerId;
+import org.bouncycastle.cms.SignerInformationVerifier;
+import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.tsp.TSPAlgorithms;
 import org.bouncycastle.tsp.TimeStampRequest;
 import org.bouncycastle.tsp.TimeStampRequestGenerator;
 import org.bouncycastle.tsp.TimeStampResponse;
 import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.util.Store;
 
-import javax.security.auth.x500.X500Principal;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.security.cert.CertStore;
-import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.HashMap;
@@ -87,7 +85,7 @@ public class TSPTimeStampService implements TimeStampService {
 
 	private final String tspServiceUrl;
 
-	private String requestPolicy;
+	private ASN1ObjectIdentifier requestPolicy;
 
 	private final String userAgent;
 
@@ -118,8 +116,7 @@ public class TSPTimeStampService implements TimeStampService {
 	 * @param requestPolicy the optional TSP request policy.
 	 * @param userAgent     the optional User-Agent TSP request header value.
 	 */
-	public TSPTimeStampService(String tspServiceUrl, TimeStampServiceValidator validator, String requestPolicy,
-							   String userAgent) {
+	public TSPTimeStampService(String tspServiceUrl, TimeStampServiceValidator validator, ASN1ObjectIdentifier requestPolicy, String userAgent) {
 		if (null == tspServiceUrl) {
 			throw new IllegalArgumentException("TSP service URL required");
 		}
@@ -145,7 +142,7 @@ public class TSPTimeStampService implements TimeStampService {
 	/**
 	 * Sets the request policy OID.
 	 */
-	public void setRequestPolicy(String policyOid) {
+	public void setRequestPolicy(ASN1ObjectIdentifier policyOid) {
 		this.requestPolicy = policyOid;
 	}
 
@@ -266,44 +263,46 @@ public class TSPTimeStampService implements TimeStampService {
 		TimeStampToken timeStampToken = timeStampResponse.getTimeStampToken();
 		SignerId signerId = timeStampToken.getSID();
 		BigInteger signerCertSerialNumber = signerId.getSerialNumber();
-		X500Principal signerCertIssuer = signerId.getIssuer();
+		X500Name signerCertIssuer = signerId.getIssuer();
 		LOG.debug("signer cert serial number: " + signerCertSerialNumber);
 		LOG.debug("signer cert issuer: " + signerCertIssuer);
 
 		// TSP signer certificates retrieval
-		CertStore certStore = timeStampToken.getCertificatesAndCRLs("Collection", BouncyCastleProvider.PROVIDER_NAME);
-		Collection<? extends Certificate> certificates = certStore.getCertificates(null);
-		X509Certificate signerCert = null;
-		Map<String, X509Certificate> certificateMap = new HashMap<>();
-		for (Certificate certificate : certificates) {
-			X509Certificate x509Certificate = (X509Certificate) certificate;
-			if (signerCertIssuer.equals(x509Certificate.getIssuerX500Principal())
-					&& signerCertSerialNumber.equals(x509Certificate.getSerialNumber())) {
-				signerCert = x509Certificate;
+		@SuppressWarnings("unchecked") Store<X509CertificateHolder> certStore = timeStampToken.getCertificates();
+		Collection<X509CertificateHolder> certificates = certStore.getMatches(null);
+		X509CertificateHolder signerCertificateHolder = null;
+		Map<String, X509CertificateHolder> certificateMap = new HashMap<>();
+		for (X509CertificateHolder certificateHolder : certificates) {
+			if (signerCertIssuer.equals(certificateHolder.getIssuer()) && signerCertSerialNumber.equals(certificateHolder.getSerialNumber())) {
+				signerCertificateHolder = certificateHolder;
 			}
-			String ski = Hex.encodeHexString(getSubjectKeyId(x509Certificate));
-			certificateMap.put(ski, x509Certificate);
-			LOG.debug("embedded certificate: " + x509Certificate.getSubjectX500Principal() + "; SKI=" + ski);
+			String ski = Hex.encodeHexString(getSubjectKeyId(certificateHolder));
+			certificateMap.put(ski, certificateHolder);
+			LOG.debug("embedded certificate: " + certificateHolder.getSubject() + "; SKI=" + ski);
+		}
+
+		if (signerCertificateHolder == null) {
+			throw new RuntimeException("TSP response token has no signer certificate");
 		}
 
 		// TSP signer cert path building
-		if (null == signerCert) {
-			throw new RuntimeException("TSP response token has no signer certificate");
-		}
 		List<X509Certificate> tspCertificateChain = new LinkedList<>();
-		X509Certificate certificate = signerCert;
+		X509CertificateHolder currentCertificateHolder = signerCertificateHolder;
 		do {
-			LOG.debug("adding to certificate chain: " + certificate.getSubjectX500Principal());
-			tspCertificateChain.add(certificate);
-			if (certificate.getSubjectX500Principal().equals(certificate.getIssuerX500Principal())) {
+			LOG.debug("adding to certificate chain: " + currentCertificateHolder.getSubject());
+			tspCertificateChain.add(getFromHolder(currentCertificateHolder));
+			if (currentCertificateHolder.getSubject().equals(currentCertificateHolder.getIssuer())) {
 				break;
 			}
-			String aki = Hex.encodeHexString(getAuthorityKeyId(certificate));
-			certificate = certificateMap.get(aki);
-		} while (null != certificate);
+			String aki = Hex.encodeHexString(getAuthorityKeyId(currentCertificateHolder));
+			currentCertificateHolder = certificateMap.get(aki);
+		} while (null != currentCertificateHolder);
 
 		// verify TSP signer signature
-		timeStampToken.validate(tspCertificateChain.get(0), BouncyCastleProvider.PROVIDER_NAME);
+		SignerInformationVerifier signerInformationVerifier = new JcaSimpleSignerInfoVerifierBuilder()
+				.setProvider(BouncyCastleProvider.PROVIDER_NAME)
+				.build(signerCertificateHolder);
+		timeStampToken.validate(signerInformationVerifier);
 
 		// verify TSP signer certificate
 		this.validator.validate(tspCertificateChain, revocationData);
@@ -327,26 +326,15 @@ public class TSPTimeStampService implements TimeStampService {
 		return builder.build();
 	}
 
-	private byte[] getSubjectKeyId(X509Certificate cert) {
-		byte[] extvalue = cert.getExtensionValue(Extension.subjectKeyIdentifier.getId());
-		if (extvalue == null) {
-			return null;
-		}
-		ASN1OctetString str = ASN1OctetString
-				.getInstance(new ASN1InputStream(new ByteArrayInputStream(extvalue)).readObject());
-		SubjectKeyIdentifier keyId = SubjectKeyIdentifier
-				.getInstance(new ASN1InputStream(new ByteArrayInputStream(str.getOctets())).readObject());
-		return keyId.getKeyIdentifier();
+	private byte[] getSubjectKeyId(X509CertificateHolder cert) {
+		return SubjectKeyIdentifier.fromExtensions(cert.getExtensions()).getKeyIdentifier();
 	}
 
-	private byte[] getAuthorityKeyId(X509Certificate cert) {
-		byte[] extvalue = cert.getExtensionValue(Extension.authorityKeyIdentifier.getId());
-		if (extvalue == null) {
-			return null;
-		}
-		DEROctetString oct = (DEROctetString) (new ASN1InputStream(new ByteArrayInputStream(extvalue)).readObject());
-		AuthorityKeyIdentifier keyId = new AuthorityKeyIdentifier(
-				(ASN1Sequence) new ASN1InputStream(new ByteArrayInputStream(oct.getOctets())).readObject());
-		return keyId.getKeyIdentifier();
+	private byte[] getAuthorityKeyId(X509CertificateHolder cert) {
+		return AuthorityKeyIdentifier.fromExtensions(cert.getExtensions()).getKeyIdentifier();
+	}
+
+	private X509Certificate getFromHolder(X509CertificateHolder certificateHolder) throws CertificateException {
+		return new JcaX509CertificateConverter().setProvider( "BC" ).getCertificate( certificateHolder );
 	}
 }

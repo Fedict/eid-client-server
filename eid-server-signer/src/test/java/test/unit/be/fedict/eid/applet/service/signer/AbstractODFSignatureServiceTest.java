@@ -24,20 +24,19 @@ import be.fedict.eid.applet.service.signer.TemporaryDataStorage;
 import be.fedict.eid.applet.service.signer.facets.XAdESXLSignatureFacet;
 import be.fedict.eid.applet.service.signer.odf.AbstractODFSignatureService;
 import be.fedict.eid.applet.service.signer.odf.ODFURIDereferencer;
+import be.fedict.eid.applet.service.signer.util.XmlUtil;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.Init;
 import org.bouncycastle.asn1.x509.KeyUsage;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.crypto.Cipher;
@@ -46,8 +45,6 @@ import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.crypto.dsig.XMLSignatureException;
 import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -57,6 +54,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -98,7 +96,7 @@ public class AbstractODFSignatureServiceTest {
 		while (null != (zipEntry = odfZipInputStream.getNextEntry())) {
 			LOG.debug(zipEntry.getName());
 			if ("META-INF/documentsignatures.xml".equals(zipEntry.getName())) {
-				Document documentSignatures = loadDocument(odfZipInputStream);
+				Document documentSignatures = XmlUtil.loadDocument(odfZipInputStream);
 				NodeList signatureNodeList = documentSignatures.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
 				assertEquals(signatureCount, signatureNodeList.getLength());
 				for (int idx = 0; idx < signatureNodeList.getLength(); idx++) {
@@ -182,10 +180,10 @@ public class AbstractODFSignatureServiceTest {
 		odfSignatureService.setOdfUrl(odfUrl);
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusYears(1);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusYears(1);
 		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", notBefore,
-				notAfter, null, keyPair.getPrivate(), true, 0, null, null, new KeyUsage(KeyUsage.nonRepudiation));
+				notAfter, null, keyPair.getPrivate(), true, new KeyUsage(KeyUsage.nonRepudiation));
 
 		// operate
 		DigestInfo digestInfo = odfSignatureService.preSign(null, Collections.singletonList(certificate), null, null,
@@ -245,12 +243,4 @@ public class AbstractODFSignatureServiceTest {
 		return xmlSignature.validate(domValidateContext);
 	}
 
-	private Document loadDocument(InputStream documentInputStream)
-			throws ParserConfigurationException, SAXException, IOException {
-		InputSource inputSource = new InputSource(documentInputStream);
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		return documentBuilder.parse(inputSource);
-	}
 }

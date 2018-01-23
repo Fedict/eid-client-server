@@ -18,6 +18,7 @@
 package be.fedict.eid.applet.service.signer.ooxml;
 
 import be.fedict.eid.applet.service.signer.util.XPathUtil;
+import be.fedict.eid.applet.service.signer.util.XmlUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Constants;
@@ -25,8 +26,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import javax.xml.crypto.Data;
 import javax.xml.crypto.OctetStreamData;
@@ -36,9 +35,6 @@ import javax.xml.crypto.dom.DOMStructure;
 import javax.xml.crypto.dsig.TransformException;
 import javax.xml.crypto.dsig.TransformService;
 import javax.xml.crypto.dsig.spec.TransformParameterSpec;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -49,7 +45,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -176,7 +171,7 @@ public class RelationshipTransformService extends TransformService {
 		InputStream octetStream = octetStreamData.getOctetStream();
 		Document relationshipsDocument;
 		try {
-			relationshipsDocument = loadDocument(octetStream);
+			relationshipsDocument = XmlUtil.loadDocument(octetStream);
 		} catch (Exception e) {
 			throw new TransformException(e.getMessage(), e);
 		}
@@ -268,15 +263,6 @@ public class RelationshipTransformService extends TransformService {
 		transformer.transform(source, result);
 		LOG.debug("result: " + new String(outputStream.toByteArray()));
 		return new OctetStreamData(new ByteArrayInputStream(outputStream.toByteArray()));
-	}
-
-	private Document loadDocument(InputStream documentInputStream)
-			throws ParserConfigurationException, SAXException, IOException {
-		InputSource inputSource = new InputSource(documentInputStream);
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		return documentBuilder.parse(inputSource);
 	}
 
 	public Data transform(Data data, XMLCryptoContext context, OutputStream os) {

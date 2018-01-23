@@ -87,9 +87,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class AppletServiceServletTest {
+public class EIdServerServletTest {
 
-	private static final Log LOG = LogFactory.getLog(AppletServiceServletTest.class);
+	private static final Log LOG = LogFactory.getLog(EIdServerServletTest.class);
 
 	private ServletTester servletTester;
 
@@ -257,7 +257,7 @@ public class AppletServiceServletTest {
 	@Ignore("Sample identity card has expired")
 	public void sslPostIdentityMessage() throws Exception {
 		// setup
-		byte[] idFile = IOUtils.toByteArray(AppletServiceServletTest.class.getResourceAsStream("/id-alice.tlv")); // XXX: expired
+		byte[] idFile = IOUtils.toByteArray(EIdServerServletTest.class.getResourceAsStream("/id-alice.tlv")); // XXX: expired
 
 		LOG.debug("SSL URL: " + this.sslLocation);
 		HttpClient httpClient = createTrustAllHttpClient();
@@ -300,7 +300,7 @@ public class AppletServiceServletTest {
 	@Ignore("Sample identity card has expired")
 	public void sslPostIdentityMessageViaTransport() throws Exception {
 		// setup
-		byte[] idFile = IOUtils.toByteArray(AppletServiceServletTest.class.getResourceAsStream("/id-alice.tlv")); // XXX: expired
+		byte[] idFile = IOUtils.toByteArray(EIdServerServletTest.class.getResourceAsStream("/id-alice.tlv")); // XXX: expired
 
 		LOG.debug("SSL URL: " + this.sslLocation);
 		HttpClient httpClient = createTrustAllHttpClient();

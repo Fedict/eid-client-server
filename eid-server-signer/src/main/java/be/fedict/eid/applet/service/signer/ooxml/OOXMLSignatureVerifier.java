@@ -27,6 +27,7 @@ import be.fedict.eid.applet.service.signer.jaxb.opc.relationships.CTRelationship
 import be.fedict.eid.applet.service.signer.jaxb.opc.relationships.ObjectFactory;
 import be.fedict.eid.applet.service.signer.jaxb.opc.relationships.STTargetMode;
 import be.fedict.eid.applet.service.signer.util.XPathUtil;
+import be.fedict.eid.applet.service.signer.util.XmlUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -56,7 +57,6 @@ import javax.xml.crypto.dsig.XMLSignatureException;
 import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -352,7 +352,7 @@ public class OOXMLSignatureVerifier {
 			if (!signatureResourceName.equals(zipEntry.getName())) {
 				continue;
 			}
-			return OOXMLSignatureFacet.loadDocument(zipInputStream);
+			return XmlUtil.loadDocument(zipInputStream);
 		}
 		return null;
 	}
@@ -422,7 +422,7 @@ public class OOXMLSignatureVerifier {
 
 	@SuppressWarnings("unchecked")
 	public boolean isValidOOXMLSignature(XMLSignature xmlSignature, byte[] document)
-			throws IOException, TransformerException, SAXException, ParserConfigurationException {
+			throws IOException, SAXException, ParserConfigurationException {
 
 		// check c18n == http://www.w3.org/TR/2001/REC-xml-c14n-20010315
 		if (!xmlSignature.getSignedInfo().getCanonicalizationMethod().getAlgorithm()
@@ -660,7 +660,7 @@ public class OOXMLSignatureVerifier {
 			if (!"[Content_Types].xml".equals(zipEntry.getName())) {
 				continue;
 			}
-			Document contentTypesDocument = OOXMLSignatureFacet.loadDocument(zipInputStream);
+			Document contentTypesDocument = XmlUtil.loadDocument(zipInputStream);
 			Element nsElement = contentTypesDocument.createElement("ns");
 			nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:tns",
 					"http://schemas.openxmlformats.org/package/2006/content-types");

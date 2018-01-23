@@ -26,11 +26,10 @@ import be.fedict.eid.applet.service.signer.ooxml.OOXMLSignatureVerifier;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.asn1.x509.KeyUsage;
-import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -41,6 +40,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -100,10 +100,10 @@ public class AbstractOOXMLSignatureServiceTest {
 		OOXMLTestSignatureService signatureService = new OOXMLTestSignatureService(ooxmlUrl);
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusYears(1);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusYears(1);
 		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", notBefore,
-				notAfter, null, keyPair.getPrivate(), true, 0, null, null, new KeyUsage(KeyUsage.nonRepudiation));
+				notAfter, null, keyPair.getPrivate(), true, new KeyUsage(KeyUsage.nonRepudiation));
 
 		// operate
 		DigestInfo digestInfo = signatureService.preSign(null, Collections.singletonList(certificate), null, null,
@@ -118,10 +118,10 @@ public class AbstractOOXMLSignatureServiceTest {
 		assertNotNull(digestInfo.digestValue);
 
 		TemporaryDataStorage temporaryDataStorage = signatureService.getTemporaryDataStorage();
-		String preSignResult = IOUtils.toString(temporaryDataStorage.getTempInputStream());
+		String preSignResult = IOUtils.toString(temporaryDataStorage.getTempInputStream(), "UTF-8");
 		LOG.debug("pre-sign result: " + preSignResult);
 		File tmpFile = File.createTempFile("ooxml-pre-sign-", ".xml");
-		FileUtils.writeStringToFile(tmpFile, preSignResult);
+		FileUtils.writeStringToFile(tmpFile, preSignResult, "UTF-8");
 		LOG.debug("tmp pre-sign file: " + tmpFile.getAbsolutePath());
 	}
 
@@ -186,14 +186,13 @@ public class AbstractOOXMLSignatureServiceTest {
 		OOXMLTestSignatureService signatureService = new OOXMLTestSignatureService(ooxmlUrl);
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusYears(1);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusYears(1);
 		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), signerDn, notBefore,
-				notAfter, null, keyPair.getPrivate(), true, 0, null, null, new KeyUsage(KeyUsage.digitalSignature));
+				notAfter, null, keyPair.getPrivate(), true, new KeyUsage(KeyUsage.digitalSignature));
 
 		// operate
-		DigestInfo digestInfo = signatureService.preSign(null, Collections.singletonList(certificate), null, null,
-				null);
+		DigestInfo digestInfo = signatureService.preSign(null, Collections.singletonList(certificate), null, null, null);
 
 		// verify
 		assertNotNull(digestInfo);
@@ -204,10 +203,10 @@ public class AbstractOOXMLSignatureServiceTest {
 		assertNotNull(digestInfo.digestValue);
 
 		TemporaryDataStorage temporaryDataStorage = signatureService.getTemporaryDataStorage();
-		String preSignResult = IOUtils.toString(temporaryDataStorage.getTempInputStream());
+		String preSignResult = IOUtils.toString(temporaryDataStorage.getTempInputStream(), "UTF-8");
 		LOG.debug("pre-sign result: " + preSignResult);
 		File tmpFile = File.createTempFile("ooxml-pre-sign-", ".xml");
-		FileUtils.writeStringToFile(tmpFile, preSignResult);
+		FileUtils.writeStringToFile(tmpFile, preSignResult, "UTF-8");
 		LOG.debug("tmp pre-sign file: " + tmpFile.getAbsolutePath());
 
 		// setup: key material, signature value

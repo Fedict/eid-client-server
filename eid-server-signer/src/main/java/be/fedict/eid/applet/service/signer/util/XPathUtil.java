@@ -38,7 +38,7 @@ public class XPathUtil {
 		}
 	}
 
-	public static Node getNodeByXPath(Node parentNode, Node nsNode, String expression) {
+	public static Node getNodeByXPath(Node parentNode, String expression, Node nsNode) {
 		try {
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			xpath.setNamespaceContext(new DOMNamespaceContext(nsNode));

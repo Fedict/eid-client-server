@@ -15,7 +15,7 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.fedict.eid.applet.service.signer;
+package be.fedict.eid.applet.service.signer.util;
 
 import java.security.PrivateKey;
 
@@ -25,8 +25,6 @@ import java.security.PrivateKey;
  * @author Frank Cornelis
  */
 public class DummyPrivateKey implements PrivateKey {
-
-	private static final long serialVersionUID = 1L;
 
 	public String getAlgorithm() {
 		return "RSA";

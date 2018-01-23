@@ -15,23 +15,21 @@
  * along with this software; if not, see https://www.gnu.org/licenses/.
  */
 
-package be.fedict.eid.applet.service.signer.cms;
+package be.fedict.eid.applet.service.signer.util;
 
-import be.fedict.eid.applet.service.signer.SHA1WithRSAProxySignature;
+import java.security.Key;
 
-import java.security.Provider;
+public class DummyKey implements Key {
 
-/**
- * Security Provider for proxy signature implementation.
- *
- * @author Frank Cornelis
- */
-public class CMSProvider extends Provider {
+	public String getAlgorithm() {
+		return null;
+	}
 
-	public static final String NAME = "CMSProvider";
+	public byte[] getEncoded() {
+		return null;
+	}
 
-	public CMSProvider() {
-		super(NAME, 1.0, "CMS Security Provider");
-		put("Signature.SHA1withRSA", SHA1WithRSAProxySignature.class.getName());
+	public String getFormat() {
+		return null;
 	}
 }

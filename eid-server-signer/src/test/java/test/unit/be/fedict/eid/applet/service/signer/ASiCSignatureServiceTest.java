@@ -28,11 +28,10 @@ import be.fedict.eid.applet.service.signer.facets.RevocationData;
 import be.fedict.eid.applet.service.signer.facets.RevocationDataService;
 import be.fedict.eid.applet.service.signer.time.TimeStampService;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.asn1.x509.KeyUsage;
-import org.joda.time.DateTime;
 import org.junit.Test;
 
 import javax.crypto.Cipher;
@@ -45,6 +44,7 @@ import java.io.OutputStream;
 import java.security.KeyPair;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
+import java.time.OffsetDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -73,19 +73,19 @@ public class ASiCSignatureServiceTest {
 	public void testCreateSignature() throws Exception {
 		// setup
 		KeyPair caKeyPair = PkiTestUtils.generateKeyPair();
-		DateTime caNotBefore = new DateTime();
-		DateTime caNotAfter = caNotBefore.plusYears(1);
+		OffsetDateTime caNotBefore = OffsetDateTime.now();
+		OffsetDateTime caNotAfter = caNotBefore.plusYears(1);
 		X509Certificate caCertificate = PkiTestUtils.generateCertificate(caKeyPair.getPublic(), "CN=TestCA",
-				caNotBefore, caNotAfter, null, caKeyPair.getPrivate(), true, 0, null, null,
+				caNotBefore, caNotAfter, null, caKeyPair.getPrivate(), true,
 				new KeyUsage(KeyUsage.cRLSign | KeyUsage.keyCertSign));
 
 		final X509CRL crl = PkiTestUtils.generateCrl(caCertificate, caKeyPair.getPrivate());
 
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusMonths(1);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusYears(1);
 		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", notBefore,
-				notAfter, caCertificate, caKeyPair.getPrivate(), false, 0, null, null,
+				notAfter, caCertificate, caKeyPair.getPrivate(), false,
 				new KeyUsage(KeyUsage.nonRepudiation));
 
 		ByteArrayOutputStream asicOutputStream = new ByteArrayOutputStream();
@@ -112,20 +112,12 @@ public class ASiCSignatureServiceTest {
 		AddressDTO address = new AddressDTO();
 		address.city = "Brussels";
 
-		RevocationDataService revocationDataService = new RevocationDataService() {
-
-			public RevocationData getRevocationData(List<X509Certificate> certificateChain) {
-				RevocationData revocationData = new RevocationData();
-				revocationData.addCRL(crl);
-				return revocationData;
-			}
+		RevocationDataService revocationDataService = certificateChain -> {
+			RevocationData revocationData = new RevocationData();
+			revocationData.addCRL(crl);
+			return revocationData;
 		};
-		TimeStampService timeStampService = new TimeStampService() {
-
-			public byte[] timeStamp(byte[] data, RevocationData revocationData) {
-				return "encoded time-stamp token".getBytes();
-			}
-		};
+		TimeStampService timeStampService = (data, revocationData) -> "encoded time-stamp token".getBytes();
 
 		ASiCSignatureService testedInstance = new ASiCSignatureService(asicInputStream, DigestAlgo.SHA256,
 				revocationDataService, timeStampService, temporaryDataStorage, identity, photo, resultOutputStream);

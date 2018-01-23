@@ -17,47 +17,46 @@
 
 package test.unit.be.fedict.eid.applet.service.signer;
 
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.DERIA5String;
-import org.bouncycastle.asn1.DERSequence;
-import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
-import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.CRLNumber;
 import org.bouncycastle.asn1.x509.CRLReason;
-import org.bouncycastle.asn1.x509.DistributionPoint;
-import org.bouncycastle.asn1.x509.DistributionPointName;
 import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.KeyUsage;
-import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.asn1.x509.X509ObjectIdentifiers;
-import org.bouncycastle.jce.X509Principal;
+import org.bouncycastle.cert.CertIOException;
+import org.bouncycastle.cert.X509CRLHolder;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.X509v2CRLBuilder;
+import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.cert.jcajce.JcaX509CRLConverter;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
+import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.bouncycastle.cert.ocsp.BasicOCSPRespBuilder;
+import org.bouncycastle.cert.ocsp.CertificateID;
+import org.bouncycastle.cert.ocsp.OCSPException;
+import org.bouncycastle.cert.ocsp.OCSPResp;
+import org.bouncycastle.cert.ocsp.OCSPRespBuilder;
+import org.bouncycastle.cert.ocsp.RespID;
+import org.bouncycastle.cert.ocsp.RevokedStatus;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.SignerId;
+import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.cms.SignerInformationVerifier;
+import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.ocsp.BasicOCSPResp;
-import org.bouncycastle.ocsp.BasicOCSPRespGenerator;
-import org.bouncycastle.ocsp.CertificateID;
-import org.bouncycastle.ocsp.CertificateStatus;
-import org.bouncycastle.ocsp.OCSPReq;
-import org.bouncycastle.ocsp.OCSPReqGenerator;
-import org.bouncycastle.ocsp.OCSPResp;
-import org.bouncycastle.ocsp.OCSPRespGenerator;
-import org.bouncycastle.ocsp.Req;
-import org.bouncycastle.ocsp.RevokedStatus;
-import org.bouncycastle.x509.X509V2CRLGenerator;
-import org.bouncycastle.x509.X509V3CertificateGenerator;
-import org.joda.time.DateTime;
-import org.w3c.dom.Document;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.DigestCalculator;
+import org.bouncycastle.operator.DigestCalculatorProvider;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -66,9 +65,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.math.BigInteger;
 import java.security.KeyPair;
@@ -76,14 +72,20 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.cert.CRLException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.security.spec.RSAKeyGenParameterSpec;
+import java.time.OffsetDateTime;
 import java.util.Date;
 
+import static org.junit.Assert.assertTrue;
+
 public class PkiTestUtils {
+
+	private static final Log LOG = LogFactory.getLog(PkiTestUtils.class);
 
 	public static final byte[] SHA1_DIGEST_INFO_PREFIX = new byte[]{0x30, 0x1f, 0x30, 0x07, 0x06, 0x05, 0x2b, 0x0e,
 			0x03, 0x02, 0x1a, 0x04, 0x14};
@@ -102,99 +104,34 @@ public class PkiTestUtils {
 		return keyPairGenerator.generateKeyPair();
 	}
 
-	private static SubjectKeyIdentifier createSubjectKeyId(PublicKey publicKey) {
-		ByteArrayInputStream bais = new ByteArrayInputStream(publicKey.getEncoded());
-		SubjectPublicKeyInfo info = new SubjectPublicKeyInfo((ASN1Sequence) new ASN1InputStream(bais).readObject());
-		return new SubjectKeyIdentifier(info);
-	}
-
-	private static AuthorityKeyIdentifier createAuthorityKeyId(PublicKey publicKey) {
-
-		ByteArrayInputStream bais = new ByteArrayInputStream(publicKey.getEncoded());
-		SubjectPublicKeyInfo info = new SubjectPublicKeyInfo((ASN1Sequence) new ASN1InputStream(bais).readObject());
-
-		return new AuthorityKeyIdentifier(info);
-	}
-
-	static X509Certificate generateCertificate(PublicKey subjectPublicKey, String subjectDn, DateTime notBefore,
-											   DateTime notAfter, X509Certificate issuerCertificate, PrivateKey issuerPrivateKey, boolean caFlag,
-											   int pathLength, String crlUri, String ocspUri, KeyUsage keyUsage) throws
-			IllegalStateException, CertificateException {
+	static X509Certificate generateCertificate(PublicKey subjectPublicKey, String subjectDn, OffsetDateTime notBefore,
+											   OffsetDateTime notAfter, X509Certificate issuerCertificate, PrivateKey issuerPrivateKey,
+											   boolean caFlag, KeyUsage keyUsage)
+			throws IllegalStateException, CertificateException, CertIOException, OperatorCreationException {
 		String signatureAlgorithm = "SHA1withRSA";
-		X509V3CertificateGenerator certificateGenerator = new X509V3CertificateGenerator();
-		certificateGenerator.reset();
-		certificateGenerator.setPublicKey(subjectPublicKey);
-		certificateGenerator.setSignatureAlgorithm(signatureAlgorithm);
-		certificateGenerator.setNotBefore(notBefore.toDate());
-		certificateGenerator.setNotAfter(notAfter.toDate());
-		X509Principal issuerDN;
-		if (null != issuerCertificate) {
-			issuerDN = new X509Principal(issuerCertificate.getSubjectX500Principal().toString());
-		} else {
-			issuerDN = new X509Principal(subjectDn);
-		}
-		certificateGenerator.setIssuerDN(issuerDN);
-		certificateGenerator.setSubjectDN(new X509Principal(subjectDn));
-		certificateGenerator.setSerialNumber(new BigInteger(128, new SecureRandom()));
 
-		certificateGenerator.addExtension(Extension.aubjectKeyIdentifier, false,
-				createSubjectKeyId(subjectPublicKey));
-		PublicKey issuerPublicKey;
-		issuerPublicKey = subjectPublicKey;
-		certificateGenerator.addExtension(Extension.authorityKeyIdentifier, false,
-				createAuthorityKeyId(issuerPublicKey));
+		X509v3CertificateBuilder certificateBuilder = new X509v3CertificateBuilder(
+				issuerCertificate != null ? new X500Name(issuerCertificate.getSubjectX500Principal().toString()) : new X500Name(subjectDn),
+				new BigInteger(128, new SecureRandom()),
+				Date.from(notBefore.toInstant()),
+				Date.from(notAfter.toInstant()),
+				new X500Name(subjectDn),
+				SubjectPublicKeyInfo.getInstance(subjectPublicKey.getEncoded())
+		);
+
+		certificateBuilder.addExtension(Extension.subjectKeyIdentifier, false, subjectPublicKey.getEncoded());
+		certificateBuilder.addExtension(Extension.authorityKeyIdentifier, false, subjectPublicKey.getEncoded());
 
 		if (caFlag) {
-			if (-1 == pathLength) {
-				certificateGenerator.addExtension(Extension.basicConstraints, false, new BasicConstraints(true));
-			} else {
-				certificateGenerator.addExtension(Extension.basicConstraints, false,
-						new BasicConstraints(pathLength));
-			}
+			certificateBuilder.addExtension(Extension.basicConstraints, false, new BasicConstraints(0));
 		}
 
-		if (null != crlUri) {
-			GeneralName gn = new GeneralName(GeneralName.uniformResourceIdentifier, new DERIA5String(crlUri));
-			GeneralNames gns = new GeneralNames(new DERSequence(gn));
-			DistributionPointName dpn = new DistributionPointName(0, gns);
-			DistributionPoint distp = new DistributionPoint(dpn, null, null);
-			certificateGenerator.addExtension(Extension.cRLDistributionPoints, false, new DERSequence(distp));
+		if (keyUsage != null) {
+			certificateBuilder.addExtension(Extension.keyUsage, true, keyUsage);
 		}
 
-		if (null != ocspUri) {
-			GeneralName ocspName = new GeneralName(GeneralName.uniformResourceIdentifier, ocspUri);
-			AuthorityInformationAccess authorityInformationAccess = new AuthorityInformationAccess(
-					X509ObjectIdentifiers.ocspAccessMethod, ocspName);
-			certificateGenerator.addExtension(Extension.authorityInfoAccess.getId(), false,
-					authorityInformationAccess);
-		}
-
-		if (null != keyUsage) {
-			certificateGenerator.addExtension(Extension.keyUsage, true, keyUsage);
-		}
-
-		X509Certificate certificate;
-		certificate = certificateGenerator.generate(issuerPrivateKey);
-
-		/*
-		 * Next certificate factory trick is needed to make sure that the
-		 * certificate delivered to the caller is provided by the default
-		 * security provider instead of BouncyCastle. If we don't do this trick
-		 * we might run into trouble when trying to use the CertPath validator.
-		 */
-		CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-		certificate = (X509Certificate) certificateFactory
-				.generateCertificate(new ByteArrayInputStream(certificate.getEncoded()));
-		return certificate;
-	}
-
-	static Document loadDocument(InputStream documentInputStream)
-			throws ParserConfigurationException, SAXException, IOException {
-		InputSource inputSource = new InputSource(documentInputStream);
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-		documentBuilderFactory.setNamespaceAware(true);
-		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		return documentBuilder.parse(inputSource);
+		X509CertificateHolder certificateHolder = certificateBuilder.build(new JcaContentSignerBuilder(signatureAlgorithm).build(issuerPrivateKey));
+		return new JcaX509CertificateConverter().setProvider("BC").getCertificate(certificateHolder);
 	}
 
 	static String toString(Node dom) throws TransformerException {
@@ -212,56 +149,49 @@ public class PkiTestUtils {
 		return stringWriter.getBuffer().toString();
 	}
 
-	public static X509CRL generateCrl(X509Certificate issuer, PrivateKey issuerPrivateKey) throws
-			IllegalStateException {
-		X509V2CRLGenerator crlGenerator = new X509V2CRLGenerator();
-		crlGenerator.setIssuerDN(issuer.getSubjectX500Principal());
+	public static X509CRL generateCrl(X509Certificate issuer, PrivateKey issuerPrivateKey) throws IllegalStateException, CertificateEncodingException, CertIOException, OperatorCreationException, CRLException {
 		Date now = new Date();
-		crlGenerator.setThisUpdate(now);
-		crlGenerator.setNextUpdate(new Date(now.getTime() + 100000));
-		crlGenerator.setSignatureAlgorithm("SHA1withRSA");
-		crlGenerator.addExtension(Extension.cRLNumber, false, new CRLNumber(new BigInteger("1234")));
-		return crlGenerator.generate(issuerPrivateKey);
+		X509v2CRLBuilder crlBuilder = new X509v2CRLBuilder(
+				new JcaX509CertificateHolder(issuer).getSubject(),
+				now
+		);
+		crlBuilder.setNextUpdate(new Date(now.getTime() + 100000));
+		crlBuilder.addExtension(Extension.cRLNumber, false, new CRLNumber(new BigInteger("1234")));
+
+		X509CRLHolder crlHolder = crlBuilder.build(new JcaContentSignerBuilder("SHA1withRSA").build(issuerPrivateKey));
+		return new JcaX509CRLConverter().setProvider("BC").getCRL(crlHolder);
 	}
 
 	public static OCSPResp createOcspResp(X509Certificate certificate, boolean revoked,
 										  X509Certificate issuerCertificate, X509Certificate ocspResponderCertificate,
-										  PrivateKey ocspResponderPrivateKey, String signatureAlgorithm) {
-		// request
-		OCSPReqGenerator ocspReqGenerator = new OCSPReqGenerator();
-		CertificateID certId = new CertificateID(CertificateID.HASH_SHA1, issuerCertificate,
-				certificate.getSerialNumber());
-		ocspReqGenerator.addRequest(certId);
-		OCSPReq ocspReq = ocspReqGenerator.generate();
+										  PrivateKey ocspResponderPrivateKey, String signatureAlgorithm)
+			throws CertificateEncodingException, OCSPException, OperatorCreationException {
+		JcaX509CertificateHolder issuerHolder = new JcaX509CertificateHolder(issuerCertificate);
+		JcaX509CertificateHolder ocspResponderHolder = new JcaX509CertificateHolder(ocspResponderCertificate);
+		BasicOCSPRespBuilder ocspResponseBuilder = new BasicOCSPRespBuilder(new RespID(issuerHolder.getSubject()));
 
-		BasicOCSPRespGenerator basicOCSPRespGenerator = new BasicOCSPRespGenerator(
-				ocspResponderCertificate.getPublicKey());
-
-		// request processing
-		Req[] requestList = ocspReq.getRequestList();
-		for (Req ocspRequest : requestList) {
-			CertificateID certificateID = ocspRequest.getCertID();
-			CertificateStatus certificateStatus;
-			if (revoked) {
-				certificateStatus = new RevokedStatus(new Date(), CRLReason.unspecified);
-			} else {
-				certificateStatus = CertificateStatus.GOOD;
-			}
-			basicOCSPRespGenerator.addResponse(certificateID, certificateStatus);
+		DigestCalculatorProvider digestCalculatorProvider = new JcaDigestCalculatorProviderBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME).build();
+		DigestCalculator digestCalculator = digestCalculatorProvider.get(CertificateID.HASH_SHA1);
+		CertificateID certId = new CertificateID(digestCalculator, issuerHolder, certificate.getSerialNumber());
+		if (revoked) {
+			ocspResponseBuilder.addResponse(certId, new RevokedStatus(new Date(), CRLReason.unspecified));
+		} else {
+			ocspResponseBuilder.addResponse(certId, RevokedStatus.GOOD);
 		}
 
-		// basic response generation
-		X509Certificate[] chain = null;
-		if (!ocspResponderCertificate.equals(issuerCertificate)) {
-			chain = new X509Certificate[]{ocspResponderCertificate, issuerCertificate};
+		ContentSigner contentSigner = new JcaContentSignerBuilder(signatureAlgorithm).setProvider(BouncyCastleProvider.PROVIDER_NAME).build(ocspResponderPrivateKey);
+		BasicOCSPResp basicOcspResponse = ocspResponseBuilder.build(contentSigner, new X509CertificateHolder[]{ocspResponderHolder, issuerHolder}, new Date());
+		return new OCSPRespBuilder().build(OCSPRespBuilder.SUCCESSFUL, basicOcspResponse);
+	}
+
+	public static void verifySignatures(X509Certificate certificate, SignerInformationStore signers) throws OperatorCreationException, CMSException {
+		for (SignerInformation signer : signers.getSigners()) {
+			SignerId signerId = signer.getSID();
+			LOG.debug("signer: " + signerId);
+			assertTrue(signerId.match(certificate));
+
+			SignerInformationVerifier signerInformationVerifier = new JcaSimpleSignerInfoVerifierBuilder().setProvider(BouncyCastleProvider.PROVIDER_NAME).build(certificate);
+			assertTrue(signer.verify(signerInformationVerifier));
 		}
-
-		BasicOCSPResp basicOCSPResp = basicOCSPRespGenerator.generate(signatureAlgorithm, ocspResponderPrivateKey,
-				chain, new Date(), BouncyCastleProvider.PROVIDER_NAME);
-
-		// response generation
-		OCSPRespGenerator ocspRespGenerator = new OCSPRespGenerator();
-
-		return ocspRespGenerator.generate(OCSPRespGenerator.SUCCESSFUL, basicOCSPResp);
 	}
 }

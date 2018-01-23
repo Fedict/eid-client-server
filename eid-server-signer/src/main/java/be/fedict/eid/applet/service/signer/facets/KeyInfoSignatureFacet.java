@@ -18,17 +18,15 @@
 package be.fedict.eid.applet.service.signer.facets;
 
 import be.fedict.eid.applet.service.signer.SignatureFacet;
+import be.fedict.eid.applet.service.signer.util.DummyKey;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jcp.xml.dsig.internal.dom.DOMKeyInfo;
 import org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.xml.crypto.MarshalException;
-import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.Reference;
 import javax.xml.crypto.dsig.XMLObject;
 import javax.xml.crypto.dsig.XMLSignContext;
@@ -38,7 +36,6 @@ import javax.xml.crypto.dsig.keyinfo.KeyInfo;
 import javax.xml.crypto.dsig.keyinfo.KeyInfoFactory;
 import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import javax.xml.crypto.dsig.keyinfo.X509Data;
-import java.security.Key;
 import java.security.KeyException;
 import java.security.cert.X509Certificate;
 import java.util.LinkedList;
@@ -71,21 +68,6 @@ public class KeyInfoSignatureFacet implements SignatureFacet {
 
 	public void postSign(Element signatureElement, List<X509Certificate> signingCertificateChain) {
 		LOG.debug("postSign");
-
-		String signatureNamespacePrefix = signatureElement.getPrefix();
-
-		/*
-		 * Make sure we insert right after the ds:SignatureValue element, just
-		 * before the first ds:Object element.
-		 */
-		Node nextSibling;
-		NodeList objectNodeList = signatureElement.getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#",
-				"Object");
-		if (0 == objectNodeList.getLength()) {
-			nextSibling = null;
-		} else {
-			nextSibling = objectNodeList.item(0);
-		}
 
 		/*
 		 * Construct the ds:KeyInfo element using JSR 105.
@@ -124,26 +106,10 @@ public class KeyInfoSignatureFacet implements SignatureFacet {
 		KeyInfo keyInfo = keyInfoFactory.newKeyInfo(keyInfoContent);
 		DOMKeyInfo domKeyInfo = (DOMKeyInfo) keyInfo;
 
-		Key key = new Key() {
-			private static final long serialVersionUID = 1L;
+		XMLSignContext xmlSignContext = new DOMSignContext(new DummyKey(), signatureElement);
 
-			public String getAlgorithm() {
-				return null;
-			}
-
-			public byte[] getEncoded() {
-				return null;
-			}
-
-			public String getFormat() {
-				return null;
-			}
-		};
-
-		XMLSignContext xmlSignContext = new DOMSignContext(key, signatureElement);
-		DOMCryptoContext domCryptoContext = (DOMCryptoContext) xmlSignContext;
 		try {
-			DOMKeyInfo.marshal(signatureElement, nextSibling, signatureNamespacePrefix, domCryptoContext);
+			domKeyInfo.marshal(keyInfo, xmlSignContext);
 		} catch (MarshalException e) {
 			throw new RuntimeException("marshall error: " + e.getMessage(), e);
 		}
@@ -153,4 +119,5 @@ public class KeyInfoSignatureFacet implements SignatureFacet {
 						List<X509Certificate> signingCertificateChain, List<Reference> references, List<XMLObject> objects) {
 		// empty
 	}
+
 }

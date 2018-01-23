@@ -19,6 +19,7 @@ package test.unit.be.fedict.eid.applet.service.signer;
 
 import be.fedict.eid.applet.service.signer.DigestAlgo;
 import be.fedict.eid.applet.service.signer.facets.CoSignatureFacet;
+import be.fedict.eid.applet.service.signer.util.XmlUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI;
@@ -56,8 +57,7 @@ public class CoSignatureFacetTest {
 	@Test
 	public void testCoSignature() throws Exception {
 		// setup
-		Document document = PkiTestUtils
-				.loadDocument(CoSignatureFacetTest.class.getResourceAsStream("/helloworld.xml"));
+		Document document = XmlUtil.loadDocument(CoSignatureFacetTest.class.getResourceAsStream("/helloworld.xml"));
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 
 		XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance("DOM", new XMLDSigRI());
@@ -100,8 +100,7 @@ public class CoSignatureFacetTest {
 	@Test
 	public void testCoSignatureUri() throws Exception {
 		// setup
-		Document document = PkiTestUtils
-				.loadDocument(CoSignatureFacetTest.class.getResourceAsStream("/helloworld.xml"));
+		Document document = XmlUtil.loadDocument(CoSignatureFacetTest.class.getResourceAsStream("/helloworld.xml"));
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
 
 		XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance("DOM", new XMLDSigRI());

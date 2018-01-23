@@ -17,62 +17,63 @@
 
 package test.unit.be.fedict.eid.applet.service.signer;
 
-import org.apache.commons.lang.ArrayUtils;
+import be.fedict.eid.applet.service.signer.cms.CMSProvider;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1StreamParser;
 import org.bouncycastle.asn1.util.ASN1Dump;
-import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
+import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.cms.CMSProcessable;
+import org.bouncycastle.cert.CertIOException;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.cert.jcajce.JcaCertStore;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
+import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
-import org.bouncycastle.cms.SignerId;
-import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInfoGenerator;
 import org.bouncycastle.cms.SignerInformationStore;
-import org.bouncycastle.jce.X509Principal;
+import org.bouncycastle.cms.jcajce.JcaSignerInfoGeneratorBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.x509.X509V3CertificateGenerator;
-import org.joda.time.DateTime;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.crypto.Cipher;
-import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.security.InvalidParameterException;
 import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.Provider;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.security.Signature;
-import java.security.cert.CertStore;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.CollectionCertStoreParameters;
 import java.security.cert.X509Certificate;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.Date;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class CMSTest {
 
 	private static final Log LOG = LogFactory.getLog(CMSTest.class);
+	private static final String SUBJECT_DN = "CN=Test";
 
 	@BeforeClass
 	public static void beforeClass() {
@@ -106,16 +107,15 @@ public class CMSTest {
 	public void testBasicCmsSignature() throws Exception {
 		// setup
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusMonths(1);
-		X509Certificate certificate = generateSelfSignedCertificate(keyPair, "CN=Test", notBefore, notAfter);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusYears(1);
+		X509Certificate certificate = generateSelfSignedCertificate(keyPair, notBefore, notAfter);
 		byte[] toBeSigned = "hello world".getBytes();
 
 		// operate
-		CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
-		generator.addSigner(keyPair.getPrivate(), certificate, CMSSignedDataGenerator.DIGEST_SHA1);
-		CMSProcessable content = new CMSProcessableByteArray(toBeSigned);
-		CMSSignedData signedData = generator.generate(content, false, (String) null);
+		CMSSignedDataGenerator generator = createCMSSignedDataGenerator(keyPair.getPrivate(), certificate);
+		CMSProcessableByteArray content = new CMSProcessableByteArray(toBeSigned);
+		CMSSignedData signedData = generator.generate(content, false);
 
 		byte[] cmsSignature = signedData.getEncoded();
 		LOG.debug("CMS signature: " + ASN1Dump.dumpAsString(new ASN1StreamParser(cmsSignature).readObject()));
@@ -123,14 +123,7 @@ public class CMSTest {
 		// verify
 		signedData = new CMSSignedData(content, cmsSignature);
 		SignerInformationStore signers = signedData.getSignerInfos();
-		Iterator<SignerInformation> iter = signers.getSigners().iterator();
-		while (iter.hasNext()) {
-			SignerInformation signer = iter.next();
-			SignerId signerId = signer.getSID();
-			LOG.debug("signer: " + signerId);
-			assertTrue(signerId.match(certificate));
-			assertTrue(signer.verify(keyPair.getPublic(), BouncyCastleProvider.PROVIDER_NAME));
-		}
+		PkiTestUtils.verifySignatures(certificate, signers);
 		LOG.debug("content type: " + signedData.getSignedContentTypeOID());
 	}
 
@@ -142,16 +135,15 @@ public class CMSTest {
 	public void testCmsSignatureWithContent() throws Exception {
 		// setup
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusMonths(1);
-		X509Certificate certificate = generateSelfSignedCertificate(keyPair, "CN=Test", notBefore, notAfter);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusYears(1);
+		X509Certificate certificate = generateSelfSignedCertificate(keyPair, notBefore, notAfter);
 		byte[] toBeSigned = "hello world".getBytes();
 
 		// operate
-		CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
-		generator.addSigner(keyPair.getPrivate(), certificate, CMSSignedDataGenerator.DIGEST_SHA1);
-		CMSProcessable content = new CMSProcessableByteArray(toBeSigned);
-		CMSSignedData signedData = generator.generate(content, true, (String) null);
+		CMSSignedDataGenerator generator = createCMSSignedDataGenerator(keyPair.getPrivate(), certificate);
+		CMSProcessableByteArray content = new CMSProcessableByteArray(toBeSigned);
+		CMSSignedData signedData = generator.generate(content, true);
 
 		byte[] cmsSignature = signedData.getEncoded();
 		LOG.debug("CMS signature: " + ASN1Dump.dumpAsString(new ASN1StreamParser(cmsSignature).readObject()));
@@ -159,14 +151,8 @@ public class CMSTest {
 		// verify
 		signedData = new CMSSignedData(cmsSignature);
 		SignerInformationStore signers = signedData.getSignerInfos();
-		Iterator<SignerInformation> iter = signers.getSigners().iterator();
-		while (iter.hasNext()) {
-			SignerInformation signer = iter.next();
-			SignerId signerId = signer.getSID();
-			LOG.debug("signer: " + signerId);
-			assertTrue(signerId.match(certificate));
-			assertTrue(signer.verify(keyPair.getPublic(), BouncyCastleProvider.PROVIDER_NAME));
-		}
+		PkiTestUtils.verifySignatures(certificate, signers);
+
 		byte[] data = (byte[]) signedData.getSignedContent().getContent();
 		assertArrayEquals(toBeSigned, data);
 		LOG.debug("content type: " + signedData.getSignedContentTypeOID());
@@ -181,42 +167,23 @@ public class CMSTest {
 	public void testCmsSignatureWithCertificate() throws Exception {
 		// setup
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusMonths(1);
-		X509Certificate certificate = generateSelfSignedCertificate(keyPair, "CN=Test", notBefore, notAfter);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusYears(1);
+		X509Certificate certificate = generateSelfSignedCertificate(keyPair, notBefore, notAfter);
 		byte[] toBeSigned = "hello world".getBytes();
 
 		// operate
-		CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
-		/*
-		 * addSigner requires the certificate to be able to calculate the key
-		 * selector.
-		 */
-		generator.addSigner(keyPair.getPrivate(), certificate, CMSSignedDataGenerator.DIGEST_SHA1);
-		List<X509Certificate> certList = new LinkedList<>();
-		certList.add(certificate);
-		CertStore certStore = CertStore.getInstance("Collection", new CollectionCertStoreParameters(certList));
-		generator.addCertificatesAndCRLs(certStore);
-		CMSProcessable content = new CMSProcessableByteArray(toBeSigned);
-		CMSSignedData signedData = generator.generate(content, false, (String) null);
+		CMSSignedDataGenerator generator = createCMSSignedDataGenerator(keyPair.getPrivate(), certificate);
+		CMSProcessableByteArray content = new CMSProcessableByteArray(toBeSigned);
+		CMSSignedData signedData = generator.generate(content, false);
 
 		byte[] cmsSignature = signedData.getEncoded();
 		LOG.debug("CMS signature: " + ASN1Dump.dumpAsString(new ASN1StreamParser(cmsSignature).readObject()));
 
 		// verify
 		signedData = new CMSSignedData(content, cmsSignature);
-		certStore = signedData.getCertificatesAndCRLs("Collection", BouncyCastleProvider.PROVIDER_NAME);
 		SignerInformationStore signers = signedData.getSignerInfos();
-		Iterator<SignerInformation> iter = signers.getSigners().iterator();
-		while (iter.hasNext()) {
-			SignerInformation signer = iter.next();
-			SignerId signerId = signer.getSID();
-			LOG.debug("signer: " + signerId);
-			assertTrue(signerId.match(certificate));
-			assertTrue(signer.verify(keyPair.getPublic(), BouncyCastleProvider.PROVIDER_NAME));
-			X509Certificate storedCert = (X509Certificate) certStore.getCertificates(signerId).iterator().next();
-			assertEquals(certificate, storedCert);
-		}
+		PkiTestUtils.verifySignatures(certificate, signers);
 		LOG.debug("content type: " + signedData.getSignedContentTypeOID());
 	}
 
@@ -237,6 +204,7 @@ public class CMSTest {
 		}
 
 		@Override
+		@Deprecated
 		protected Object engineGetParameter(String param) throws InvalidParameterException {
 			throw new UnsupportedOperationException();
 		}
@@ -252,6 +220,7 @@ public class CMSTest {
 		}
 
 		@Override
+		@Deprecated
 		protected void engineSetParameter(String param, Object value) throws InvalidParameterException {
 			throw new UnsupportedOperationException();
 		}
@@ -294,34 +263,19 @@ public class CMSTest {
 		}
 	}
 
-	private static class CMSTestProvider extends Provider {
-
-		private static final long serialVersionUID = 1L;
-
-		public static final String NAME = "CMSTestProvider";
-
-		private CMSTestProvider() {
-			super(NAME, 1.0, "CMS Test Security Provider");
-			put("Signature.SHA1withRSA", SHA1WithRSASignature.class.getName());
-		}
-	}
-
 	@Test
 	public void testRetrieveCMSDigestValue() throws Exception {
 		// setup
 		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusMonths(1);
-		X509Certificate certificate = generateSelfSignedCertificate(keyPair, "CN=Test", notBefore, notAfter);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusMonths(1);
+		X509Certificate certificate = generateSelfSignedCertificate(keyPair, notBefore, notAfter);
 		byte[] toBeSigned = "hello world".getBytes();
 
 		// operate
-		CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
-		generator.addSigner(keyPair.getPrivate(), certificate, CMSSignedDataGenerator.DIGEST_SHA1);
-		CMSProcessable content = new CMSProcessableByteArray(toBeSigned);
-
-		CMSTestProvider provider = new CMSTestProvider();
-		generator.generate(content, false, provider);
+		CMSSignedDataGenerator generator = createCMSSignedDataGenerator(keyPair.getPrivate(), certificate);
+		CMSProcessableByteArray content = new CMSProcessableByteArray(toBeSigned);
+		generator.generate(content, false);
 
 		byte[] digestValue = SHA1WithRSASignature.getDigestValue();
 		assertNotNull(digestValue);
@@ -331,12 +285,9 @@ public class CMSTest {
 		byte[] signatureValue = cipher.doFinal(digestInfoValue);
 		SHA1WithRSASignature.setSignatureValue(signatureValue);
 
-		generator = new CMSSignedDataGenerator();
-		generator.addSigner(keyPair.getPrivate(), certificate, CMSSignedDataGenerator.DIGEST_SHA1);
+		generator = createCMSSignedDataGenerator(keyPair.getPrivate(), certificate);
 		content = new CMSProcessableByteArray(toBeSigned);
-		provider = new CMSTestProvider();
-
-		CMSSignedData signedData = generator.generate(content, false, provider);
+		CMSSignedData signedData = generator.generate(content, false);
 
 		byte[] cmsSignature = signedData.getEncoded();
 		LOG.debug("CMS signature: " + ASN1Dump.dumpAsString(new ASN1StreamParser(cmsSignature).readObject()));
@@ -345,69 +296,43 @@ public class CMSTest {
 		content = new CMSProcessableByteArray(toBeSigned);
 		signedData = new CMSSignedData(content, cmsSignature);
 		SignerInformationStore signers = signedData.getSignerInfos();
-		Iterator<SignerInformation> iter = signers.getSigners().iterator();
-		while (iter.hasNext()) {
-			SignerInformation signer = iter.next();
-			SignerId signerId = signer.getSID();
-			LOG.debug("signer: " + signerId);
-			assertTrue(signerId.match(certificate));
-			assertTrue(signer.verify(keyPair.getPublic(), BouncyCastleProvider.PROVIDER_NAME));
-		}
+		PkiTestUtils.verifySignatures(certificate, signers);
 		LOG.debug("content type: " + signedData.getSignedContentTypeOID());
 	}
 
-	private X509Certificate generateSelfSignedCertificate(KeyPair keyPair, String subjectDn, DateTime notBefore,
-														  DateTime notAfter) throws IllegalStateException,
-			CertificateException {
+	private X509Certificate generateSelfSignedCertificate(KeyPair keyPair, OffsetDateTime notBefore, OffsetDateTime notAfter)
+			throws IllegalStateException, CertificateException, CertIOException, OperatorCreationException, NoSuchAlgorithmException {
 		PublicKey subjectPublicKey = keyPair.getPublic();
 		PrivateKey issuerPrivateKey = keyPair.getPrivate();
-		String signatureAlgorithm = "SHA1WithRSAEncryption";
-		X509V3CertificateGenerator certificateGenerator = new X509V3CertificateGenerator();
-		certificateGenerator.reset();
-		certificateGenerator.setPublicKey(subjectPublicKey);
-		certificateGenerator.setSignatureAlgorithm(signatureAlgorithm);
-		certificateGenerator.setNotBefore(notBefore.toDate());
-		certificateGenerator.setNotAfter(notAfter.toDate());
-		X509Principal issuerDN = new X509Principal(subjectDn);
-		certificateGenerator.setIssuerDN(issuerDN);
-		certificateGenerator.setSubjectDN(new X509Principal(subjectDn));
-		certificateGenerator.setSerialNumber(new BigInteger(128, new SecureRandom()));
 
-		certificateGenerator.addExtension(Extension.subjectKeyIdentifier, false,
-				createSubjectKeyId(subjectPublicKey));
-		PublicKey issuerPublicKey;
-		issuerPublicKey = subjectPublicKey;
-		certificateGenerator.addExtension(Extension.authorityKeyIdentifier, false,
-				createAuthorityKeyId(issuerPublicKey));
+		X509CertificateHolder certificateHolder = new X509v3CertificateBuilder(
+				new X500Name(SUBJECT_DN),
+				new BigInteger(128, new SecureRandom()),
+				Date.from(notBefore.toInstant()),
+				Date.from(notAfter.toInstant()),
+				new X500Name(SUBJECT_DN),
+				SubjectPublicKeyInfo.getInstance(keyPair.getPublic()))
+				.addExtension(Extension.subjectKeyIdentifier, false, new JcaX509ExtensionUtils().createSubjectKeyIdentifier(subjectPublicKey))
+				.addExtension(Extension.authorityKeyIdentifier, false, new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(subjectPublicKey))
+				.addExtension(Extension.basicConstraints, false, new BasicConstraints(true))
+				.build(new JcaContentSignerBuilder(BouncyCastleProvider.PROVIDER_NAME).build(issuerPrivateKey));
 
-		certificateGenerator.addExtension(Extension.basicConstraints, false, new BasicConstraints(true));
-
-		X509Certificate certificate;
-		certificate = certificateGenerator.generate(issuerPrivateKey);
-
-		/*
-		 * Next certificate factory trick is needed to make sure that the
-		 * certificate delivered to the caller is provided by the default
-		 * security provider instead of BouncyCastle. If we don't do this trick
-		 * we might run into trouble when trying to use the CertPath validator.
-		 */
-		CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-		certificate = (X509Certificate) certificateFactory
-				.generateCertificate(new ByteArrayInputStream(certificate.getEncoded()));
-		return certificate;
+		return new JcaX509CertificateConverter().setProvider("BC").getCertificate(certificateHolder);
 	}
 
-	private SubjectKeyIdentifier createSubjectKeyId(PublicKey publicKey) {
-		ByteArrayInputStream bais = new ByteArrayInputStream(publicKey.getEncoded());
-		SubjectPublicKeyInfo info = new SubjectPublicKeyInfo((ASN1Sequence) new ASN1InputStream(bais).readObject());
-		return new SubjectKeyIdentifier(info);
-	}
+	private CMSSignedDataGenerator createCMSSignedDataGenerator(PrivateKey privateKey, X509Certificate signingCertificate) throws CertificateEncodingException, OperatorCreationException, CMSException {
+		JcaCertStore certStore = new JcaCertStore(Collections.singletonList(signingCertificate));
 
-	private AuthorityKeyIdentifier createAuthorityKeyId(PublicKey publicKey) {
+		ContentSigner sha1Signer = new JcaContentSignerBuilder(CMSSignedDataGenerator.DIGEST_SHA1)
+				.setProvider(new CMSProvider())
+				.build(privateKey);
+		SignerInfoGenerator signerInfoGenerator = new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder().setProvider("BC").build())
+				.build(sha1Signer, signingCertificate);
 
-		ByteArrayInputStream bais = new ByteArrayInputStream(publicKey.getEncoded());
-		SubjectPublicKeyInfo info = new SubjectPublicKeyInfo((ASN1Sequence) new ASN1InputStream(bais).readObject());
+		CMSSignedDataGenerator generator = new CMSSignedDataGenerator();
+		generator.addSignerInfoGenerator(signerInfoGenerator);
+		generator.addCertificates(certStore);
 
-		return new AuthorityKeyIdentifier(info);
+		return generator;
 	}
 }

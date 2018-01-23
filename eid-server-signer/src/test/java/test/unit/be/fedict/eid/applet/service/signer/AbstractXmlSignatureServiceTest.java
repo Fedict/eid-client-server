@@ -24,7 +24,9 @@ import be.fedict.eid.applet.service.signer.SignatureFacet;
 import be.fedict.eid.applet.service.signer.TemporaryDataStorage;
 import be.fedict.eid.applet.service.signer.facets.EnvelopedSignatureFacet;
 import be.fedict.eid.applet.service.signer.odf.ApacheNodeSetData;
-import org.apache.commons.lang.ArrayUtils;
+import be.fedict.eid.applet.service.signer.util.XPathUtil;
+import be.fedict.eid.applet.service.signer.util.XmlUtil;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jcp.xml.dsig.internal.dom.DOMReference;
@@ -33,14 +35,10 @@ import org.apache.jcp.xml.dsig.internal.dom.XMLDSigRI;
 import org.apache.xml.security.Init;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Manifest;
-import org.apache.xml.security.signature.ReferenceNotInitializedException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transforms;
-import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
-import org.apache.xpath.XPathAPI;
 import org.bouncycastle.asn1.x509.KeyUsage;
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -59,7 +57,6 @@ import javax.xml.crypto.URIDereferencer;
 import javax.xml.crypto.URIReference;
 import javax.xml.crypto.URIReferenceException;
 import javax.xml.crypto.XMLCryptoContext;
-import javax.xml.crypto.dom.DOMCryptoContext;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import javax.xml.crypto.dsig.DigestMethod;
 import javax.xml.crypto.dsig.Reference;
@@ -84,6 +81,8 @@ import java.io.OutputStream;
 import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.cert.X509Certificate;
+import java.time.OffsetDateTime;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -209,13 +208,15 @@ public class AbstractXmlSignatureServiceTest {
 		assertNotNull(temporaryDataStorage);
 		InputStream tempInputStream = temporaryDataStorage.getTempInputStream();
 		assertNotNull(tempInputStream);
-		Document tmpDocument = PkiTestUtils.loadDocument(tempInputStream);
+		Document tmpDocument = XmlUtil.loadDocument(tempInputStream);
 
 		LOG.debug("tmp document: " + PkiTestUtils.toString(tmpDocument));
 		Element nsElement = tmpDocument.createElement("ns");
 		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", Constants.SignatureSpecNS);
-		Node digestValueNode = XPathAPI.selectSingleNode(tmpDocument, "//ds:DigestValue", nsElement);
+
+		Node digestValueNode = getDigestValueNode(tmpDocument, nsElement);
 		assertNotNull(digestValueNode);
+
 		String digestValueTextContent = digestValueNode.getTextContent();
 		LOG.debug("digest value text content: " + digestValueTextContent);
 		assertFalse(digestValueTextContent.isEmpty());
@@ -229,10 +230,10 @@ public class AbstractXmlSignatureServiceTest {
 		byte[] digestInfoValue = ArrayUtils.addAll(PkiTestUtils.SHA1_DIGEST_INFO_PREFIX, digestInfo.digestValue);
 		byte[] signatureValue = cipher.doFinal(digestInfoValue);
 
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusYears(1);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusYears(1);
 		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", notBefore,
-				notAfter, null, keyPair.getPrivate(), true, 0, null, null, new KeyUsage(KeyUsage.nonRepudiation));
+				notAfter, null, keyPair.getPrivate(), true, new KeyUsage(KeyUsage.nonRepudiation));
 
 		/*
 		 * Operate: postSign
@@ -241,7 +242,7 @@ public class AbstractXmlSignatureServiceTest {
 
 		byte[] signedDocumentData = testedInstance.getSignedDocumentData();
 		assertNotNull(signedDocumentData);
-		Document signedDocument = PkiTestUtils.loadDocument(new ByteArrayInputStream(signedDocumentData));
+		Document signedDocument = XmlUtil.loadDocument(new ByteArrayInputStream(signedDocumentData));
 		LOG.debug("signed document: " + PkiTestUtils.toString(signedDocument));
 
 		NodeList signatureNodeList = signedDocument.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
@@ -312,12 +313,13 @@ public class AbstractXmlSignatureServiceTest {
 		assertNotNull(temporaryDataStorage);
 		InputStream tempInputStream = temporaryDataStorage.getTempInputStream();
 		assertNotNull(tempInputStream);
-		Document tmpDocument = PkiTestUtils.loadDocument(tempInputStream);
+		Document tmpDocument = XmlUtil.loadDocument(tempInputStream);
 
 		LOG.debug("tmp document: " + PkiTestUtils.toString(tmpDocument));
 		Element nsElement = tmpDocument.createElement("ns");
 		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", Constants.SignatureSpecNS);
-		Node digestValueNode = XPathAPI.selectSingleNode(tmpDocument, "//ds:DigestValue", nsElement);
+
+		Node digestValueNode = getDigestValueNode(tmpDocument, nsElement);
 		assertNotNull(digestValueNode);
 		String digestValueTextContent = digestValueNode.getTextContent();
 		LOG.debug("digest value text content: " + digestValueTextContent);
@@ -332,10 +334,10 @@ public class AbstractXmlSignatureServiceTest {
 		byte[] digestInfoValue = ArrayUtils.addAll(PkiTestUtils.SHA1_DIGEST_INFO_PREFIX, digestInfo.digestValue);
 		byte[] signatureValue = cipher.doFinal(digestInfoValue);
 
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusYears(1);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusYears(1);
 		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", notBefore,
-				notAfter, null, keyPair.getPrivate(), true, 0, null, null, new KeyUsage(KeyUsage.nonRepudiation));
+				notAfter, null, keyPair.getPrivate(), true, new KeyUsage(KeyUsage.nonRepudiation));
 
 		/*
 		 * Operate: postSign
@@ -344,7 +346,7 @@ public class AbstractXmlSignatureServiceTest {
 
 		byte[] signedDocumentData = testedInstance.getSignedDocumentData();
 		assertNotNull(signedDocumentData);
-		Document signedDocument = PkiTestUtils.loadDocument(new ByteArrayInputStream(signedDocumentData));
+		Document signedDocument = XmlUtil.loadDocument(new ByteArrayInputStream(signedDocumentData));
 		LOG.debug("signed document: " + PkiTestUtils.toString(signedDocument));
 
 		NodeList signatureNodeList = signedDocument.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
@@ -398,12 +400,12 @@ public class AbstractXmlSignatureServiceTest {
 		assertNotNull(temporaryDataStorage);
 		InputStream tempInputStream = temporaryDataStorage.getTempInputStream();
 		assertNotNull(tempInputStream);
-		Document tmpDocument = PkiTestUtils.loadDocument(tempInputStream);
+		Document tmpDocument = XmlUtil.loadDocument(tempInputStream);
 
 		LOG.debug("tmp document: " + PkiTestUtils.toString(tmpDocument));
 		Element nsElement = tmpDocument.createElement("ns");
 		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", Constants.SignatureSpecNS);
-		Node digestValueNode = XPathAPI.selectSingleNode(tmpDocument, "//ds:DigestValue", nsElement);
+		Node digestValueNode = getDigestValueNode(tmpDocument, nsElement);
 		assertNotNull(digestValueNode);
 		String digestValueTextContent = digestValueNode.getTextContent();
 		LOG.debug("digest value text content: " + digestValueTextContent);
@@ -418,10 +420,10 @@ public class AbstractXmlSignatureServiceTest {
 		byte[] digestInfoValue = ArrayUtils.addAll(PkiTestUtils.SHA1_DIGEST_INFO_PREFIX, digestInfo.digestValue);
 		byte[] signatureValue = cipher.doFinal(digestInfoValue);
 
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusYears(1);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusYears(1);
 		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", notBefore,
-				notAfter, null, keyPair.getPrivate(), true, 0, null, null, new KeyUsage(KeyUsage.nonRepudiation));
+				notAfter, null, keyPair.getPrivate(), true, new KeyUsage(KeyUsage.nonRepudiation));
 
 		/*
 		 * Operate: postSign
@@ -430,7 +432,7 @@ public class AbstractXmlSignatureServiceTest {
 
 		byte[] signedDocumentData = testedInstance.getSignedDocumentData();
 		assertNotNull(signedDocumentData);
-		Document signedDocument = PkiTestUtils.loadDocument(new ByteArrayInputStream(signedDocumentData));
+		Document signedDocument = XmlUtil.loadDocument(new ByteArrayInputStream(signedDocumentData));
 		LOG.debug("signed document: " + PkiTestUtils.toString(signedDocument));
 
 		NodeList signatureNodeList = signedDocument.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
@@ -482,12 +484,12 @@ public class AbstractXmlSignatureServiceTest {
 		assertNotNull(temporaryDataStorage);
 		InputStream tempInputStream = temporaryDataStorage.getTempInputStream();
 		assertNotNull(tempInputStream);
-		Document tmpDocument = PkiTestUtils.loadDocument(tempInputStream);
+		Document tmpDocument = XmlUtil.loadDocument(tempInputStream);
 
 		LOG.debug("tmp document: " + PkiTestUtils.toString(tmpDocument));
 		Element nsElement = tmpDocument.createElement("ns");
 		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", Constants.SignatureSpecNS);
-		Node digestValueNode = XPathAPI.selectSingleNode(tmpDocument, "//ds:DigestValue", nsElement);
+		Node digestValueNode = getDigestValueNode(tmpDocument, nsElement);
 		assertNotNull(digestValueNode);
 		String digestValueTextContent = digestValueNode.getTextContent();
 		LOG.debug("digest value text content: " + digestValueTextContent);
@@ -502,10 +504,10 @@ public class AbstractXmlSignatureServiceTest {
 		byte[] digestInfoValue = ArrayUtils.addAll(PkiTestUtils.SHA1_DIGEST_INFO_PREFIX, digestInfo.digestValue);
 		byte[] signatureValue = cipher.doFinal(digestInfoValue);
 
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusYears(1);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusYears(1);
 		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", notBefore,
-				notAfter, null, keyPair.getPrivate(), true, 0, null, null, new KeyUsage(KeyUsage.nonRepudiation));
+				notAfter, null, keyPair.getPrivate(), true, new KeyUsage(KeyUsage.nonRepudiation));
 
 		/*
 		 * Operate: postSign
@@ -514,7 +516,7 @@ public class AbstractXmlSignatureServiceTest {
 
 		byte[] signedDocumentData = testedInstance.getSignedDocumentData();
 		assertNotNull(signedDocumentData);
-		Document signedDocument = PkiTestUtils.loadDocument(new ByteArrayInputStream(signedDocumentData));
+		Document signedDocument = XmlUtil.loadDocument(new ByteArrayInputStream(signedDocumentData));
 		LOG.debug("signed document: " + PkiTestUtils.toString(signedDocument));
 
 		NodeList signatureNodeList = signedDocument.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
@@ -578,14 +580,14 @@ public class AbstractXmlSignatureServiceTest {
 		javax.xml.crypto.dsig.XMLSignature xmlSignature = signatureFactory.newXMLSignature(signedInfo, null);
 
 		DOMXMLSignature domXmlSignature = (DOMXMLSignature) xmlSignature;
-		domXmlSignature.marshal(document.getDocumentElement(), "ds", (DOMCryptoContext) signContext);
+		domXmlSignature.sign(signContext);
 		domReference.digest(signContext);
 		// xmlSignature.sign(signContext);
 		// LOG.debug("signed document: " + toString(document));
 
 		Element nsElement = document.createElement("ns");
 		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", Constants.SignatureSpecNS);
-		Node digestValueNode = XPathAPI.selectSingleNode(document, "//ds:DigestValue", nsElement);
+		Node digestValueNode = getDigestValueNode(document, nsElement);
 		assertNotNull(digestValueNode);
 		String digestValueTextContent = digestValueNode.getTextContent();
 		LOG.debug("digest value text content: " + digestValueTextContent);
@@ -635,14 +637,14 @@ public class AbstractXmlSignatureServiceTest {
 		javax.xml.crypto.dsig.XMLSignature xmlSignature = signatureFactory.newXMLSignature(signedInfo, null);
 
 		DOMXMLSignature domXmlSignature = (DOMXMLSignature) xmlSignature;
-		domXmlSignature.marshal(document.getDocumentElement(), "ds", (DOMCryptoContext) signContext);
+		domXmlSignature.sign(signContext);
 		domReference.digest(signContext);
 		// xmlSignature.sign(signContext);
 		// LOG.debug("signed document: " + toString(document));
 
 		Element nsElement = document.createElement("ns");
 		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", Constants.SignatureSpecNS);
-		Node digestValueNode = XPathAPI.selectSingleNode(document, "//ds:DigestValue", nsElement);
+		Node digestValueNode = getDigestValueNode(document, nsElement);
 		assertNotNull(digestValueNode);
 		String digestValueTextContent = digestValueNode.getTextContent();
 		LOG.debug("digest value text content: " + digestValueTextContent);
@@ -693,14 +695,14 @@ public class AbstractXmlSignatureServiceTest {
 		javax.xml.crypto.dsig.XMLSignature xmlSignature = signatureFactory.newXMLSignature(signedInfo, null);
 
 		DOMXMLSignature domXmlSignature = (DOMXMLSignature) xmlSignature;
-		domXmlSignature.marshal(document.getDocumentElement(), "ds", (DOMCryptoContext) signContext);
+		domXmlSignature.sign(signContext);
 		domReference.digest(signContext);
 		// xmlSignature.sign(signContext);
 		// LOG.debug("signed document: " + toString(document));
 
 		Element nsElement = document.createElement("ns");
 		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", Constants.SignatureSpecNS);
-		Node digestValueNode = XPathAPI.selectSingleNode(document, "//ds:DigestValue", nsElement);
+		Node digestValueNode = getDigestValueNode(document, nsElement);
 		assertNotNull(digestValueNode);
 		String digestValueTextContent = digestValueNode.getTextContent();
 		LOG.debug("digest value text content: " + digestValueTextContent);
@@ -771,12 +773,13 @@ public class AbstractXmlSignatureServiceTest {
 		assertNotNull(temporaryDataStorage);
 		InputStream tempInputStream = temporaryDataStorage.getTempInputStream();
 		assertNotNull(tempInputStream);
-		Document tmpDocument = PkiTestUtils.loadDocument(tempInputStream);
+		Document tmpDocument = XmlUtil.loadDocument(tempInputStream);
 
 		LOG.debug("tmp document: " + PkiTestUtils.toString(tmpDocument));
 		Element nsElement = tmpDocument.createElement("ns");
 		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", Constants.SignatureSpecNS);
-		Node digestValueNode = XPathAPI.selectSingleNode(tmpDocument, "//ds:DigestValue", nsElement);
+		Node digestValueNode = getDigestValueNode(tmpDocument, nsElement);
+
 		assertNotNull(digestValueNode);
 		String digestValueTextContent = digestValueNode.getTextContent();
 		LOG.debug("digest value text content: " + digestValueTextContent);
@@ -791,10 +794,10 @@ public class AbstractXmlSignatureServiceTest {
 		byte[] digestInfoValue = ArrayUtils.addAll(PkiTestUtils.SHA1_DIGEST_INFO_PREFIX, digestInfo.digestValue);
 		byte[] signatureValue = cipher.doFinal(digestInfoValue);
 
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusYears(1);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusYears(1);
 		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", notBefore,
-				notAfter, null, keyPair.getPrivate(), true, 0, null, null, new KeyUsage(KeyUsage.nonRepudiation));
+				notAfter, null, keyPair.getPrivate(), true, new KeyUsage(KeyUsage.nonRepudiation));
 
 		/*
 		 * Operate: postSign
@@ -803,7 +806,7 @@ public class AbstractXmlSignatureServiceTest {
 
 		byte[] signedDocumentData = testedInstance.getSignedDocumentData();
 		assertNotNull(signedDocumentData);
-		Document signedDocument = PkiTestUtils.loadDocument(new ByteArrayInputStream(signedDocumentData));
+		Document signedDocument = XmlUtil.loadDocument(new ByteArrayInputStream(signedDocumentData));
 		LOG.debug("signed document: " + PkiTestUtils.toString(signedDocument));
 
 		NodeList signatureNodeList = signedDocument.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
@@ -816,6 +819,10 @@ public class AbstractXmlSignatureServiceTest {
 		XMLSignature xmlSignature = xmlSignatureFactory.unmarshalXMLSignature(domValidateContext);
 		boolean validity = xmlSignature.validate(domValidateContext);
 		assertTrue(validity);
+	}
+
+	private Node getDigestValueNode(Document tmpDocument, Element nsElement) {
+		return XPathUtil.getNodeByXPath(tmpDocument, "//ds:DigestValue", nsElement);
 	}
 
 	@Test
@@ -853,12 +860,12 @@ public class AbstractXmlSignatureServiceTest {
 		assertNotNull(temporaryDataStorage);
 		InputStream tempInputStream = temporaryDataStorage.getTempInputStream();
 		assertNotNull(tempInputStream);
-		Document tmpDocument = PkiTestUtils.loadDocument(tempInputStream);
+		Document tmpDocument = XmlUtil.loadDocument(tempInputStream);
 
 		LOG.debug("tmp document: " + PkiTestUtils.toString(tmpDocument));
 		Element nsElement = tmpDocument.createElement("ns");
 		nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", Constants.SignatureSpecNS);
-		Node digestValueNode = XPathAPI.selectSingleNode(tmpDocument, "//ds:DigestValue", nsElement);
+		Node digestValueNode = getDigestValueNode(tmpDocument, nsElement);
 		assertNotNull(digestValueNode);
 		String digestValueTextContent = digestValueNode.getTextContent();
 		LOG.debug("digest value text content: " + digestValueTextContent);
@@ -873,10 +880,10 @@ public class AbstractXmlSignatureServiceTest {
 		byte[] digestInfoValue = ArrayUtils.addAll(PkiTestUtils.SHA1_DIGEST_INFO_PREFIX, digestInfo.digestValue);
 		byte[] signatureValue = cipher.doFinal(digestInfoValue);
 
-		DateTime notBefore = new DateTime();
-		DateTime notAfter = notBefore.plusYears(1);
+		OffsetDateTime notBefore = OffsetDateTime.now();
+		OffsetDateTime notAfter = notBefore.plusYears(1);
 		X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", notBefore,
-				notAfter, null, keyPair.getPrivate(), true, 0, null, null, new KeyUsage(KeyUsage.nonRepudiation));
+				notAfter, null, keyPair.getPrivate(), true, new KeyUsage(KeyUsage.nonRepudiation));
 
 		/*
 		 * Operate: postSign
@@ -885,7 +892,7 @@ public class AbstractXmlSignatureServiceTest {
 
 		byte[] signedDocumentData = testedInstance.getSignedDocumentData();
 		assertNotNull(signedDocumentData);
-		Document signedDocument = PkiTestUtils.loadDocument(new ByteArrayInputStream(signedDocumentData));
+		Document signedDocument = XmlUtil.loadDocument(new ByteArrayInputStream(signedDocumentData));
 		LOG.debug("signed document: " + PkiTestUtils.toString(signedDocument));
 
 		NodeList signatureNodeList = signedDocument.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
@@ -934,9 +941,7 @@ public class AbstractXmlSignatureServiceTest {
 				Document document;
 				try {
 					document = documentBuilder.parse(inputSource);
-				} catch (SAXException e) {
-					throw new URIReferenceException(e);
-				} catch (IOException e) {
+				} catch (SAXException | IOException e) {
 					throw new URIReferenceException(e);
 				}
 				XMLSignatureInput xmlSignatureInput = new XMLSignatureInput(document);
@@ -1059,14 +1064,12 @@ public class AbstractXmlSignatureServiceTest {
 
 		public void init() throws XMLSecurityException {
 			generateDigestValue();
-			LOG.debug("original digest: " + Base64.encode(getDigestValue()));
+			LOG.debug("original digest: " + Base64.getEncoder().encodeToString(getDigestValue()));
 		}
 
 		public boolean hasChanged() {
 			try {
 				return !verify();
-			} catch (ReferenceNotInitializedException e) {
-				return false;
 			} catch (XMLSecurityException e) {
 				return false;
 			}
@@ -1117,8 +1120,7 @@ public class AbstractXmlSignatureServiceTest {
 				String changedTextValue = originalTextValue + "foobar";
 				node.setNodeValue(changedTextValue);
 				changed = false; // need to have impact anyway
-				for (int referenceIdx = 0; referenceIdx < references.length; referenceIdx++) {
-					VerifyReference reference = references[referenceIdx];
+				for (VerifyReference reference : references) {
 					changed |= reference.hasChanged();
 				}
 				if (!changed) {
@@ -1134,19 +1136,17 @@ public class AbstractXmlSignatureServiceTest {
 					String originalAttributeValue = attributeNode.getNodeValue();
 					String changedAttributeValue = originalAttributeValue + "foobar";
 					attributeNode.setNodeValue(changedAttributeValue);
-					for (int referenceIdx = 0; referenceIdx < references.length; referenceIdx++) {
-						VerifyReference reference = references[referenceIdx];
+					for (VerifyReference reference : references) {
 						changed |= reference.hasChanged();
 					}
 
 					attributeNode.setNodeValue(originalAttributeValue);
 				}
 				changed |= isDigested(element.getChildNodes(), references);
-			} else if (node.getNodeType() == Node.COMMENT_NODE) {
-				// not always digested
-			} else {
+			} else if (node.getNodeType() != Node.COMMENT_NODE) {
 				throw new RuntimeException("unsupported node type: " + node.getNodeType());
-			}
+			}  // not always digested
+
 			if (!changed) {
 				return false;
 			}

@@ -132,7 +132,7 @@ public class ODFSignatureVerifierTest {
 		// setup
 		File tmpFile = File.createTempFile("foo-bar-", ".txt");
 		tmpFile.deleteOnExit();
-		FileUtils.writeStringToFile(tmpFile, "hello world");
+		FileUtils.writeStringToFile(tmpFile, "hello world", "UTF-8");
 		URL tmpFileUrl = tmpFile.toURI().toURL();
 
 		// operate
@@ -147,7 +147,7 @@ public class ODFSignatureVerifierTest {
 		// setup
 		File tmpFile = File.createTempFile("foo-bar-", ".txt");
 		tmpFile.deleteOnExit();
-		FileUtils.writeStringToFile(tmpFile, "hello world");
+		FileUtils.writeStringToFile(tmpFile, "hello world", "UTF-8");
 		URL tmpFileUrl = tmpFile.toURI().toURL();
 
 		// operate
