@@ -34,7 +34,7 @@ public class FinishedMessage extends AbstractProtocolMessage {
 	public static final String TYPE = FinishedMessage.class.getSimpleName();
 
 	/**
-	 * The optional error code to communicate towards the eID Applet in case
+	 * The optional error code to communicate towards the eID Client in case
 	 * something went wrong on the server side.
 	 */
 	@HttpHeader(HTTP_HEADER_PREFIX + "ErrorCode")

@@ -79,7 +79,7 @@ public class UserIdentifierUtilTest {
 		// setup
 		String userId = "1234";
 		String orgId = "fedict";
-		String appId = "eid-applet-unit-test";
+		String appId = "eid-unit-test";
 		String secret = "the-secret-secret";
 
 		// operate & verify
@@ -96,7 +96,7 @@ public class UserIdentifierUtilTest {
 		// setup
 		String userId = "1234";
 		String orgId = "fedict";
-		String appId = "eid-applet-unit-test";
+		String appId = "eid-unit-test";
 		String secret = "1234";
 
 		// operate & verify
@@ -124,7 +124,7 @@ public class UserIdentifierUtilTest {
 		String userId1 = "1234";
 		String userId2 = "5678";
 		String orgId = "fedict";
-		String appId = "eid-applet-unit-test";
+		String appId = "eid-unit-test";
 		String secret = "123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0";
 
 		// operate

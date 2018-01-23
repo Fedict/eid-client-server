@@ -41,7 +41,7 @@ public interface SignatureService {
 
 	/**
 	 * Pre-sign callback method. Depending on the configuration some parameters
-	 * are passed. The returned value will be signed by the eID Applet.
+	 * are passed. The returned value will be signed by the eID Client.
 	 * <p>
 	 * TODO: service must be able to throw some exception on failure.
 	 * </p>

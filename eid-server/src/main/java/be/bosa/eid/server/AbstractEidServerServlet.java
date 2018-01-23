@@ -45,15 +45,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The eID applet service abstract Servlet. This abstract servlet is the basis
- * for the classic Java EE 5 AppletServiceServlet, and the Java EE 6 CDI based
+ * The eID server service abstract Servlet. This abstract servlet is the basis
+ * for the classic Java EE 5 EidServerServlet, and the Java EE 6 CDI based
  * version.
  *
  * @author Frank Cornelis
  */
-public abstract class AbstractAppletServiceServlet extends HttpServlet {
+public abstract class AbstractEidServerServlet extends HttpServlet {
 
-	private static final Log LOG = LogFactory.getLog(AbstractAppletServiceServlet.class);
+	private static final Log LOG = LogFactory.getLog(AbstractEidServerServlet.class);
 
 	private Unmarshaller unmarshaller;
 
@@ -61,7 +61,7 @@ public abstract class AbstractAppletServiceServlet extends HttpServlet {
 
 	private boolean skipSecureConnectionCheck;
 
-	public AbstractAppletServiceServlet() {
+	public AbstractEidServerServlet() {
 		super();
 		LOG.debug("constructor");
 	}
@@ -87,10 +87,10 @@ public abstract class AbstractAppletServiceServlet extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		out.println("<html>");
-		out.println("<head><title>eID Applet Service</title></head>");
+		out.println("<head><title>eID Server Service</title></head>");
 		out.println("<body>");
-		out.println("<h1>eID Applet Service</h1>");
-		out.println("<p>The eID Applet Service should not be accessed directly.</p>");
+		out.println("<h1>eID Server Service</h1>");
+		out.println("<p>The eID Server Service should not be accessed directly.</p>");
 		out.println("</body></html>");
 		out.close();
 	}

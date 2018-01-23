@@ -80,7 +80,7 @@ public class HttpServletRequestHttpReceiver implements HttpReceiver {
 		String referrerHeader = this.httpServletRequest.getHeader("Referer");
 		if (referrerHeader != null) {
 			/*
-			 * Only the eID Applet should be able to call our eID Applet
+			 * Only the eID Client should be able to call our eID Server
 			 * Service.
 			 */
 			LOG.warn("Refered HTTP header should not be present");

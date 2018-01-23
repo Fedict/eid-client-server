@@ -113,7 +113,7 @@ public class AuthenticationDataMessage extends AbstractProtocolMessage {
 	 * Main constructor.
 	 *
 	 * @param sessionId                   the optional TLS session identifier.
-	 * @param serverCertData              the applet also needs to communicate the server SSL
+	 * @param serverCertData              the client also needs to communicate the server SSL
 	 *                                    certificate in case of channel binding as the server not
 	 *                                    always knows its own identity.
 	 * @param transactionMessageSignature the optional signed transaction message.

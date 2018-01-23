@@ -19,7 +19,7 @@ package be.bosa.eid.server.spi;
 
 /**
  * Interface for security environment service components. Can be used by the eID
- * Applet Service to check the client environment security requirements.
+ * Server Service to check the client environment security requirements.
  *
  * @author Frank Cornelis
  */

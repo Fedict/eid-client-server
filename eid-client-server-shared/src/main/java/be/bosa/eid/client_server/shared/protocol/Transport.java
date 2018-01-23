@@ -45,7 +45,7 @@ public class Transport {
 	 */
 	public static void transfer(Object dataObject, HttpTransmitter httpTransmitter) {
 		if (!httpTransmitter.isSecure()) {
-			throw new SecurityException("applet service connection not trusted");
+			throw new SecurityException("Client service connection not trusted");
 		}
 
 		// TODO: semantic integrity validation

@@ -29,7 +29,7 @@ public interface ChannelBindingService {
 	/**
 	 * Gives back the X509 server SSL certificate that should be used for
 	 * verification of the secure channel binding. When <code>null</code> is
-	 * being returned the eID Applet Service can of course not perform the
+	 * being returned the eID Server Service can of course not perform the
 	 * secure channel binding verification.
 	 *
 	 * @return the X509 server certificate.

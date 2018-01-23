@@ -28,7 +28,7 @@ import java.util.List;
 public interface AuthenticationService {
 
 	/**
-	 * Validates the given certificate chain. After the eID Applet Service has
+	 * Validates the given certificate chain. After the eID Server Service has
 	 * verified the authentication signature, it will invoke this method on your
 	 * authentication service component. The implementation of this method
 	 * should validate the given certificate chain. This validation could be
@@ -36,7 +36,7 @@ public interface AuthenticationService {
 	 * incoming public key. The actual implementation is very dependent on your
 	 * type of application. This method should only be used for certificate
 	 * validation. Processing the incoming citizen identifier (if required at
-	 * all) should be handled as part of the eID Applet target page.
+	 * all) should be handled as part of the eID Server target page.
 	 * <p>
 	 * Check out <a href="http://code.google.com/p/jtrust/">jTrust</a> for an
 	 * implementation of a PKI validation framework.

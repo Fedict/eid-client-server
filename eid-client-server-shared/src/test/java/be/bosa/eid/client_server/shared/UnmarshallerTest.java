@@ -58,8 +58,8 @@ public class UnmarshallerTest {
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Version")).thenReturn("1");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Type")).thenReturn("IdentityDataMessage");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Version")).thenReturn("1");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Type")).thenReturn("IdentityDataMessage");
 		when(mockHttpReceiver.getHeaderNames()).thenReturn(new LinkedList<>());
 		when(mockHttpReceiver.getBody()).thenReturn("hello world".getBytes());
 
@@ -72,7 +72,7 @@ public class UnmarshallerTest {
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Version")).thenReturn(null);
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Version")).thenReturn(null);
 
 		unmarshaller.receive(mockHttpReceiver);
 	}
@@ -85,12 +85,12 @@ public class UnmarshallerTest {
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
 		when(mockHttpReceiver.getHeaderNames()).thenReturn(
-				Arrays.asList("foo-bar", "X-AppletProtocol-Version", "X-AppletProtocol-Type", "X-AppletProtocol-IdentityFileSize", "X-AppletProtocol-AddressFileSize")
+				Arrays.asList("foo-bar", "X-EIdServerProtocol-Version", "X-EIdServerProtocol-Type", "X-EIdServerProtocol-IdentityFileSize", "X-EIdServerProtocol-AddressFileSize")
 		);
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Version")).thenReturn("1");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Type")).thenReturn("IdentityDataMessage");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-IdentityFileSize")).thenReturn("10");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-AddressFileSize")).thenReturn("1");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Version")).thenReturn("1");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Type")).thenReturn("IdentityDataMessage");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-IdentityFileSize")).thenReturn("10");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-AddressFileSize")).thenReturn("1");
 		when(mockHttpReceiver.getBody()).thenReturn("hello world".getBytes());
 
 		Object result = unmarshaller.receive(mockHttpReceiver);
@@ -114,11 +114,11 @@ public class UnmarshallerTest {
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
 		when(mockHttpReceiver.getHeaderNames()).thenReturn(
-				Arrays.asList("foo-bar", "X-AppletProtocol-Version", "X-AppletProtocol-Type", "X-AppletProtocol-IncludePhoto")
+				Arrays.asList("foo-bar", "X-EIdServerProtocol-Version", "X-EIdServerProtocol-Type", "X-EIdServerProtocol-IncludePhoto")
 		);
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Version")).thenReturn("1");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Type")).thenReturn("IdentificationRequestMessage");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-IncludePhoto")).thenReturn("true");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Version")).thenReturn("1");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Type")).thenReturn("IdentificationRequestMessage");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-IncludePhoto")).thenReturn("true");
 
 		Object result = unmarshaller.receive(mockHttpReceiver);
 
@@ -135,9 +135,9 @@ public class UnmarshallerTest {
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
-		when(mockHttpReceiver.getHeaderNames()).thenReturn(Arrays.asList("X-AppletProtocol-Version", "X-AppletProtocol-Type"));
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Version")).thenReturn("1");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Type")).thenReturn("FinishedMessage");
+		when(mockHttpReceiver.getHeaderNames()).thenReturn(Arrays.asList("X-EIdServerProtocol-Version", "X-EIdServerProtocol-Type"));
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Version")).thenReturn("1");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Type")).thenReturn("FinishedMessage");
 
 		Object result = unmarshaller.receive(mockHttpReceiver);
 
@@ -156,11 +156,11 @@ public class UnmarshallerTest {
 		// stubs
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
 		when(mockHttpReceiver.getHeaderNames()).thenReturn(
-				Arrays.asList("X-AppletProtocol-Version", "X-AppletProtocol-Type", "X-AppletProtocol-ErrorCode")
+				Arrays.asList("X-EIdServerProtocol-Version", "X-EIdServerProtocol-Type", "X-EIdServerProtocol-ErrorCode")
 		);
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Version")).thenReturn("1");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Type")).thenReturn("FinishedMessage");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-ErrorCode"))
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Version")).thenReturn("1");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Type")).thenReturn("FinishedMessage");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-ErrorCode"))
 				.thenReturn(ErrorCode.CERTIFICATE_EXPIRED.name());
 
 		Object result = unmarshaller.receive(mockHttpReceiver);
@@ -183,10 +183,10 @@ public class UnmarshallerTest {
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
 		when(mockHttpReceiver.getHeaderNames()).thenReturn(
-				Arrays.asList("foo-bar", "X-AppletProtocol-Version", "X-AppletProtocol-Type")
+				Arrays.asList("foo-bar", "X-EIdServerProtocol-Version", "X-EIdServerProtocol-Type")
 		);
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Version")).thenReturn("1");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Type")).thenReturn(TestMessage.class.getSimpleName());
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Version")).thenReturn("1");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Type")).thenReturn(TestMessage.class.getSimpleName());
 
 		unmarshaller.receive(mockHttpReceiver);
 	}
@@ -198,17 +198,17 @@ public class UnmarshallerTest {
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
 		when(mockHttpReceiver.getHeaderNames()).thenReturn(Arrays.asList(
-				"foo-bar", "X-AppletProtocol-Version", "X-AppletProtocol-Type", "X-AppletProtocol-JavaVersion",
-				"X-AppletProtocol-JavaVendor", "X-AppletProtocol-OSName", "X-AppletProtocol-OSArch",
-				"X-AppletProtocol-OSVersion"
+				"foo-bar", "X-EIdServerProtocol-Version", "X-EIdServerProtocol-Type", "X-EIdServerProtocol-JavaVersion",
+				"X-EIdServerProtocol-JavaVendor", "X-EIdServerProtocol-OSName", "X-EIdServerProtocol-OSArch",
+				"X-EIdServerProtocol-OSVersion"
 		));
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Version")).thenReturn("1");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Type")).thenReturn("ClientEnvironmentMessage");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-JavaVersion")).thenReturn("1.6");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-JavaVendor")).thenReturn("Sun");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-OSName")).thenReturn("Linux");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-OSArch")).thenReturn("i386");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-OSVersion")).thenReturn("2.6");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Version")).thenReturn("1");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Type")).thenReturn("ClientEnvironmentMessage");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-JavaVersion")).thenReturn("1.6");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-JavaVendor")).thenReturn("Sun");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-OSName")).thenReturn("Linux");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-OSArch")).thenReturn("i386");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-OSVersion")).thenReturn("2.6");
 		when(mockHttpReceiver.getBody()).thenReturn("Reader 1\nReader 2\n".getBytes());
 
 		Object result = unmarshaller.receive(mockHttpReceiver);
@@ -231,17 +231,17 @@ public class UnmarshallerTest {
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Type")).thenReturn("IdentityDataMessage");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Type")).thenReturn("IdentityDataMessage");
 
 		when(mockHttpReceiver.getHeaderNames()).thenReturn(Arrays.asList(
-				"foo-bar", "x-appletprotocol-version", "x-appletprotocol-type", "x-appletprotocol-identityfilesize",
-				"x-appletprotocol-addressfilesize"
+				"foo-bar", "X-EIdServerProtocol-version", "X-EIdServerProtocol-type", "X-EIdServerProtocol-identityfilesize",
+				"X-EIdServerProtocol-addressfilesize"
 		));
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Version")).thenReturn("1");
-		when(mockHttpReceiver.getHeaderValue("x-appletprotocol-version")).thenReturn("1");
-		when(mockHttpReceiver.getHeaderValue("x-appletprotocol-type")).thenReturn("IdentityDataMessage");
-		when(mockHttpReceiver.getHeaderValue("x-appletprotocol-identityfilesize")).thenReturn("10");
-		when(mockHttpReceiver.getHeaderValue("x-appletprotocol-addressfilesize")).thenReturn("1");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Version")).thenReturn("1");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-version")).thenReturn("1");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-type")).thenReturn("IdentityDataMessage");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-identityfilesize")).thenReturn("10");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-addressfilesize")).thenReturn("1");
 		when(mockHttpReceiver.getBody()).thenReturn("hello world".getBytes());
 
 		Object result = unmarshaller.receive(mockHttpReceiver);
@@ -262,8 +262,8 @@ public class UnmarshallerTest {
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Version")).thenReturn("1");
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Type")).thenReturn("foo-bar");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Version")).thenReturn("1");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Type")).thenReturn("foo-bar");
 
 		unmarshaller.receive(mockHttpReceiver);
 	}
@@ -284,7 +284,7 @@ public class UnmarshallerTest {
 		Unmarshaller unmarshaller = new Unmarshaller(catalog);
 
 		when(mockHttpReceiver.isSecure()).thenReturn(true);
-		when(mockHttpReceiver.getHeaderValue("X-AppletProtocol-Version")).thenReturn("007");
+		when(mockHttpReceiver.getHeaderValue("X-EIdServerProtocol-Version")).thenReturn("007");
 
 		unmarshaller.receive(mockHttpReceiver);
 	}

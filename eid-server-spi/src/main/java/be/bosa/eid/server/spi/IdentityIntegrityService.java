@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * Interface for identity integrity service components. Can be used by the eID
- * Applet Service to run integrity validation on the identity data that comes
+ * Server Service to run integrity validation on the identity data that comes
  * from the eID card.
  *
  * @author Frank Cornelis
@@ -31,12 +31,12 @@ public interface IdentityIntegrityService {
 
 	/**
 	 * Checks the validity of the National Registration certificate. After the
-	 * eID Applet Service has performed the integrity checks on the incoming
+	 * eID Server Service has performed the integrity checks on the incoming
 	 * identity data files it will invoke this method on your component. Your
 	 * implementation should check the validity of the given national
 	 * registration certificate. This method should only be used to validation
 	 * the national registration certificate. Processing the incoming identity
-	 * data should be handled as part of the eID Applet target page.
+	 * data should be handled as part of the eID Server target page.
 	 * <p>
 	 * Check out <a href="http://code.google.com/p/jtrust/">jTrust</a> for an
 	 * implementation of a PKI validation framework.

@@ -46,10 +46,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The eID applet service Servlet. This servlet should be used by web
+ * The eID server service Servlet. This servlet should be used by web
  * applications for secure communication between the Java EE servlet container
- * and the eID applet. This servlet will push attributes within the HTTP session
- * after a successful identification of the browser using via the eID applet.
+ * and the eID server. This servlet will push attributes within the HTTP session
+ * after a successful identification of the browser using via the eID server.
  * <p>
  * <p>
  * The attribute that is pushed within the HTTP session per default is:
@@ -71,14 +71,14 @@ import java.util.Map;
  * <p>
  * <p>
  * More information on all available init-param configuration parameters is
- * available in the eID Applet developer's guide.
+ * available in the eID Server developer's guide.
  * </p>
  *
  * @author Frank Cornelis
  */
-public class AppletServiceServlet extends AbstractAppletServiceServlet {
+public class EidServerServlet extends AbstractEidServerServlet {
 
-	private static final Log LOG = LogFactory.getLog(AppletServiceServlet.class);
+	private static final Log LOG = LogFactory.getLog(EidServerServlet.class);
 
 	private static final List<Class<? extends MessageHandler<?>>> MESSAGE_HANDLER_CLASSES = Arrays.asList(
 			IdentityDataMessageHandler.class, HelloMessageHandler.class, ClientEnvironmentMessageHandler.class,
@@ -88,7 +88,7 @@ public class AppletServiceServlet extends AbstractAppletServiceServlet {
 
 	private Map<Class<?>, MessageHandler<?>> messageHandlers;
 
-	public AppletServiceServlet() {
+	public EidServerServlet() {
 		LOG.debug("constructor");
 	}
 

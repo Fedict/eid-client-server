@@ -44,7 +44,7 @@ import java.util.Map;
  * <p>
  * <p>
  * Keep this class stateless as it can be shared across different HTTP requests
- * inside AppletServiceServlet.
+ * inside the server service servlet.
  * </p>
  *
  * @author Frank Cornelis

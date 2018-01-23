@@ -21,28 +21,28 @@ import java.security.cert.X509Certificate;
 
 /**
  * Interface for audit service components. Via such a component you can receive
- * eID Applet Service security related events.
+ * eID Server Service security related events.
  *
  * @author Frank Cornelis
  */
 public interface AuditService {
 
 	/**
-	 * Called by the eID Applet Service in case a citizen has been successfully authenticated using the eID Applet.
+	 * Called by the eID Server Service in case a citizen has been successfully authenticated using the eID Client.
 	 *
 	 * @param userId the unique identifier of the authenticated user.
 	 */
 	void authenticated(String userId);
 
 	/**
-	 * Called by the eID Applet Service in case a citizen has been successfully identified using the eID Applet.
+	 * Called by the eID Server Service in case a citizen has been successfully identified using the eID Client.
 	 *
 	 * @param userId the unique identifier of the identified user.
 	 */
 	void identified(String userId);
 
 	/**
-	 * Called by the eID Applet Service in case the eID Applet responded with an invalid authentication signature.
+	 * Called by the eID Server Service in case the eID Client responded with an invalid authentication signature.
 	 *
 	 * @param remoteAddress     the remote address of the client causing the authentication error.
 	 * @param clientCertificate the X509 certificate causing the authentication error.
@@ -50,7 +50,7 @@ public interface AuditService {
 	void authenticationError(String remoteAddress, X509Certificate clientCertificate);
 
 	/**
-	 * Called by the eID Applet Service in case the eID Applet detects an
+	 * Called by the eID Server Service in case the eID Client detects an
 	 * integrity error during the identity data verification.
 	 *
 	 * @param remoteAddress the remote address of the client causing the integrity error.
@@ -58,7 +58,7 @@ public interface AuditService {
 	void identityIntegrityError(String remoteAddress);
 
 	/**
-	 * Called by the eID Applet Service in case the eID Applet responded with an invalid non-repudiation signature.
+	 * Called by the eID Server Service in case the eID Client responded with an invalid non-repudiation signature.
 	 *
 	 * @param remoteAddress     the remote address of the client causing the signature error.
 	 * @param clientCertificate the X509 certificate causing the signature error.
@@ -66,7 +66,7 @@ public interface AuditService {
 	void signatureError(String remoteAddress, X509Certificate clientCertificate);
 
 	/**
-	 * Called by the eID Applet Service in case a user created a non-repudiation signature.
+	 * Called by the eID Server Service in case a user created a non-repudiation signature.
 	 *
 	 * @param userId the unique identifier of the user creating a non-repudiation signature.
 	 */

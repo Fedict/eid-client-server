@@ -40,7 +40,7 @@ import java.net.InetAddress;
  * with his authentication certificate was indeed meant as way of
  * authenticating. In case of challenge abuse, there was no intention to sign
  * any legally binding contract except this authentication contract. If a
- * malicious eID Applet Service tricks the citizen into signing a document
+ * malicious eID Server Service tricks the citizen into signing a document
  * digest instead of a meaningless challenge, we give the citizen a proof of
  * intention via this formal authentication contract.
  * </p>

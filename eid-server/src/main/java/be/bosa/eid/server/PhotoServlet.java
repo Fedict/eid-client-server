@@ -34,7 +34,7 @@ import java.io.IOException;
 
 /**
  * Servlet to display the citizen's photo that is stored in the HTTP session
- * after a successful eID identification operation via the eID Applet.
+ * after a successful eID identification operation via the eID Client.
  *
  * @author Frank Cornelis
  */

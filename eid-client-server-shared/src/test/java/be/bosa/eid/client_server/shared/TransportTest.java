@@ -51,10 +51,10 @@ public class TransportTest {
 
 		Transport.transfer(identityDataMessage, mockHttpTransmitter);
 
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-Version", "1");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-Type", "IdentityDataMessage");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-IdentityFileSize", "20");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-AddressFileSize", "10");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-Version", "1");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-Type", "IdentityDataMessage");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-IdentityFileSize", "20");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-AddressFileSize", "10");
 		verify(mockHttpTransmitter).setBody(MESSAGE.getBytes());
 	}
 
@@ -65,8 +65,8 @@ public class TransportTest {
 
 		Transport.transfer(finishedMessage, mockHttpTransmitter);
 
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-Version", "1");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-Type", "FinishedMessage");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-Version", "1");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-Type", "FinishedMessage");
 	}
 
 	@Test
@@ -76,9 +76,9 @@ public class TransportTest {
 
 		Transport.transfer(finishedMessage, mockHttpTransmitter);
 
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-Version", "1");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-Type", "FinishedMessage");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-ErrorCode", ErrorCode.CERTIFICATE_EXPIRED.name());
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-Version", "1");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-Type", "FinishedMessage");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-ErrorCode", ErrorCode.CERTIFICATE_EXPIRED.name());
 	}
 
 	@Test
@@ -89,14 +89,14 @@ public class TransportTest {
 
 		Transport.transfer(message, mockHttpTransmitter);
 
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-Version", "1");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-Type", "IdentificationRequestMessage");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-IncludeAddress", "false");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-IncludePhoto", "true");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-Version", "1");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-Type", "IdentificationRequestMessage");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-IncludeAddress", "false");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-IncludePhoto", "true");
 		// TODO: protocol optimization: next could be omitted
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-IncludeIntegrityData", "false");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-IncludeCertificates", "false");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-RemoveCard", "false");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-IncludeIntegrityData", "false");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-IncludeCertificates", "false");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-RemoveCard", "false");
 	}
 
 	@Test
@@ -112,14 +112,14 @@ public class TransportTest {
 
 		Transport.transfer(message, mockHttpTransmitter);
 
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-Version", "1");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-Type", "ClientEnvironmentMessage");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-Version", "1");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-Type", "ClientEnvironmentMessage");
 
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-JavaVersion", "1.6");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-JavaVendor", "Sun");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-OSName", "Linux");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-OSArch", "i386");
-		verify(mockHttpTransmitter).addHeader("X-AppletProtocol-OSVersion", "2.6");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-JavaVersion", "1.6");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-JavaVendor", "Sun");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-OSName", "Linux");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-OSArch", "i386");
+		verify(mockHttpTransmitter).addHeader("X-EIdServerProtocol-OSVersion", "2.6");
 	}
 
 	@Test(expected = SecurityException.class)

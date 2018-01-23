@@ -141,7 +141,7 @@ public class AuthenticationDataMessageHandlerTest {
 		when(mockServletRequest.getAttribute("javax.servlet.request.ssl_session")).thenReturn(new String(Hex.encodeHex(sessionId)));
 		when(mockServletRequest.getRemoteAddr()).thenReturn("1.2.3.4");
 
-		AppletServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, testHttpSession);
 
@@ -223,7 +223,7 @@ public class AuthenticationDataMessageHandlerTest {
 		when(mockServletConfig.getInitParameter(AuthenticationDataMessageHandler.AUTHN_SIGNATURE_SERVICE_INIT_PARAM_NAME + "Class"))
 				.thenReturn(null);
 
-		AppletServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, testHttpSession);
 
@@ -309,7 +309,7 @@ public class AuthenticationDataMessageHandlerTest {
 		when(mockServletConfig.getInitParameter(AuthenticationDataMessageHandler.AUTHN_SIGNATURE_SERVICE_INIT_PARAM_NAME + "Class"))
 				.thenReturn(null);
 
-		AppletServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		try {
 			this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, testHttpSession);
@@ -396,7 +396,7 @@ public class AuthenticationDataMessageHandlerTest {
 		when(mockServletRequest.getAttribute("javax.servlet.request.ssl_session")).thenReturn(new String(Hex.encodeHex(sessionId)));
 		when(mockServletRequest.getRemoteAddr()).thenReturn(REMOTE_ADDRESS);
 
-		AppletServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 
 		try {
@@ -487,7 +487,7 @@ public class AuthenticationDataMessageHandlerTest {
 		when(mockServletConfig.getInitParameter(IdentityDataMessageHandler.INCLUDE_DATA_FILES)).thenReturn(null);
 		when(mockServletRequest.getRemoteAddr()).thenReturn(REMOTE_ADDRESS);
 
-		AppletServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, testHttpSession);
 

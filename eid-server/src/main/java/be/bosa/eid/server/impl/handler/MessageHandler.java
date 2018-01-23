@@ -17,7 +17,7 @@
 
 package be.bosa.eid.server.impl.handler;
 
-import be.bosa.eid.server.AppletServiceServlet;
+import be.bosa.eid.server.EidServerServlet;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -27,11 +27,11 @@ import java.util.Map;
 
 /**
  * Interface for a message handler. A message handler has the same lifecycle as
- * the {@link AppletServiceServlet} dispatcher servlet.
+ * the {@link EidServerServlet} dispatcher servlet.
  *
  * @param <T> the message type.
  * @author Frank Cornelis
- * @see AppletServiceServlet
+ * @see EidServerServlet
  */
 public interface MessageHandler<T> {
 

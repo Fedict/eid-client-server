@@ -164,7 +164,7 @@ public class EIdServerServletTest {
 	@Before
 	public void setUp() throws Exception {
 		this.servletTester = new ServletTester();
-		this.servletTester.addServlet(AppletServiceServlet.class, "/");
+		this.servletTester.addServlet(EidServerServlet.class, "/");
 
 		Security.addProvider(new BouncyCastleProvider());
 
@@ -238,7 +238,7 @@ public class EIdServerServletTest {
 		assertEquals(HttpServletResponse.SC_OK, response.getStatusLine().getStatusCode());
 		String responseBody = EntityUtils.toString(response.getEntity());
 		LOG.debug("Response body: " + responseBody);
-		assertTrue(responseBody.indexOf("applet service") != 1);
+		assertTrue(responseBody.indexOf("server service") != 1);
 	}
 
 	@Test
@@ -276,9 +276,9 @@ public class EIdServerServletTest {
 		LOG.debug("session id: " + sessionId);
 
 		HttpPost request2 = new HttpPost(this.sslLocation);
-		request2.addHeader("X-AppletProtocol-Version", "1");
-		request2.addHeader("X-AppletProtocol-Type", "IdentityDataMessage");
-		request2.addHeader("X-AppletProtocol-IdentityFileSize", Integer.toString(idFile.length));
+		request2.addHeader("X-EIdServerProtocol-Version", "1");
+		request2.addHeader("X-EIdServerProtocol-Type", "IdentityDataMessage");
+		request2.addHeader("X-EIdServerProtocol-IdentityFileSize", Integer.toString(idFile.length));
 		request2.setEntity(new ByteArrayEntity(idFile));
 
 		// operate

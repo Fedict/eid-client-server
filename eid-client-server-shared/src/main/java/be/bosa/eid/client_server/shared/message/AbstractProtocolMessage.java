@@ -27,7 +27,7 @@ import be.bosa.eid.client_server.shared.annotation.ProtocolVersion;
  */
 public abstract class AbstractProtocolMessage {
 
-	public static final String HTTP_HEADER_PREFIX = "X-AppletProtocol-";
+	public static final String HTTP_HEADER_PREFIX = "X-EIdServerProtocol-";
 
 	public static final int PROTOCOL_VERSION = 1;
 

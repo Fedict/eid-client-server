@@ -103,7 +103,7 @@ public class SignatureDataMessageHandlerTest {
 		byte[] signatureValue = signature.sign();
 		message.signatureValue = signatureValue;
 
-		AppletServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, mockHttpSession);
 
@@ -144,7 +144,7 @@ public class SignatureDataMessageHandlerTest {
 		byte[] signatureValue = signature.sign();
 		message.signatureValue = signatureValue;
 
-		AppletServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, mockHttpSession);
 
@@ -186,7 +186,7 @@ public class SignatureDataMessageHandlerTest {
 		byte[] signatureValue = signature.sign();
 		message.signatureValue = signatureValue;
 
-		AppletServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, mockHttpSession);
 
@@ -229,7 +229,7 @@ public class SignatureDataMessageHandlerTest {
 		byte[] signatureValue = signature.sign();
 		message.signatureValue = signatureValue;
 
-		AppletServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, mockHttpSession);
 
@@ -273,7 +273,7 @@ public class SignatureDataMessageHandlerTest {
 		message.signatureValue = signature.sign();
 
 		// operate
-		AppletServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		try {
 			this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, mockHttpSession);

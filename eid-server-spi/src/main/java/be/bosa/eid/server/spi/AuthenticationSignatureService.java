@@ -22,14 +22,14 @@ import java.util.List;
 
 /**
  * Authentication Signature Service SPI. Via this interface you can create for
- * example WS-Security signatures via the eID Applet.
+ * example WS-Security signatures via the eID Server.
  *
  * @author Frank Cornelis
  */
 public interface AuthenticationSignatureService {
 
 	/**
-	 * Gives back the digest value and digest algo to be used by the eID Applet for the creation of an authentication signature.
+	 * Gives back the digest value and digest algo to be used by the eID Server for the creation of an authentication signature.
 	 *
 	 * @param authnCertificateChain          the authentication certificate chain.
 	 * @param authenticationSignatureContext the context
@@ -38,7 +38,7 @@ public interface AuthenticationSignatureService {
 	PreSignResult preSign(List<X509Certificate> authnCertificateChain, AuthenticationSignatureContext authenticationSignatureContext);
 
 	/**
-	 * Via this method your receive the signature as created via the eID Applet over the corresponding digest value from
+	 * Via this method your receive the signature as created via the eID Server over the corresponding digest value from
 	 * the {@link DigestInfo} structure from {@link #preSign(List, AuthenticationSignatureContext)}.
 	 *
 	 * @param signatureValue                 the signature value.

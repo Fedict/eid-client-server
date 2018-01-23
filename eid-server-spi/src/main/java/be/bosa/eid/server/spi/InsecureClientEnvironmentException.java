@@ -43,11 +43,11 @@ public class InsecureClientEnvironmentException extends Exception {
 	}
 
 	/**
-	 * If set the eID Applet will only give a warning on case the server-side
-	 * marks the client environment as being insecure. Else the eID Applet will
+	 * If set the eID Client will only give a warning on case the server-side
+	 * marks the client environment as being insecure. Else the eID Client will
 	 * abort the requested eID operation.
 	 *
-	 * @return <code>true</code> if the applet should only give a warning, <code>false</code> otherwise.
+	 * @return <code>true</code> if the client should only give a warning, <code>false</code> otherwise.
 	 */
 	public boolean isWarnOnly() {
 		return this.warnOnly;

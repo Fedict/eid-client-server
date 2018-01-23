@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * eID Applet Protocol Message Catalog.
+ * eID Client Protocol Message Catalog.
  *
  * @author Frank Cornelis
  */
