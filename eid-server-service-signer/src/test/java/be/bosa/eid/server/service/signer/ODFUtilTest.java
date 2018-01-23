@@ -18,8 +18,6 @@
 package be.bosa.eid.server.service.signer;
 
 import be.bosa.eid.server.service.signer.odf.ODFUtil;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
 import java.net.URL;
@@ -32,7 +30,6 @@ import static org.junit.Assert.assertTrue;
  * @author Bart Hanssens
  */
 public class ODFUtilTest {
-	private static final Log LOG = LogFactory.getLog(ODFUtilTest.class);
 
 	@Test
 	public void testSelfContained() throws Exception {

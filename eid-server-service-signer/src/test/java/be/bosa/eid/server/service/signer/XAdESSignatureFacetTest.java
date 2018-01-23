@@ -56,7 +56,6 @@ import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -137,12 +136,7 @@ public class XAdESSignatureFacetTest {
 		// setup
 		EnvelopedSignatureFacet envelopedSignatureFacet = new EnvelopedSignatureFacet();
 		KeyInfoSignatureFacet keyInfoSignatureFacet = new KeyInfoSignatureFacet(true, false, false);
-		SignaturePolicyService signaturePolicyService = null;
-		// SignaturePolicyService signaturePolicyService = new
-		// ExplicitSignaturePolicyService(
-		// "urn:test", "hello world".getBytes(), "description",
-		// "http://here.com");
-		XAdESSignatureFacet xadesSignatureFacet = new XAdESSignatureFacet(signaturePolicyService);
+		XAdESSignatureFacet xadesSignatureFacet = new XAdESSignatureFacet((SignaturePolicyService) null);
 		TimeStampService mockTimeStampService = mock(TimeStampService.class);
 		RevocationDataService mockRevocationDataService = mock(RevocationDataService.class);
 		XAdESXLSignatureFacet xadesXLSignatureFacet = new XAdESXLSignatureFacet(mockTimeStampService,
@@ -257,10 +251,7 @@ public class XAdESSignatureFacetTest {
 		// DOMResult gives some DOMException...
 		validator.validate(new DOMSource(qualifyingPropertiesNode));
 
-		StreamSource streamSource = new StreamSource(tmpFile.toURI().toString());
 		ByteArrayOutputStream resultOutputStream = new ByteArrayOutputStream();
-		StreamResult streamResult = new StreamResult(resultOutputStream);
-		// validator.validate(streamSource, streamResult);
 		LOG.debug("result: " + resultOutputStream);
 	}
 
@@ -396,10 +387,7 @@ public class XAdESSignatureFacetTest {
 		// DOMResult gives some DOMException...
 		validator.validate(new DOMSource(qualifyingPropertiesNode));
 
-		StreamSource streamSource = new StreamSource(tmpFile.toURI().toString());
 		ByteArrayOutputStream resultOutputStream = new ByteArrayOutputStream();
-		StreamResult streamResult = new StreamResult(resultOutputStream);
-		// validator.validate(streamSource, streamResult);
 		LOG.debug("result: " + resultOutputStream);
 	}
 

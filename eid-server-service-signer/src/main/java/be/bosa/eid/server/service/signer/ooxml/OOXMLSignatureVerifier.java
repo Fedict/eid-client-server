@@ -157,6 +157,7 @@ public class OOXMLSignatureVerifier {
 			/*
 			 * Check the content of idPackageObject.
 			 */
+			//noinspection unchecked
 			List<XMLObject> objects = xmlSignature.getObjects();
 			XMLObject idPackageObject = null;
 			for (XMLObject object : objects) {
@@ -169,6 +170,7 @@ public class OOXMLSignatureVerifier {
 				LOG.debug("idPackageObject ds:Object not present");
 				continue;
 			}
+			//noinspection unchecked
 			List<XMLStructure> idPackageObjectContent = idPackageObject.getContent();
 			Manifest idPackageObjectManifest = null;
 			for (XMLStructure content : idPackageObjectContent) {
@@ -182,6 +184,7 @@ public class OOXMLSignatureVerifier {
 				continue;
 			}
 			LOG.debug("ds:Manifest present within idPackageObject ds:Object");
+			//noinspection unchecked
 			List<Reference> idPackageObjectReferences = idPackageObjectManifest.getReferences();
 			Set<String> idPackageObjectReferenceUris = new HashSet<>();
 			Set<String> remainingIdPackageObjectReferenceUris = new HashSet<>();
@@ -195,6 +198,7 @@ public class OOXMLSignatureVerifier {
 			for (String relsEntryName : relsEntryNames) {
 				LOG.debug("---- relationship entry name: " + relsEntryName);
 				CTRelationships relationships = getRelationships(url, relsEntryName);
+				//noinspection unchecked
 				List<CTRelationship> relationshipList = relationships.getRelationship();
 				boolean includeRelationshipInSignature = false;
 				for (CTRelationship relationship : relationshipList) {
@@ -298,8 +302,8 @@ public class OOXMLSignatureVerifier {
 		JAXBContext jaxbContext = JAXBContext
 				.newInstance(ObjectFactory.class);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		JAXBElement<CTRelationships> relationshipsElement = (JAXBElement<CTRelationships>) unmarshaller
-				.unmarshal(relationshipsInputStream);
+		//noinspection unchecked
+		JAXBElement<CTRelationships> relationshipsElement = (JAXBElement<CTRelationships>) unmarshaller.unmarshal(relationshipsInputStream);
 		return relationshipsElement.getValue();
 	}
 
@@ -334,8 +338,8 @@ public class OOXMLSignatureVerifier {
 		JAXBContext jaxbContext = JAXBContext
 				.newInstance(be.bosa.eid.server.service.signer.jaxb.opc.contenttypes.ObjectFactory.class);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		JAXBElement<CTTypes> contentTypesElement = (JAXBElement<CTTypes>) unmarshaller
-				.unmarshal(contentTypesInputStream);
+		//noinspection unchecked
+		JAXBElement<CTTypes> contentTypesElement = (JAXBElement<CTTypes>) unmarshaller.unmarshal(contentTypesInputStream);
 		return contentTypesElement.getValue();
 	}
 

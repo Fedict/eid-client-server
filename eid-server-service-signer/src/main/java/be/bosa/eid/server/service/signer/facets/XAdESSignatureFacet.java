@@ -86,7 +86,7 @@ import java.util.TimeZone;
  * participated multiple ETSI XAdES plugtests.
  *
  * @author Frank Cornelis
- * @see http://en.wikipedia.org/wiki/XAdES
+ * @see <a href="http://en.wikipedia.org/wiki/XAdES">http://en.wikipedia.org/wiki/XAdES</a>
  */
 public class XAdESSignatureFacet implements SignatureFacet {
 

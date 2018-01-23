@@ -121,8 +121,8 @@ public class OPCKeySelector extends KeyInfoKeySelector {
 
 		JAXBElement<CTRelationships> signatureRelationshipsElement;
 		try {
-			signatureRelationshipsElement = (JAXBElement<CTRelationships>) this.relationshipsUnmarshaller
-					.unmarshal(zipInputStream);
+			//noinspection unchecked
+			signatureRelationshipsElement = (JAXBElement<CTRelationships>) this.relationshipsUnmarshaller.unmarshal(zipInputStream);
 		} catch (JAXBException e) {
 			throw new KeySelectorException(e);
 		}

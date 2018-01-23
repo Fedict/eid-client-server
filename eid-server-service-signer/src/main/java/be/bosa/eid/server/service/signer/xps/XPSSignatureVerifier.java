@@ -142,8 +142,8 @@ public class XPSSignatureVerifier {
 		}
 
 		String dsOriginPart = null;
-		JAXBElement<CTRelationships> packageRelationshipsElement = (JAXBElement<CTRelationships>) this.relationshipsUnmarshaller
-				.unmarshal(zipInputStream);
+		//noinspection unchecked
+		JAXBElement<CTRelationships> packageRelationshipsElement = (JAXBElement<CTRelationships>) this.relationshipsUnmarshaller.unmarshal(zipInputStream);
 		CTRelationships packageRelationships = packageRelationshipsElement.getValue();
 		List<CTRelationship> packageRelationshipList = packageRelationships.getRelationship();
 		for (CTRelationship packageRelationship : packageRelationshipList) {
@@ -177,7 +177,7 @@ public class XPSSignatureVerifier {
 			LOG.debug("no Digital Signature Origin relationship part present");
 			return signatureResourceNames;
 		}
-
+		//noinspection unchecked
 		JAXBElement<CTRelationships> dsoRelationshipsElement = (JAXBElement<CTRelationships>) this.relationshipsUnmarshaller.unmarshal(zipInputStream);
 		CTRelationships dsoRelationships = dsoRelationshipsElement.getValue();
 		List<CTRelationship> dsoRelationshipList = dsoRelationships.getRelationship();

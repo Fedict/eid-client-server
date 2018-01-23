@@ -45,7 +45,6 @@ import java.util.zip.ZipInputStream;
  * @author Bart Hanssens
  */
 public class ODFUtil {
-	public static String MANIFEST_FILE = "META-INF/manifest.xml";
 	public static String MIMETYPE_FILE = "mimetype";
 	public static String MIMETYPE_START = "application/vnd.oasis.opendocument";
 	public static String SIGNATURE_FILE = "META-INF/documentsignatures.xml";
@@ -130,14 +129,6 @@ public class ODFUtil {
 	 */
 	public static boolean isToBeSigned(ZipEntry zipEntry) {
 		String name = zipEntry.getName();
-
-		/* OOo 3.0/3.1 bug: don't sign mimetype stream nor the manifest */
-		/*
-		 * if (zipEntry.isDirectory() || name.equals(MIMETYPE_FILE) ||
-		 * name.equals(MANIFEST_FILE) ||
-		 */
-		/* Corrected in OOo 3.2 */
-
 		return !zipEntry.isDirectory() && !name.equals(SIGNATURE_FILE);
 	}
 
@@ -145,7 +136,7 @@ public class ODFUtil {
 	 * Get a list of all the files / zip entries in an ODF package
 	 */
 	public static List getZipEntriesAsList(InputStream odfInputStream) throws IOException {
-		ArrayList list = new ArrayList();
+		List<String> list = new ArrayList<>();
 
 		ZipInputStream odfZipInputStream = new ZipInputStream(odfInputStream);
 		ZipEntry zipEntry;

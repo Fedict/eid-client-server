@@ -98,12 +98,8 @@ public class OOXMLURIDereferencer implements URIDereferencer {
 
 	private InputStream findDataInputStream(String uri) throws IOException {
 		String entryName;
-		if (uri.startsWith("/")) {
-			entryName = uri.substring(1); // remove '/'
-		} else {
-			entryName = uri.toString();
-		}
-		if (-1 != entryName.indexOf("?")) {
+		entryName = uri.startsWith("/") ? uri.substring(1) : uri;
+		if (entryName.contains("?")) {
 			entryName = entryName.substring(0, entryName.indexOf("?"));
 		}
 		LOG.debug("ZIP entry name: " + entryName);

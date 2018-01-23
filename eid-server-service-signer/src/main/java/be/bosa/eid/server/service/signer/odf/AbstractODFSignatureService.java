@@ -46,7 +46,7 @@ import java.util.zip.ZipOutputStream;
  * OpenOffice.org 3.x. They probably don't get accepted by older OOo versions.
  *
  * @author fcorneli
- * @see http://wiki.services.openoffice.org/wiki/Security/Digital_Signatures
+ * @see <a href="http://wiki.services.openoffice.org/wiki/Security/Digital_Signatures">http://wiki.services.openoffice.org/wiki/Security/Digital_Signatures</a>
  */
 abstract public class AbstractODFSignatureService extends AbstractXmlSignatureService {
 

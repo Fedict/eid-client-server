@@ -54,7 +54,6 @@ import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -459,25 +458,16 @@ public abstract class AbstractXmlSignatureService implements SignatureService {
 	protected void writeDocument(Document document, OutputStream documentOutputStream)
 			throws TransformerFactoryConfigurationError, TransformerException,
 			IOException {
+		// we need the XML processing initial line for OOXML
 		writeDocumentNoClosing(document, documentOutputStream);
 		documentOutputStream.close();
 	}
 
 	protected void writeDocumentNoClosing(Document document, OutputStream documentOutputStream)
 			throws TransformerFactoryConfigurationError, TransformerException {
-		// we need the XML processing initial line for OOXML
-		writeDocumentNoClosing(document, documentOutputStream, false);
-	}
-
-	protected void writeDocumentNoClosing(Document document, OutputStream documentOutputStream,
-										  boolean omitXmlDeclaration) throws TransformerFactoryConfigurationError,
-			TransformerException {
 		NoCloseOutputStream outputStream = new NoCloseOutputStream(documentOutputStream);
 		Result result = new StreamResult(outputStream);
 		Transformer xformer = TransformerFactory.newInstance().newTransformer();
-		if (omitXmlDeclaration) {
-			xformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-		}
 		Source source = new DOMSource(document);
 		xformer.transform(source, result);
 	}

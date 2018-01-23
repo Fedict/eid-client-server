@@ -252,8 +252,8 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 		JAXBContext jaxbContext = JAXBContext
 				.newInstance(be.bosa.eid.server.service.signer.jaxb.opc.relationships.ObjectFactory.class);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		JAXBElement<CTRelationships> relationshipsElement = (JAXBElement<CTRelationships>) unmarshaller
-				.unmarshal(relationshipsInputStream);
+		//noinspection unchecked
+		JAXBElement<CTRelationships> relationshipsElement = (JAXBElement<CTRelationships>) unmarshaller.unmarshal(relationshipsInputStream);
 		return relationshipsElement.getValue();
 	}
 
@@ -275,8 +275,8 @@ public class OOXMLSignatureFacet implements SignatureFacet {
 		JAXBContext jaxbContext = JAXBContext
 				.newInstance(be.bosa.eid.server.service.signer.jaxb.opc.contenttypes.ObjectFactory.class);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		JAXBElement<CTTypes> contentTypesElement = (JAXBElement<CTTypes>) unmarshaller
-				.unmarshal(contentTypesInputStream);
+		//noinspection unchecked
+		JAXBElement<CTTypes> contentTypesElement = (JAXBElement<CTTypes>) unmarshaller.unmarshal(contentTypesInputStream);
 		return contentTypesElement.getValue();
 	}
 

@@ -120,6 +120,7 @@ public class AbstractASiCSignatureService extends AbstractXmlSignatureService im
 
 	private class CloseAction implements Runnable {
 		public void run() {
+			//noinspection ResultOfMethodCallIgnored
 			AbstractASiCSignatureService.this.tmpFile.delete();
 		}
 	}

@@ -50,7 +50,6 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -231,7 +230,7 @@ public class RelationshipTransformService extends TransformService {
 			relationshipElements.add(relationshipElement);
 			relationshipsElement.removeChild(relationshipNode);
 		}
-		Collections.sort(relationshipElements, new RelationshipComparator());
+		relationshipElements.sort(new RelationshipComparator());
 		for (Element relationshipElement : relationshipElements) {
 			LOG.debug("sorted Id: " + relationshipElement.getAttribute("Id"));
 			relationshipsElement.appendChild(relationshipElement);

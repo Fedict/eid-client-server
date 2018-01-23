@@ -200,7 +200,7 @@ public abstract class AbstractOOXMLSignatureService extends AbstractXmlSignature
 					typesElement.appendChild(defaultElement);
 				}
 
-				writeDocumentNoClosing(contentTypesDocument, zipOutputStream, false);
+				writeDocumentNoClosing(contentTypesDocument, zipOutputStream);
 			} else if ("_rels/.rels".equals(zipEntry.getName())) {
 				Document relsDocument = loadDocumentNoClose(zipInputStream);
 
@@ -218,7 +218,7 @@ public abstract class AbstractOOXMLSignatureService extends AbstractXmlSignature
 					relsDocument.getDocumentElement().appendChild(relationshipElement);
 				}
 
-				writeDocumentNoClosing(relsDocument, zipOutputStream, false);
+				writeDocumentNoClosing(relsDocument, zipOutputStream);
 			} else if ("_xmlsignatures/_rels/origin.sigs.rels".equals(zipEntry.getName())) {
 				hasOriginSigsRels = true;
 				Document originSignRelsDocument = loadDocumentNoClose(zipInputStream);
@@ -234,7 +234,7 @@ public abstract class AbstractOOXMLSignatureService extends AbstractXmlSignature
 				relationshipElement.setAttribute("Target", target);
 				originSignRelsDocument.getDocumentElement().appendChild(relationshipElement);
 
-				writeDocumentNoClosing(originSignRelsDocument, zipOutputStream, false);
+				writeDocumentNoClosing(originSignRelsDocument, zipOutputStream);
 			} else {
 				IOUtils.copy(zipInputStream, zipOutputStream);
 			}
@@ -285,7 +285,7 @@ public abstract class AbstractOOXMLSignatureService extends AbstractXmlSignature
 		relationshipsElement.appendChild(relationshipElement);
 
 		zipOutputStream.putNextEntry(new ZipEntry("_xmlsignatures/_rels/origin.sigs.rels"));
-		writeDocumentNoClosing(originSignRelsDocument, zipOutputStream, false);
+		writeDocumentNoClosing(originSignRelsDocument, zipOutputStream);
 	}
 
 	@Override
