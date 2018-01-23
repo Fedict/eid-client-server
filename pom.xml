@@ -100,7 +100,7 @@
 
 		<module>eid-server-spi</module>
 		<module>eid-server</module>
-		<module>eid-server-signer</module>
+		<module>eid-server-service-signer</module>
 
 		<module>eid-client-core</module>
 		<module>eid-client-java-web-start</module>
@@ -284,7 +284,7 @@
 			</dependency>
 			<dependency>
 				<groupId>be.bosa.eid-client-server</groupId>
-				<artifactId>eid-server-signer</artifactId>
+				<artifactId>eid-server-service-signer</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -398,7 +398,6 @@
 				<artifactId>poi-ooxml</artifactId>
 				<version>${version.org.apache.poi}</version>
 			</dependency>
-
 
 			<dependency>
 				<groupId>javax.jnlp</groupId>
