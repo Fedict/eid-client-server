@@ -31,6 +31,7 @@ import be.bosa.eid.server.impl.RequestContext;
 import be.bosa.eid.server.impl.handler.MessageHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -40,6 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.Security;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,8 +63,11 @@ public abstract class AbstractEidServiceServlet extends HttpServlet {
 
 	private boolean skipSecureConnectionCheck;
 
+	static {
+		Security.addProvider(new BouncyCastleProvider());
+	}
+
 	public AbstractEidServiceServlet() {
-		super();
 		LOG.debug("constructor");
 	}
 

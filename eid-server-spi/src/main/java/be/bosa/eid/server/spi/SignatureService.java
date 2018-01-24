@@ -35,7 +35,7 @@ public interface SignatureService {
 	 * <code>null</code> if no pre-sign digest infos are required.
 	 *
 	 * @return the digest algorithm to be used when digesting local files.
-	 * @see #preSign(List, List, IdentityDTO, AddressDTO, byte[])
+	 * @see #preSign(String, List, List, IdentityDTO, AddressDTO, byte[])
 	 */
 	String getFilesDigestAlgorithm();
 
@@ -46,6 +46,8 @@ public interface SignatureService {
 	 * TODO: service must be able to throw some exception on failure.
 	 * </p>
 	 *
+	 *
+	 * @param requestId
 	 * @param digestInfos             the optional list of digest infos.
 	 * @param signingCertificateChain the optional list of certificates.
 	 * @param identity                the optional identity.
@@ -53,7 +55,7 @@ public interface SignatureService {
 	 * @param photo                   the optional identity photo.
 	 * @return the digest to be signed.
 	 */
-	DigestInfo preSign(List<DigestInfo> digestInfos, List<X509Certificate> signingCertificateChain,
+	DigestInfo preSign(String requestId, List<DigestInfo> digestInfos, List<X509Certificate> signingCertificateChain,
 					   IdentityDTO identity, AddressDTO address, byte[] photo)
 			throws NoSuchAlgorithmException, AuthorizationException;
 
@@ -61,9 +63,10 @@ public interface SignatureService {
 	 * Post-sign callback method. Received the signature value. Depending on the
 	 * configuration the signing certificate chain is also obtained.
 	 *
+	 * @param requestId
 	 * @param signingCertificateChain the optional chain of signing certificates.
 	 */
-	void postSign(byte[] signatureValue, List<X509Certificate> signingCertificateChain)
+	void postSign(String requestId, byte[] signatureValue, List<X509Certificate> signingCertificateChain)
 			throws
 			SecurityException;
 }

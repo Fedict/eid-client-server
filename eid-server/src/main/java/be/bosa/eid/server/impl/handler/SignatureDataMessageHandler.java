@@ -179,7 +179,7 @@ public class SignatureDataMessageHandler implements MessageHandler<SignatureData
 
 		SignatureService signatureService = this.signatureServiceLocator.locateService();
 		try {
-			signatureService.postSign(signatureValue, certificateChain);
+			signatureService.postSign(getRequestId(session), signatureValue, certificateChain);
 		} catch (ExpiredCertificateSecurityException e) {
 			return new FinishedMessage(ErrorCode.CERTIFICATE_EXPIRED);
 		} catch (RevokedCertificateSecurityException e) {

@@ -325,7 +325,7 @@ public class AuthenticationDataMessageHandler implements MessageHandler<Authenti
 		 * Push authenticated used Id into the HTTP session.
 		 */
 		Optional<IdentityConsumerService> identityConsumer = Optional.ofNullable(identityConsumerLocator.locateService());
-		String requestId = (String) session.getAttribute(HelloMessageHandler.REQUEST_ID_ATTRIBUTE);
+		String requestId = getRequestId(session);
 		session.setAttribute(AUTHENTICATED_USER_IDENTIFIER_SESSION_ATTRIBUTE, userId);
 		identityConsumer.ifPresent(service -> service.setUserId(requestId, userId));
 

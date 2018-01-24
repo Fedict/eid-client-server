@@ -23,6 +23,7 @@
 	Optional<String> userId = ResultExtractor.getUserId(request);
 	Optional<IdentityDTO> identity = ResultExtractor.getIdentity(request);
 	Optional<AddressDTO> address = ResultExtractor.getAddress(request);
+	Optional<String> signature = ResultExtractor.getSignature(request);
 %>
 
 <html>
@@ -41,6 +42,11 @@
 
 <h2>Your picture</h2>
 <img src="photo?requestId=<%=request.getParameter("requestId")%>">
+
+<h2>Signature value</h2>
+<p>
+	<%= signature.orElse("") %>
+</p>
 
 <p>
 	<a href="index.html">Go back</a>

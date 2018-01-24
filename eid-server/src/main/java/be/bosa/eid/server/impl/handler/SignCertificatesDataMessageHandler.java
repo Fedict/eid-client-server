@@ -177,8 +177,8 @@ public class SignCertificatesDataMessageHandler implements MessageHandler<SignCe
 		IdentityDTO identityDTO = dtoMapper.map(identity, IdentityDTO.class);
 		AddressDTO addressDTO = dtoMapper.map(address, AddressDTO.class);
 		try {
-			digestInfo = signatureService.preSign(null, signingCertificateChain, identityDTO, addressDTO,
-					message.photoData);
+			digestInfo = signatureService.preSign(getRequestId(session),
+					null, signingCertificateChain, identityDTO, addressDTO, message.photoData);
 		} catch (NoSuchAlgorithmException e) {
 			throw new ServletException("no such algo: " + e.getMessage(), e);
 		} catch (AuthorizationException e) {

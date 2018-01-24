@@ -49,4 +49,8 @@ public interface MessageHandler<T> {
 	 * Initializes this message handler.
 	 */
 	void init(ServletConfig config) throws ServletException;
+
+	default String getRequestId(HttpSession session) {
+		return (String) session.getAttribute(HelloMessageHandler.REQUEST_ID_ATTRIBUTE);
+	}
 }

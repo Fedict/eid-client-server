@@ -21,8 +21,6 @@ import be.bosa.eid.server.dto.DTOMapper;
 
 public class Util {
 
-	static final String REQUEST_ID_ATTRIBUTE = "requestId";
-
 	static String getDigestAlgo(int hashSize) {
 		switch (hashSize) {
 			case 20:

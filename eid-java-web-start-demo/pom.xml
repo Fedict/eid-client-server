@@ -29,7 +29,7 @@
 
 	<artifactId>eid-java-web-start-demo</artifactId>
 	<packaging>war</packaging>
-	<name>Demo Web Application</name>
+	<name>Java Web Start Demo Web Application</name>
 
 	<build>
 		<plugins>

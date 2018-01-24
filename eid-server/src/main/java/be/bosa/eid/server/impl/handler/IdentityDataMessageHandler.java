@@ -243,7 +243,7 @@ public class IdentityDataMessageHandler implements MessageHandler<IdentityDataMe
 
 		// push the identity into the session
 		Optional<IdentityConsumerService> identityService = Optional.ofNullable(identityConsumerLocator.locateService());
-		String requestId = (String) session.getAttribute(HelloMessageHandler.REQUEST_ID_ATTRIBUTE);
+		String requestId = getRequestId(session);
 		identityService.ifPresent(service -> service.setIdentity(requestId, Util.map(identity, IdentityDTO.class)));
 		if (address != null) {
 			identityService.ifPresent(service -> service.setAddress(requestId, Util.map(address, AddressDTO.class)));

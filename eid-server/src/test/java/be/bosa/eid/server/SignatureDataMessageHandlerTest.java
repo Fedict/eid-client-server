@@ -302,11 +302,11 @@ public class SignatureDataMessageHandlerTest {
 			return null;
 		}
 
-		public void postSign(byte[] signatureValue, List<X509Certificate> signingCertificateChain) {
+		public void postSign(String requestId, byte[] signatureValue, List<X509Certificate> signingCertificateChain) {
 			SignatureTestService.signatureValue = signatureValue;
 		}
 
-		public DigestInfo preSign(List<DigestInfo> digestInfos, List<X509Certificate> signingCertificateChain,
+		public DigestInfo preSign(String requestId, List<DigestInfo> digestInfos, List<X509Certificate> signingCertificateChain,
 								  IdentityDTO identity, AddressDTO address, byte[] photo) {
 			return null;
 		}

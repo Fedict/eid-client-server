@@ -182,7 +182,7 @@ public class ClientEnvironmentMessageHandler implements MessageHandler<ClientEnv
 
 			DigestInfo digestInfo;
 			try {
-				digestInfo = signatureService.preSign(null, null, null, null, null);
+				digestInfo = signatureService.preSign(getRequestId(session), null, null, null, null, null);
 			} catch (NoSuchAlgorithmException e) {
 				throw new ServletException("no such algo: " + e.getMessage(), e);
 			} catch (AuthorizationException e) {

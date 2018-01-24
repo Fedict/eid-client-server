@@ -43,9 +43,23 @@ public class ResultExtractor {
 		return getFromIdentityConsumerService(request, IdentityConsumerServiceImpl::getUserId);
 	}
 
+	public static Optional<String> getSignature(HttpServletRequest request) {
+		return getFromSignatureService(request, SignatureServiceImpl::getSignatureValue);
+	}
+
 	private static <T> Optional<T> getFromIdentityConsumerService(HttpServletRequest request, BiFunction<IdentityConsumerServiceImpl, String, T> extractor) {
 		String requestId = request.getParameter("requestId");
 		IdentityConsumerServiceImpl identityService = IdentityConsumerServiceImpl.INSTANCE;
+		if (requestId == null || identityService == null) {
+			return Optional.empty();
+		}
+
+		return Optional.ofNullable(extractor.apply(identityService, requestId));
+	}
+
+	private static <T> Optional<T> getFromSignatureService(HttpServletRequest request, BiFunction<SignatureServiceImpl, String, T> extractor) {
+		String requestId = request.getParameter("requestId");
+		SignatureServiceImpl identityService = SignatureServiceImpl.INSTANCE;
 		if (requestId == null || identityService == null) {
 			return Optional.empty();
 		}

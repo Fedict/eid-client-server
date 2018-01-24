@@ -87,7 +87,7 @@ public class FileDigestsDataMessageHandler implements MessageHandler<FileDigests
 
 		DigestInfo digestInfo;
 		try {
-			digestInfo = signatureService.preSign(fileDigestInfos, null, null, null, null);
+			digestInfo = signatureService.preSign(getRequestId(session), fileDigestInfos, null, null, null, null);
 		} catch (NoSuchAlgorithmException e) {
 			throw new ServletException("no such algo: " + e.getMessage(), e);
 		} catch (AuthorizationException e) {
