@@ -17,6 +17,8 @@
 
 package be.bosa.eid.server.spi;
 
+import java.security.cert.X509Certificate;
+
 /**
  * Interface for identity services. An identity service allows for run-time
  * selected of required identity data like address, photo.
@@ -32,4 +34,24 @@ public interface IdentityService {
 	 * @return the identity request object.
 	 */
 	IdentityRequest getIdentityRequest();
+
+	/**
+	 * Callback that supplies the identity of a specific client. This should be cached for later usage.
+	 */
+	void setIdentity(String sessionId, IdentityDTO identity);
+
+	/**
+	 * Callback that supplies the address of a specific client. This should be cached for later usage.
+	 */
+	void setAddress(String sessionId, AddressDTO address);
+
+	/**
+	 * Callback that supplies the photo of a specific client. This should be cached for later usage.
+	 */
+	void setPhoto(String sessionId, byte[] photo);
+
+	/**
+	 * Callback that supplies the certificates of a specific client. This should be cached for later usage.
+	 */
+	void setCertificates(String sessionId, X509Certificate authnCert, X509Certificate signCert, X509Certificate caCert, X509Certificate rootCert);
 }

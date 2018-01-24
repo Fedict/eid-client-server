@@ -24,13 +24,17 @@ import be.bosa.eid.server.Address;
 import be.bosa.eid.server.EIdCertsData;
 import be.bosa.eid.server.EIdData;
 import be.bosa.eid.server.Identity;
+import be.bosa.eid.server.dto.DTOMapper;
 import be.bosa.eid.server.impl.RequestContext;
 import be.bosa.eid.server.impl.ServiceLocator;
 import be.bosa.eid.server.impl.tlv.TlvParser;
+import be.bosa.eid.server.spi.AddressDTO;
 import be.bosa.eid.server.spi.AuditService;
 import be.bosa.eid.server.spi.CertificateSecurityException;
 import be.bosa.eid.server.spi.ExpiredCertificateSecurityException;
+import be.bosa.eid.server.spi.IdentityDTO;
 import be.bosa.eid.server.spi.IdentityIntegrityService;
+import be.bosa.eid.server.spi.IdentityService;
 import be.bosa.eid.server.spi.RevokedCertificateSecurityException;
 import be.bosa.eid.server.spi.TrustCertificateSecurityException;
 import org.apache.commons.codec.binary.Hex;
@@ -58,6 +62,7 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Message handler for the identity data message.
@@ -97,6 +102,9 @@ public class IdentityDataMessageHandler implements MessageHandler<IdentityDataMe
 	@InitParam(AuthenticationDataMessageHandler.AUDIT_SERVICE_INIT_PARAM_NAME)
 	private ServiceLocator<AuditService> auditServiceLocator;
 
+	@InitParam(HelloMessageHandler.IDENTITY_SERVICE_INIT_PARAM_NAME)
+	private ServiceLocator<IdentityService> identityServiceLocator;
+
 	@InitParam(INCLUDE_DATA_FILES)
 	private boolean includeDataFiles;
 
@@ -133,27 +141,12 @@ public class IdentityDataMessageHandler implements MessageHandler<IdentityDataMe
 			address = null;
 		}
 
-		X509Certificate authnCert = null;
-		X509Certificate signCert = null;
-		X509Certificate caCert = null;
-		X509Certificate rootCert = null;
-		if (includeCertificates) {
-			if (message.authnCertFile == null) {
-				throw new ServletException("authn cert not included while requested");
-			}
-			if (message.signCertFile == null) {
-				throw new ServletException("sign cert not included while requested");
-			}
-			if (message.caCertFile == null) {
-				throw new ServletException("CA cert not included while requested");
-			}
-			if (message.rootCertFile == null) {
-				throw new ServletException("root cert not included while requested");
-			}
-			authnCert = getCertificate(message.authnCertFile);
-			signCert = getCertificate(message.signCertFile);
-			caCert = getCertificate(message.caCertFile);
-			rootCert = getCertificate(message.rootCertFile);
+		X509Certificate authnCert = includeCertificates ? getCertificate(message.authnCertFile) : null;
+		X509Certificate signCert = includeCertificates ? getCertificate(message.signCertFile) : null;
+		X509Certificate caCert = includeCertificates ? getCertificate(message.caCertFile) : null;
+		X509Certificate rootCert = includeCertificates ? getCertificate(message.rootCertFile) : null;
+		if (includeCertificates && (authnCert == null || signCert == null || caCert == null || rootCert == null)) {
+			throw new ServletException("authn cert not included while requested");
 		}
 
 		IdentityIntegrityService identityIntegrityService = this.identityIntegrityServiceLocator.locateService();
@@ -270,12 +263,17 @@ public class IdentityDataMessageHandler implements MessageHandler<IdentityDataMe
 		}
 
 		// push the identity into the session
+		Optional<IdentityService> identityService = Optional.ofNullable(identityServiceLocator.locateService());
 		session.setAttribute(IDENTITY_SESSION_ATTRIBUTE, identity);
+		identityService.ifPresent(service -> service.setIdentity(session.getId(), map(identity, IdentityDTO.class)));
 		if (address != null) {
 			session.setAttribute(ADDRESS_SESSION_ATTRIBUTE, address);
+			identityService.ifPresent(service -> service.setAddress(session.getId(), map(address, AddressDTO.class)));
+
 		}
 		if (message.photoFile != null) {
 			session.setAttribute(PHOTO_SESSION_ATTRIBUTE, message.photoFile);
+			identityService.ifPresent(service -> service.setPhoto(session.getId(), message.photoFile));
 		}
 
 		if (includeCertificates) {
@@ -283,6 +281,8 @@ public class IdentityDataMessageHandler implements MessageHandler<IdentityDataMe
 			session.setAttribute(SIGN_CERT_SESSION_ATTRIBUTE, signCert);
 			session.setAttribute(CA_CERT_SESSION_ATTRIBUTE, caCert);
 			session.setAttribute(ROOT_CERT_SESSION_ATTRIBUTE, rootCert);
+			identityService.ifPresent(service -> service.setCertificates(session.getId(), authnCert, signCert, caCert, rootCert));
+
 		}
 
 		EIdData eidData = (EIdData) session.getAttribute(EID_SESSION_ATTRIBUTE);
@@ -321,6 +321,10 @@ public class IdentityDataMessageHandler implements MessageHandler<IdentityDataMe
 		}
 
 		return new FinishedMessage();
+	}
+
+	private <T> T map(Object object, Class<T> toClass) {
+		return new DTOMapper().map(object, toClass);
 	}
 
 	private byte[] trimRight(byte[] addressFile) {
