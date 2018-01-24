@@ -33,6 +33,10 @@
 			<param-value>true</param-value>
 		</init-param>
 		<init-param>
+			<param-name>IdentityConsumerServiceClass</param-name>
+			<param-value>be.bosa.eid.server.demo.IdentityConsumerServiceImpl</param-value>
+		</init-param>
+		<init-param>
 			<param-name>IdentityServiceClass</param-name>
 			<param-value>be.bosa.eid.server.demo.IdentityServiceImpl</param-value>
 		</init-param>

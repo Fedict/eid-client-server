@@ -66,6 +66,7 @@ public class HelloMessageHandler implements MessageHandler<HelloMessage> {
 	public static final String INCLUDE_ADDRESS_INIT_PARAM_NAME = "IncludeAddress";
 	public static final String SECURE_CLIENT_ENV_SERVICE_INIT_PARAM_NAME = "SecureClientEnvironmentService";
 	public static final String IDENTITY_INTEGRITY_SERVICE_INIT_PARAM_NAME = "IdentityIntegrityService";
+	public static final String IDENTITY_CONSUMER_INIT_PARAM_NAME = "IdentityConsumerService";
 	public static final String SIGNATURE_SERVICE_INIT_PARAM_NAME = "SignatureService";
 	public static final String PRIVACY_SERVICE_INIT_PARAM_NAME = "PrivacyService";
 	public static final String REMOVE_CARD_INIT_PARAM_NAME = "RemoveCard";

@@ -17,7 +17,11 @@
 
 package be.bosa.eid.server.impl.handler;
 
+import be.bosa.eid.server.dto.DTOMapper;
+
 public class Util {
+
+	static final String REQUEST_ID_ATTRIBUTE = "requestId";
 
 	static String getDigestAlgo(int hashSize) {
 		switch (hashSize) {
@@ -48,4 +52,7 @@ public class Util {
 		return result;
 	}
 
+	static <T> T map(Object object, Class<T> toClass) {
+		return new DTOMapper().map(object, toClass);
+	}
 }

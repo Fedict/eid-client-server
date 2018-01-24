@@ -20,6 +20,9 @@ package be.bosa.eid.server;
 import be.bosa.eid.client_server.shared.message.IdentityDataMessage;
 import be.bosa.eid.server.impl.RequestContext;
 import be.bosa.eid.server.impl.handler.IdentityDataMessageHandler;
+import be.bosa.eid.server.spi.AddressDTO;
+import be.bosa.eid.server.spi.IdentityConsumerService;
+import be.bosa.eid.server.spi.IdentityDTO;
 import be.bosa.eid.server.spi.IdentityIntegrityService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,19 +41,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static be.bosa.eid.server.impl.handler.HelloMessageHandler.REQUEST_ID_ATTRIBUTE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class IdentityDataMessageHandlerTest {
 
 	private static final Log LOG = LogFactory.getLog(IdentityDataMessageHandlerTest.class);
 	private static final String REMOTE_ADDRESS = "remote-address";
+	private static final String REQUEST_ID = "requestId";
 
 	private IdentityDataMessageHandler testedInstance;
 
@@ -69,13 +72,14 @@ public class IdentityDataMessageHandlerTest {
 		HttpSession mockHttpSession = mock(HttpSession.class);
 		HttpServletRequest mockServletRequest = mock(HttpServletRequest.class);
 
+
+		when(mockHttpSession.getAttribute(REQUEST_ID_ATTRIBUTE)).thenReturn(REQUEST_ID);
 		when(mockServletConfig.getInitParameter("IdentityIntegrityService")).thenReturn(null);
 		when(mockServletConfig.getInitParameter("IdentityIntegrityServiceClass")).thenReturn(null);
 		when(mockServletConfig.getInitParameter("AuditService")).thenReturn(null);
 		when(mockServletConfig.getInitParameter("AuditServiceClass")).thenReturn(null);
 		when(mockServletConfig.getInitParameter("SkipNationalNumberCheck")).thenReturn(null);
 
-		when(mockHttpSession.getAttribute("eid")).thenReturn(null);
 		when(mockHttpSession.getAttribute(RequestContext.INCLUDE_ADDRESS_SESSION_ATTRIBUTE)).thenReturn(false);
 		when(mockHttpSession.getAttribute(RequestContext.INCLUDE_CERTIFICATES_SESSION_ATTRIBUTE)).thenReturn(false);
 		when(mockHttpSession.getAttribute(RequestContext.INCLUDE_PHOTO_SESSION_ATTRIBUTE)).thenReturn(false);
@@ -89,8 +93,7 @@ public class IdentityDataMessageHandlerTest {
 		this.testedInstance.init(mockServletConfig);
 		this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, mockHttpSession);
 
-		verify(mockHttpSession).setAttribute(eq("eid.identity"), isA(Identity.class));
-		verify(mockHttpSession).setAttribute(eq("eid"), isA(EIdData.class));
+
 	}
 
 	@Test
@@ -111,12 +114,14 @@ public class IdentityDataMessageHandlerTest {
 
 		when(mockServletConfig.getInitParameter("IdentityIntegrityService")).thenReturn(null);
 		when(mockServletConfig.getInitParameter("IdentityIntegrityServiceClass")).thenReturn(IdentityIntegrityTestService.class.getName());
+		when(mockServletConfig.getInitParameter("IdentityConsumerService")).thenReturn(null);
+		when(mockServletConfig.getInitParameter("IdentityConsumerServiceClass")).thenReturn(IdentityConsumerTestService.class.getName());
 		when(mockServletConfig.getInitParameter("AuditService")).thenReturn(null);
 		when(mockServletConfig.getInitParameter("AuditServiceClass")).thenReturn(null);
 		when(mockServletConfig.getInitParameter("SkipNationalNumberCheck")).thenReturn(null);
 
+		when(mockHttpSession.getAttribute(REQUEST_ID_ATTRIBUTE)).thenReturn(REQUEST_ID);
 		when(mockHttpSession.getAttribute("eid.identifier")).thenReturn(null);
-		when(mockHttpSession.getAttribute("eid")).thenReturn(null);
 		when(mockHttpSession.getAttribute(RequestContext.INCLUDE_ADDRESS_SESSION_ATTRIBUTE)).thenReturn(false);
 		when(mockHttpSession.getAttribute(RequestContext.INCLUDE_CERTIFICATES_SESSION_ATTRIBUTE)).thenReturn(false);
 		when(mockHttpSession.getAttribute(RequestContext.INCLUDE_PHOTO_SESSION_ATTRIBUTE)).thenReturn(false);
@@ -137,9 +142,9 @@ public class IdentityDataMessageHandlerTest {
 		this.testedInstance.init(mockServletConfig);
 		this.testedInstance.handleMessage(message, new HashMap<>(), mockServletRequest, mockHttpSession);
 
-		verify(mockHttpSession).setAttribute(eq("eid.identity"), isA(Identity.class));
-		verify(mockHttpSession).setAttribute(eq("eid"), isA(EIdData.class));
 		assertEquals(rrnCertificate, IdentityIntegrityTestService.getCertificate());
+		assertEquals(rrnCertificate, IdentityIntegrityTestService.getCertificate());
+		assertNotNull(IdentityConsumerTestService.identity);
 	}
 
 	@Test
@@ -252,6 +257,83 @@ public class IdentityDataMessageHandlerTest {
 		public void checkNationalRegistrationCertificate(List<X509Certificate> certificateChain)
 				throws SecurityException {
 			IdentityIntegrityTestService.certificate = certificateChain.get(0);
+		}
+	}
+
+	public static class IdentityConsumerTestService implements IdentityConsumerService {
+
+		private static String userId;
+		private static IdentityDTO identity;
+		private static AddressDTO address;
+		private static byte[] photo;
+		private static X509Certificate authnCert;
+		private static X509Certificate signCert;
+		private static X509Certificate caCert;
+		private static X509Certificate rootCert;
+
+		@Override
+		public void setUserId(String requestId, String userId) {
+			assertEquals(REQUEST_ID, requestId);
+			IdentityConsumerTestService.userId = userId;
+		}
+
+		@Override
+		public void setIdentity(String requestId, IdentityDTO identity) {
+			assertEquals(REQUEST_ID, requestId);
+			IdentityConsumerTestService.identity = identity;
+		}
+
+		@Override
+		public void setAddress(String requestId, AddressDTO address) {
+			assertEquals(REQUEST_ID, requestId);
+			IdentityConsumerTestService.address = address;
+		}
+
+		@Override
+		public void setPhoto(String requestId, byte[] photo) {
+			assertEquals(REQUEST_ID, requestId);
+			IdentityConsumerTestService.photo = photo;
+		}
+
+		@Override
+		public void setCertificates(String requestId, X509Certificate authnCert, X509Certificate signCert, X509Certificate caCert, X509Certificate rootCert) {
+			assertEquals(REQUEST_ID, requestId);
+			IdentityConsumerTestService.authnCert = authnCert;
+			IdentityConsumerTestService.signCert = signCert;
+			IdentityConsumerTestService.caCert = caCert;
+			IdentityConsumerTestService.rootCert = rootCert;
+		}
+
+		public String getUserId() {
+			return userId;
+		}
+
+		public IdentityDTO getIdentity() {
+			return identity;
+		}
+
+		public AddressDTO getAddress() {
+			return address;
+		}
+
+		public byte[] getPhoto() {
+			return photo;
+		}
+
+		public X509Certificate getAuthnCert() {
+			return authnCert;
+		}
+
+		public X509Certificate getSignCert() {
+			return signCert;
+		}
+
+		public X509Certificate getCaCert() {
+			return caCert;
+		}
+
+		public X509Certificate getRootCert() {
+			return rootCert;
 		}
 	}
 }

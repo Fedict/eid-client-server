@@ -19,9 +19,7 @@ package be.bosa.eid.server.impl;
 
 import be.bosa.eid.client_server.shared.protocol.ProtocolState;
 import be.bosa.eid.client_server.shared.protocol.ProtocolStateListener;
-import be.bosa.eid.server.EIdData;
 import be.bosa.eid.server.impl.handler.AuthenticationDataMessageHandler;
-import be.bosa.eid.server.impl.handler.IdentityDataMessageHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -53,47 +51,9 @@ public class CleanSessionProtocolStateListener implements ProtocolStateListener 
 	}
 
 	public void protocolStateTransition(ProtocolState newProtocolState) {
-		switch (newProtocolState) {
-			case IDENTIFY: {
-				LOG.debug("cleaning up the identity session attributes...");
-				this.httpSession.removeAttribute(IdentityDataMessageHandler.IDENTITY_SESSION_ATTRIBUTE);
-				this.httpSession.removeAttribute(IdentityDataMessageHandler.ADDRESS_SESSION_ATTRIBUTE);
-				this.httpSession.removeAttribute(IdentityDataMessageHandler.PHOTO_SESSION_ATTRIBUTE);
-				this.httpSession.removeAttribute(IdentityDataMessageHandler.EID_CERTS_SESSION_ATTRIBUTE);
-				this.httpSession.removeAttribute(IdentityDataMessageHandler.EID_DATA_IDENTITY_SESSION_ATTRIBUTE);
-				this.httpSession.removeAttribute(IdentityDataMessageHandler.EID_DATA_ADDRESS_SESSION_ATTRIBUTE);
-				EIdData eidData = (EIdData) this.httpSession.getAttribute(IdentityDataMessageHandler.EID_SESSION_ATTRIBUTE);
-				if (eidData != null) {
-					/*
-					 * First time eidData is null.
-					 */
-					eidData.identity = null;
-					eidData.address = null;
-					eidData.photo = null;
-					eidData.certs = null;
-				}
-				break;
-			}
-
-			case AUTHENTICATE: {
-				LOG.debug("cleaning up the authn session attributes...");
-				this.httpSession
-						.removeAttribute(AuthenticationDataMessageHandler.AUTHENTICATED_USER_IDENTIFIER_SESSION_ATTRIBUTE);
-				this.httpSession.removeAttribute(IdentityDataMessageHandler.IDENTITY_SESSION_ATTRIBUTE);
-				this.httpSession.removeAttribute(IdentityDataMessageHandler.ADDRESS_SESSION_ATTRIBUTE);
-				this.httpSession.removeAttribute(IdentityDataMessageHandler.PHOTO_SESSION_ATTRIBUTE);
-				this.httpSession.removeAttribute(IdentityDataMessageHandler.EID_DATA_IDENTITY_SESSION_ATTRIBUTE);
-				this.httpSession.removeAttribute(IdentityDataMessageHandler.EID_DATA_ADDRESS_SESSION_ATTRIBUTE);
-				EIdData eidData = (EIdData) this.httpSession.getAttribute(IdentityDataMessageHandler.EID_SESSION_ATTRIBUTE);
-				if (eidData != null) {
-					eidData.identifier = null;
-					eidData.identity = null;
-					eidData.address = null;
-					eidData.photo = null;
-					eidData.certs = null;
-				}
-				break;
-			}
+		if (newProtocolState == ProtocolState.AUTHENTICATE) {
+			LOG.debug("cleaning up the authn session attributes...");
+			this.httpSession.removeAttribute(AuthenticationDataMessageHandler.AUTHENTICATED_USER_IDENTIFIER_SESSION_ATTRIBUTE);
 		}
 	}
 

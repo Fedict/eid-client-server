@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 public class PhotoServlet extends HttpServlet {
 
@@ -31,19 +32,13 @@ public class PhotoServlet extends HttpServlet {
 		response.setHeader("Pragma", "no-cache, no-store"); // http 1.0
 		response.setDateHeader("Expires", -1);
 
-		IdentityServiceImpl identityService = IdentityServiceImpl.INSTANCE;
-		if (identityService == null) {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			return;
-		}
-
-		String requestId = request.getParameter("requestId");
-		if (requestId == null || identityService.getPhoto(requestId)==null) {
+		Optional<byte[]> photo = ResultExtractor.getPhoto(request);
+		if (!photo.isPresent()) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
 
 		response.setStatus(HttpServletResponse.SC_OK);
-		response.getOutputStream().write(identityService.getPhoto(requestId));
+		response.getOutputStream().write(photo.get());
 	}
 }

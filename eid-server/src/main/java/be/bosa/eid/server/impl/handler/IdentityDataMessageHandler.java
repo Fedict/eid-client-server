@@ -21,10 +21,7 @@ import be.bosa.eid.client_server.shared.message.ErrorCode;
 import be.bosa.eid.client_server.shared.message.FinishedMessage;
 import be.bosa.eid.client_server.shared.message.IdentityDataMessage;
 import be.bosa.eid.server.Address;
-import be.bosa.eid.server.EIdCertsData;
-import be.bosa.eid.server.EIdData;
 import be.bosa.eid.server.Identity;
-import be.bosa.eid.server.dto.DTOMapper;
 import be.bosa.eid.server.impl.RequestContext;
 import be.bosa.eid.server.impl.ServiceLocator;
 import be.bosa.eid.server.impl.tlv.TlvParser;
@@ -32,9 +29,9 @@ import be.bosa.eid.server.spi.AddressDTO;
 import be.bosa.eid.server.spi.AuditService;
 import be.bosa.eid.server.spi.CertificateSecurityException;
 import be.bosa.eid.server.spi.ExpiredCertificateSecurityException;
+import be.bosa.eid.server.spi.IdentityConsumerService;
 import be.bosa.eid.server.spi.IdentityDTO;
 import be.bosa.eid.server.spi.IdentityIntegrityService;
-import be.bosa.eid.server.spi.IdentityService;
 import be.bosa.eid.server.spi.RevokedCertificateSecurityException;
 import be.bosa.eid.server.spi.TrustCertificateSecurityException;
 import org.apache.commons.codec.binary.Hex;
@@ -74,24 +71,11 @@ public class IdentityDataMessageHandler implements MessageHandler<IdentityDataMe
 
 	private static final Log LOG = LogFactory.getLog(IdentityDataMessageHandler.class);
 
-	public static final String IDENTITY_SESSION_ATTRIBUTE = "eid.identity";
-	public static final String ADDRESS_SESSION_ATTRIBUTE = "eid.address";
-	public static final String PHOTO_SESSION_ATTRIBUTE = "eid.photo";
-	public static final String EID_SESSION_ATTRIBUTE = "eid";
-	public static final String EID_CERTS_SESSION_ATTRIBUTE = "eid.certs";
-	public static final String AUTHN_CERT_SESSION_ATTRIBUTE = "eid.certs.authn";
-	public static final String SIGN_CERT_SESSION_ATTRIBUTE = "eid.certs.sign";
-	public static final String CA_CERT_SESSION_ATTRIBUTE = "eid.certs.ca";
-
 	/**
 	 * Please use ROOT_CERT_SESSION_ATTRIBUTE instead.
 	 */
-	public static final String ROOT_CERT_SESSION_ATTRIBTUE = "eid.certs.root";
-	public static final String ROOT_CERT_SESSION_ATTRIBUTE = "eid.certs.root";
 	public static final String SKIP_NATIONAL_NUMBER_CHECK_INIT_PARAM_NAME = "SkipNationalNumberCheck";
 	public static final String INCLUDE_DATA_FILES = "IncludeDataFiles";
-	public static final String EID_DATA_IDENTITY_SESSION_ATTRIBUTE = "eid.data.identity";
-	public static final String EID_DATA_ADDRESS_SESSION_ATTRIBUTE = "eid.data.address";
 
 	@InitParam(SKIP_NATIONAL_NUMBER_CHECK_INIT_PARAM_NAME)
 	private boolean skipNationalNumberCheck;
@@ -102,11 +86,8 @@ public class IdentityDataMessageHandler implements MessageHandler<IdentityDataMe
 	@InitParam(AuthenticationDataMessageHandler.AUDIT_SERVICE_INIT_PARAM_NAME)
 	private ServiceLocator<AuditService> auditServiceLocator;
 
-	@InitParam(HelloMessageHandler.IDENTITY_SERVICE_INIT_PARAM_NAME)
-	private ServiceLocator<IdentityService> identityServiceLocator;
-
-	@InitParam(INCLUDE_DATA_FILES)
-	private boolean includeDataFiles;
+	@InitParam(HelloMessageHandler.IDENTITY_CONSUMER_INIT_PARAM_NAME)
+	private ServiceLocator<IdentityConsumerService> identityConsumerLocator;
 
 	public Object handleMessage(IdentityDataMessage message, Map<String, String> httpHeaders,
 								HttpServletRequest request, HttpSession session) throws ServletException {
@@ -173,11 +154,9 @@ public class IdentityDataMessageHandler implements MessageHandler<IdentityDataMe
 			 */
 			X509Certificate rrnCertificate = getCertificate(message.rrnCertFile);
 			PublicKey rrnPublicKey = rrnCertificate.getPublicKey();
-			verifySignature(rrnCertificate.getSigAlgName(), message.identitySignatureFile, rrnPublicKey, request,
-					message.idFile);
+			verifySignature(rrnCertificate.getSigAlgName(), message.identitySignatureFile, rrnPublicKey, request, message.idFile);
 			if (!this.skipNationalNumberCheck) {
-				String authnUserId = (String) session
-						.getAttribute(AuthenticationDataMessageHandler.AUTHENTICATED_USER_IDENTIFIER_SESSION_ATTRIBUTE);
+				String authnUserId = (String) session.getAttribute(AuthenticationDataMessageHandler.AUTHENTICATED_USER_IDENTIFIER_SESSION_ATTRIBUTE);
 				if (authnUserId != null) {
 					if (!authnUserId.equals(identity.nationalNumber)) {
 						throw new ServletException("national number mismatch");
@@ -263,56 +242,20 @@ public class IdentityDataMessageHandler implements MessageHandler<IdentityDataMe
 		}
 
 		// push the identity into the session
-		Optional<IdentityService> identityService = Optional.ofNullable(identityServiceLocator.locateService());
-		session.setAttribute(IDENTITY_SESSION_ATTRIBUTE, identity);
+		Optional<IdentityConsumerService> identityService = Optional.ofNullable(identityConsumerLocator.locateService());
 		String requestId = (String) session.getAttribute(HelloMessageHandler.REQUEST_ID_ATTRIBUTE);
-		identityService.ifPresent(service -> service.setIdentity(requestId, map(identity, IdentityDTO.class)));
+		identityService.ifPresent(service -> service.setIdentity(requestId, Util.map(identity, IdentityDTO.class)));
 		if (address != null) {
-			session.setAttribute(ADDRESS_SESSION_ATTRIBUTE, address);
-			identityService.ifPresent(service -> service.setAddress(requestId, map(address, AddressDTO.class)));
+			identityService.ifPresent(service -> service.setAddress(requestId, Util.map(address, AddressDTO.class)));
 
 		}
 		if (message.photoFile != null) {
-			session.setAttribute(PHOTO_SESSION_ATTRIBUTE, message.photoFile);
 			identityService.ifPresent(service -> service.setPhoto(requestId, message.photoFile));
 		}
 
 		if (includeCertificates) {
-			session.setAttribute(AUTHN_CERT_SESSION_ATTRIBUTE, authnCert);
-			session.setAttribute(SIGN_CERT_SESSION_ATTRIBUTE, signCert);
-			session.setAttribute(CA_CERT_SESSION_ATTRIBUTE, caCert);
-			session.setAttribute(ROOT_CERT_SESSION_ATTRIBUTE, rootCert);
 			identityService.ifPresent(service -> service.setCertificates(requestId, authnCert, signCert, caCert, rootCert));
 
-		}
-
-		EIdData eidData = (EIdData) session.getAttribute(EID_SESSION_ATTRIBUTE);
-		if (eidData == null) {
-			eidData = new EIdData();
-			session.setAttribute(EID_SESSION_ATTRIBUTE, eidData);
-		}
-		eidData.identity = identity;
-		eidData.address = address;
-		eidData.photo = message.photoFile;
-		if (includeCertificates) {
-			EIdCertsData eidCertsData = new EIdCertsData();
-			session.setAttribute(EID_CERTS_SESSION_ATTRIBUTE, eidCertsData);
-			eidData.certs = eidCertsData;
-
-			eidCertsData.authn = authnCert;
-			eidCertsData.sign = signCert;
-			eidCertsData.ca = caCert;
-			eidCertsData.root = rootCert;
-
-			session.setAttribute(AUTHN_CERT_SESSION_ATTRIBUTE, authnCert);
-			session.setAttribute(SIGN_CERT_SESSION_ATTRIBUTE, signCert);
-			session.setAttribute(CA_CERT_SESSION_ATTRIBUTE, caCert);
-			session.setAttribute(ROOT_CERT_SESSION_ATTRIBUTE, rootCert);
-		}
-
-		if (this.includeDataFiles) {
-			session.setAttribute(EID_DATA_IDENTITY_SESSION_ATTRIBUTE, message.idFile);
-			session.setAttribute(EID_DATA_ADDRESS_SESSION_ATTRIBUTE, message.addressFile);
 		}
 
 		AuditService auditService = this.auditServiceLocator.locateService();
@@ -322,10 +265,6 @@ public class IdentityDataMessageHandler implements MessageHandler<IdentityDataMe
 		}
 
 		return new FinishedMessage();
-	}
-
-	private <T> T map(Object object, Class<T> toClass) {
-		return new DTOMapper().map(object, toClass);
 	}
 
 	private byte[] trimRight(byte[] addressFile) {

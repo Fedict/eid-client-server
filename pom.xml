@@ -86,7 +86,6 @@
 		<version.commons-compress>1.15</version.commons-compress>
 		<version.org.apache.httpcomponents>4.5.4</version.org.apache.httpcomponents>
 		<version.org.apache.poi>3.17</version.org.apache.poi>
-		<version.org.json>20171018</version.org.json>
 
 		<version.junit>4.12</version.junit>
 		<version.org.mockito>1.10.19</version.org.mockito>
@@ -350,11 +349,6 @@
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
 				<version>${version.org.apache.httpcomponents}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.json</groupId>
-				<artifactId>json</artifactId>
-				<version>${version.org.json}</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-cli</groupId>
