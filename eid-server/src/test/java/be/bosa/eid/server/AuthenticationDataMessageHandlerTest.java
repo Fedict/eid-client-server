@@ -96,7 +96,7 @@ public class AuthenticationDataMessageHandlerTest {
 
 		AuthenticationContract authenticationContract = new AuthenticationContract(salt, null, null, sessionId, null, challenge);
 		byte[] toBeSigned = authenticationContract.calculateToBeSigned();
-		Signature signature = Signature.getInstance("SHA1withRSA");
+		Signature signature = Signature.getInstance("SHA256withRSA");
 		signature.initSign(keyPair.getPrivate());
 		signature.update(toBeSigned);
 		message.signatureValue = signature.sign();
@@ -141,7 +141,7 @@ public class AuthenticationDataMessageHandlerTest {
 		when(mockServletRequest.getAttribute("javax.servlet.request.ssl_session")).thenReturn(new String(Hex.encodeHex(sessionId)));
 		when(mockServletRequest.getRemoteAddr()).thenReturn("1.2.3.4");
 
-		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, testHttpSession);
 
@@ -178,7 +178,7 @@ public class AuthenticationDataMessageHandlerTest {
 		AuthenticationContract authenticationContract = new AuthenticationContract(salt, null, null, sessionId, null,
 				challenge);
 		byte[] toBeSigned = authenticationContract.calculateToBeSigned();
-		Signature signature = Signature.getInstance("SHA1withRSA");
+		Signature signature = Signature.getInstance("SHA256withRSA");
 		signature.initSign(keyPair.getPrivate());
 		signature.update(toBeSigned);
 		message.signatureValue = signature.sign();
@@ -223,7 +223,7 @@ public class AuthenticationDataMessageHandlerTest {
 		when(mockServletConfig.getInitParameter(AuthenticationDataMessageHandler.AUTHN_SIGNATURE_SERVICE_INIT_PARAM_NAME + "Class"))
 				.thenReturn(null);
 
-		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, testHttpSession);
 
@@ -263,7 +263,7 @@ public class AuthenticationDataMessageHandlerTest {
 
 		AuthenticationContract authenticationContract = new AuthenticationContract(salt, null, null, sessionId, null, challenge);
 		byte[] toBeSigned = authenticationContract.calculateToBeSigned();
-		Signature signature = Signature.getInstance("SHA1withRSA");
+		Signature signature = Signature.getInstance("SHA256withRSA");
 		signature.initSign(keyPair.getPrivate());
 		signature.update(toBeSigned);
 		message.signatureValue = signature.sign();
@@ -309,7 +309,7 @@ public class AuthenticationDataMessageHandlerTest {
 		when(mockServletConfig.getInitParameter(AuthenticationDataMessageHandler.AUTHN_SIGNATURE_SERVICE_INIT_PARAM_NAME + "Class"))
 				.thenReturn(null);
 
-		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		try {
 			this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, testHttpSession);
@@ -350,7 +350,7 @@ public class AuthenticationDataMessageHandlerTest {
 		AuthenticationContract authenticationContract = new AuthenticationContract(salt, null, null,
 				sessionId, null, "foobar-challenge".getBytes());
 		byte[] toBeSigned = authenticationContract.calculateToBeSigned();
-		Signature signature = Signature.getInstance("SHA1withRSA");
+		Signature signature = Signature.getInstance("SHA256withRSA");
 		signature.initSign(keyPair.getPrivate());
 		signature.update(toBeSigned);
 		message.signatureValue = signature.sign();
@@ -396,7 +396,7 @@ public class AuthenticationDataMessageHandlerTest {
 		when(mockServletRequest.getAttribute("javax.servlet.request.ssl_session")).thenReturn(new String(Hex.encodeHex(sessionId)));
 		when(mockServletRequest.getRemoteAddr()).thenReturn(REMOTE_ADDRESS);
 
-		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 
 		try {
@@ -438,7 +438,7 @@ public class AuthenticationDataMessageHandlerTest {
 		AuthenticationContract authenticationContract = new AuthenticationContract(SALT, null, null,
 				SESSION_ID, null, challenge);
 		byte[] toBeSigned = authenticationContract.calculateToBeSigned();
-		Signature signature = Signature.getInstance("SHA1withRSA");
+		Signature signature = Signature.getInstance("SHA256withRSA");
 		signature.initSign(keyPair.getPrivate());
 		signature.update(toBeSigned);
 		message.signatureValue = signature.sign();
@@ -487,7 +487,7 @@ public class AuthenticationDataMessageHandlerTest {
 		when(mockServletConfig.getInitParameter(IdentityDataMessageHandler.INCLUDE_DATA_FILES)).thenReturn(null);
 		when(mockServletRequest.getRemoteAddr()).thenReturn(REMOTE_ADDRESS);
 
-		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, testHttpSession);
 

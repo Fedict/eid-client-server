@@ -89,7 +89,7 @@ public class IdentityDataMessageHandlerTest {
 		IdentityDataMessage message = new IdentityDataMessage();
 		message.idFile = idFile;
 
-		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, mockHttpSession);
 
@@ -138,7 +138,7 @@ public class IdentityDataMessageHandlerTest {
 		message.rrnCertFile = rrnCertificate.getEncoded();
 		message.rootCertFile = rootCertificate.getEncoded();
 
-		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		this.testedInstance.handleMessage(message, new HashMap<>(), mockServletRequest, mockHttpSession);
 
@@ -184,7 +184,7 @@ public class IdentityDataMessageHandlerTest {
 		message.identitySignatureFile = signature.sign();
 		message.rrnCertFile = certificate.getEncoded();
 
-		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		try {
 			this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, mockHttpSession);
@@ -230,7 +230,7 @@ public class IdentityDataMessageHandlerTest {
 		message.identitySignatureFile = "foobar-signature".getBytes();
 		message.rrnCertFile = certificate.getEncoded();
 
-		EidServerServlet.injectInitParams(mockServletConfig, this.testedInstance);
+		EidServiceServlet.injectInitParams(mockServletConfig, this.testedInstance);
 		this.testedInstance.init(mockServletConfig);
 		try {
 			this.testedInstance.handleMessage(message, httpHeaders, mockServletRequest, mockHttpSession);

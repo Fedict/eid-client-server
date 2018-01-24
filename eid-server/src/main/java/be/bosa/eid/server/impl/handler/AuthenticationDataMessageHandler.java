@@ -204,7 +204,7 @@ public class AuthenticationDataMessageHandler implements MessageHandler<Authenti
 		byte[] toBeSigned = authenticationContract.calculateToBeSigned();
 
 		try {
-			Signature signature = Signature.getInstance("SHA1withRSA");
+			Signature signature = Signature.getInstance("SHA256withRSA");
 			signature.initVerify(signingKey);
 			signature.update(toBeSigned);
 			if (!signature.verify(signatureValue)) {
@@ -216,11 +216,11 @@ public class AuthenticationDataMessageHandler implements MessageHandler<Authenti
 				throw new SecurityException("authn signature incorrect");
 			}
 		} catch (NoSuchAlgorithmException e) {
-			throw new SecurityException("algo error");
+			throw new SecurityException("algo error", e);
 		} catch (InvalidKeyException e) {
-			throw new SecurityException("authn key error");
+			throw new SecurityException("authn key error", e);
 		} catch (SignatureException e) {
-			throw new SecurityException("signature error");
+			throw new SecurityException("signature error", e);
 		}
 
 		RequestContext requestContext = new RequestContext(session);

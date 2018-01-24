@@ -164,7 +164,7 @@ public class EIdServerServletTest {
 	@Before
 	public void setUp() throws Exception {
 		this.servletTester = new ServletTester();
-		this.servletTester.addServlet(EidServerServlet.class, "/");
+		this.servletTester.addServlet(EidServiceServlet.class, "/");
 
 		Security.addProvider(new BouncyCastleProvider());
 

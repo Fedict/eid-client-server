@@ -46,14 +46,14 @@ import java.util.Map;
 
 /**
  * The eID server service abstract Servlet. This abstract servlet is the basis
- * for the classic Java EE 5 EidServerServlet, and the Java EE 6 CDI based
+ * for the classic Java EE 5 EidServiceServlet, and the Java EE 6 CDI based
  * version.
  *
  * @author Frank Cornelis
  */
-public abstract class AbstractEidServerServlet extends HttpServlet {
+public abstract class AbstractEidServiceServlet extends HttpServlet {
 
-	private static final Log LOG = LogFactory.getLog(AbstractEidServerServlet.class);
+	private static final Log LOG = LogFactory.getLog(AbstractEidServiceServlet.class);
 
 	private Unmarshaller unmarshaller;
 
@@ -61,7 +61,7 @@ public abstract class AbstractEidServerServlet extends HttpServlet {
 
 	private boolean skipSecureConnectionCheck;
 
-	public AbstractEidServerServlet() {
+	public AbstractEidServiceServlet() {
 		super();
 		LOG.debug("constructor");
 	}

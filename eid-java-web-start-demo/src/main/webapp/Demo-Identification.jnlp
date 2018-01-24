@@ -16,7 +16,7 @@
   ~ along with this software; if not, see https://www.gnu.org/licenses/.
   -->
 
-<jnlp spec="1.7+" codebase="https://localhost:8443/" href="Demo.jnlp">
+<jnlp spec="1.7+" codebase="https://localhost:8443/" href="Demo-Identification.jnlp">
 	<information>
 		<title>eID Java Web Start</title>
 		<vendor>BOSA</vendor>
@@ -32,7 +32,7 @@
 	</resources>
 	<application-desc name="eID Client" main-class="be.bosa.eid.client.javawebstart.JavaWebStartApplication">
 		<argument>--language=nl</argument>
-		<argument>--eidServerUrl=https://localhost:8443/applet-identification-service</argument>
+		<argument>--eidServerUrl=https://localhost:8443/eid-identification-service</argument>
 		<argument>--targetPage=https://localhost:8443/result.jsp</argument>
 	</application-desc>
 </jnlp>

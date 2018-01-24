@@ -20,6 +20,7 @@
   --%>
 
 <%
+	Optional<String> userId = ResultExtractor.getUserId(request);
 	Optional<IdentityDTO> identity = ResultExtractor.getIdentity(request);
 	Optional<AddressDTO> address = ResultExtractor.getAddress(request);
 %>
@@ -33,12 +34,12 @@
 
 <h2>Your information</h2>
 <p>
+	User id: <%= userId.orElse("") %><br/>
 	Name: <%= identity.map(IdentityDTO::getFirstName).orElse("") %> <%= identity.map(IdentityDTO::getName).orElse("") %><br>
 	Address: <%= address.map(AddressDTO::getStreetAndNumber).orElse("") %>, <%= address.map(AddressDTO::getZip).orElse("") %> <%= address.map(AddressDTO::getCity).orElse("") %>
 </p>
 
 <h2>Your picture</h2>
-
 <img src="photo?requestId=<%=request.getParameter("requestId")%>">
 
 <p>

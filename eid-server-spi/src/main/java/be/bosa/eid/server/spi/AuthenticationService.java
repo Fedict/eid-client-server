@@ -46,6 +46,5 @@ public interface AuthenticationService {
 	 * @throws SecurityException in case the certificate chain is invalid/not accepted.
 	 */
 	// FIXME jTrust / eid-trust no longer available.
-	void validateCertificateChain(List<X509Certificate> certificateChain)
-			throws SecurityException;
+	void validateCertificateChain(List<X509Certificate> certificateChain) throws SecurityException;
 }

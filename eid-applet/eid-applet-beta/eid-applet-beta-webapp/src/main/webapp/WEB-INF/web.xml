@@ -60,7 +60,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>AppletIdentificationServiceServlet</servlet-name>
-		<url-pattern>/applet-identification-service</url-pattern>
+		<url-pattern>/eid-identification-service</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
@@ -85,7 +85,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>AppletAuthenticationServiceServlet</servlet-name>
-		<url-pattern>/applet-authentication-service</url-pattern>
+		<url-pattern>/eid-authentication-service</url-pattern>
 	</servlet-mapping>
 
 	<servlet>

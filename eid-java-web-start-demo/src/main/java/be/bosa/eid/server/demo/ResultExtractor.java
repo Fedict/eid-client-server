@@ -27,19 +27,23 @@ import java.util.function.BiFunction;
 public class ResultExtractor {
 
 	public static Optional<IdentityDTO> getIdentity(HttpServletRequest request) {
-		return getFromIdentityService(request, IdentityConsumerServiceImpl::getIdentity);
+		return getFromIdentityConsumerService(request, IdentityConsumerServiceImpl::getIdentity);
 	}
 
 	public static Optional<AddressDTO> getAddress(HttpServletRequest request) {
-		return getFromIdentityService(request, IdentityConsumerServiceImpl::getAddress);
+		return getFromIdentityConsumerService(request, IdentityConsumerServiceImpl::getAddress);
 
 	}
 
 	public static Optional<byte[]> getPhoto(HttpServletRequest request) {
-		return getFromIdentityService(request, IdentityConsumerServiceImpl::getPhoto);
+		return getFromIdentityConsumerService(request, IdentityConsumerServiceImpl::getPhoto);
 	}
 
-	private static <T> Optional<T> getFromIdentityService(HttpServletRequest request, BiFunction<IdentityConsumerServiceImpl, String, T> extractor) {
+	public static Optional<String> getUserId(HttpServletRequest request) {
+		return getFromIdentityConsumerService(request, IdentityConsumerServiceImpl::getUserId);
+	}
+
+	private static <T> Optional<T> getFromIdentityConsumerService(HttpServletRequest request, BiFunction<IdentityConsumerServiceImpl, String, T> extractor) {
 		String requestId = request.getParameter("requestId");
 		IdentityConsumerServiceImpl identityService = IdentityConsumerServiceImpl.INSTANCE;
 		if (requestId == null || identityService == null) {
