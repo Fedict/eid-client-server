@@ -30,7 +30,7 @@ public interface Runtime {
 
 	Optional<String> getForegroundColor();
 
-	void gotoTargetPage();
+	void gotoTargetPage(String requestId);
 
 	void gotoCancelPage();
 
@@ -39,5 +39,7 @@ public interface Runtime {
 	URL getCodeBase();
 
 	void copyToClipboard(String text);
+
+	void exitApplication();
 
 }

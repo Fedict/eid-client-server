@@ -29,4 +29,16 @@ public class AddressDTO implements Serializable {
 	public String streetAndNumber;
 	public String zip;
 	public String city;
+
+	public String getStreetAndNumber() {
+		return streetAndNumber;
+	}
+
+	public String getZip() {
+		return zip;
+	}
+
+	public String getCity() {
+		return city;
+	}
 }

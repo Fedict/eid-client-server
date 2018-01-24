@@ -38,17 +38,17 @@ public interface IdentityService {
 	/**
 	 * Callback that supplies the identity of a specific client. This should be cached for later usage.
 	 */
-	void setIdentity(String sessionId, IdentityDTO identity);
+	void setIdentity(String requestId, IdentityDTO identity);
 
 	/**
 	 * Callback that supplies the address of a specific client. This should be cached for later usage.
 	 */
-	void setAddress(String sessionId, AddressDTO address);
+	void setAddress(String requestId, AddressDTO address);
 
 	/**
 	 * Callback that supplies the photo of a specific client. This should be cached for later usage.
 	 */
-	void setPhoto(String sessionId, byte[] photo);
+	void setPhoto(String requestId, byte[] photo);
 
 	/**
 	 * Callback that supplies the certificates of a specific client. This should be cached for later usage.

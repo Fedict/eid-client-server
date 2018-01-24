@@ -34,7 +34,7 @@ import java.util.Locale;
  */
 public class EidClientFrame extends JFrame implements View {
 
-	private final be.bosa.eid.client.core.Runtime runtime;
+	private final Runtime runtime;
 
 	private JStatusLabel statusLabel;
 	private JTextArea detailMessages;
@@ -42,7 +42,7 @@ public class EidClientFrame extends JFrame implements View {
 	private JProgressBar progressBar;
 	private int progress;
 
-	public EidClientFrame(be.bosa.eid.client.core.Runtime runtime) {
+	public EidClientFrame(Runtime runtime) {
 		this.runtime = runtime;
 		invokeAndWait(this::initUI);
 	}
@@ -194,7 +194,7 @@ public class EidClientFrame extends JFrame implements View {
 
 	@Override
 	public boolean askPrivacyQuestion(BeIDCard beIDCard, boolean includeAddress, boolean includePhoto, String identityDataUsage) {
-		String message = String.format("%s\n%s: $%s",
+		String message = String.format("%s\n%s: %s",
 				messages.getMessage(MESSAGE_ID.PRIVACY_QUESTION),
 				messages.getMessage(MESSAGE_ID.IDENTITY_INFO),
 				messages.getMessage(MESSAGE_ID.IDENTITY_IDENTITY));
@@ -241,8 +241,10 @@ public class EidClientFrame extends JFrame implements View {
 	}
 
 	private boolean showConfirmDialogWithoutExclusiveAccess(BeIDCard card, Object message, String title) {
+		boolean hasExclusive = card.hasExclusive();
+
 		try {
-			card.endExclusive();
+			if (hasExclusive) card.endExclusive();
 		} catch (BeIDException e) {
 			addDetailMessage("Could not end exclusive card access");
 			return false;
@@ -253,7 +255,7 @@ public class EidClientFrame extends JFrame implements View {
 			return dialogResult == JOptionPane.YES_OPTION;
 		} finally {
 			try {
-				card.beginExclusive();
+				if (hasExclusive) card.beginExclusive();
 			} catch (BeIDException e) {
 				addDetailMessage("Could not acquire exclusive card access");
 

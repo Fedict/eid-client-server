@@ -265,15 +265,16 @@ public class IdentityDataMessageHandler implements MessageHandler<IdentityDataMe
 		// push the identity into the session
 		Optional<IdentityService> identityService = Optional.ofNullable(identityServiceLocator.locateService());
 		session.setAttribute(IDENTITY_SESSION_ATTRIBUTE, identity);
-		identityService.ifPresent(service -> service.setIdentity(session.getId(), map(identity, IdentityDTO.class)));
+		String requestId = (String) session.getAttribute(HelloMessageHandler.REQUEST_ID_ATTRIBUTE);
+		identityService.ifPresent(service -> service.setIdentity(requestId, map(identity, IdentityDTO.class)));
 		if (address != null) {
 			session.setAttribute(ADDRESS_SESSION_ATTRIBUTE, address);
-			identityService.ifPresent(service -> service.setAddress(session.getId(), map(address, AddressDTO.class)));
+			identityService.ifPresent(service -> service.setAddress(requestId, map(address, AddressDTO.class)));
 
 		}
 		if (message.photoFile != null) {
 			session.setAttribute(PHOTO_SESSION_ATTRIBUTE, message.photoFile);
-			identityService.ifPresent(service -> service.setPhoto(session.getId(), message.photoFile));
+			identityService.ifPresent(service -> service.setPhoto(requestId, message.photoFile));
 		}
 
 		if (includeCertificates) {
@@ -281,7 +282,7 @@ public class IdentityDataMessageHandler implements MessageHandler<IdentityDataMe
 			session.setAttribute(SIGN_CERT_SESSION_ATTRIBUTE, signCert);
 			session.setAttribute(CA_CERT_SESSION_ATTRIBUTE, caCert);
 			session.setAttribute(ROOT_CERT_SESSION_ATTRIBUTE, rootCert);
-			identityService.ifPresent(service -> service.setCertificates(session.getId(), authnCert, signCert, caCert, rootCert));
+			identityService.ifPresent(service -> service.setCertificates(requestId, authnCert, signCert, caCert, rootCert));
 
 		}
 

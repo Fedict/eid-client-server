@@ -104,13 +104,22 @@
 	<dependencies>
 		<dependency>
 			<groupId>be.bosa.eid-client-server</groupId>
-			<artifactId>eid-client-java-web-start-signed</artifactId>
+			<artifactId>eid-server</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-maven-plugin</artifactId>
-			<version>9.4.8.v20171121</version>
+			<groupId>be.bosa.eid-client-server</groupId>
+			<artifactId>eid-server-spi</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>be.bosa.eid-client-server</groupId>
+			<artifactId>eid-client-java-web-start-signed</artifactId>
 		</dependency>
 	</dependencies>
 

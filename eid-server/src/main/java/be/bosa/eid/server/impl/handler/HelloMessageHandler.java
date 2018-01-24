@@ -146,7 +146,7 @@ public class HelloMessageHandler implements MessageHandler<HelloMessage> {
 								HttpSession session) throws ServletException {
 		LOG.debug("hello message received");
 
-		storeClientLanguage(message.language, session);
+		storeClientLanguageAndRequestId(message, session);
 
 		SecureClientEnvironmentService secureClientEnvService = this.secureClientEnvServiceLocator.locateService();
 		if (secureClientEnvService != null) {
@@ -301,11 +301,13 @@ public class HelloMessageHandler implements MessageHandler<HelloMessage> {
 				includeIntegrityData, includeCertificates, removeCard, identityDataUsage);
 	}
 
-	private static final String CLIENT_LANGUAGE_SESSION_ATTRIBUTE = HelloMessageHandler.class.getName()
-			+ ".clientLanguage";
+	private static final String CLIENT_LANGUAGE_SESSION_ATTRIBUTE = HelloMessageHandler.class.getName() + ".clientLanguage";
 
-	private void storeClientLanguage(String language, HttpSession httpSession) {
-		httpSession.setAttribute(CLIENT_LANGUAGE_SESSION_ATTRIBUTE, language);
+	public static final String REQUEST_ID_ATTRIBUTE = HelloMessageHandler.class.getName() + ".requestId";
+
+	private void storeClientLanguageAndRequestId(HelloMessage message, HttpSession httpSession) {
+		httpSession.setAttribute(CLIENT_LANGUAGE_SESSION_ATTRIBUTE, message.language);
+		httpSession.setAttribute(REQUEST_ID_ATTRIBUTE, message.requestId);
 	}
 
 	public static String getClientLanguage(HttpSession httpSession) {

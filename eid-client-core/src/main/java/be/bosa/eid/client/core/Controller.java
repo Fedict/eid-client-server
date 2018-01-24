@@ -81,6 +81,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Controller component. Contains the eID logic. Interacts with {@link View} and
@@ -98,6 +99,7 @@ public class Controller {
 	private final BeIDCards beIDCards;
 	private final ProtocolStateMachine protocolStateMachine;
 	private static final int BUFFER_SIZE = 1024 * 10;
+	private final String requestId;
 
 	public Controller(EidClientFrame view, Runtime runtime) {
 		this.view = view;
@@ -105,6 +107,7 @@ public class Controller {
 
 		this.beIDCards = new BeIDCards(new DefaultBeIDCardsUI());
 		this.protocolStateMachine = new ProtocolStateMachine(new LocalProtocolContext(view));
+		this.requestId = UUID.randomUUID().toString();
 	}
 
 	private Object sendMessage(Object message) throws IOException, ProtocolException {
@@ -174,6 +177,8 @@ public class Controller {
 		} catch (Throwable t) {
 			showError(t);
 		}
+
+		delayedClose();
 	}
 
 	private boolean hasSmartCardPermission() {
@@ -221,7 +226,7 @@ public class Controller {
 
 		try {
 			String language = runtime.getLanguage().orElse("en");
-			HelloMessage helloMessage = new HelloMessage(language);
+			HelloMessage helloMessage = new HelloMessage(language, requestId);
 			Object resultMessage = sendMessage(helloMessage);
 			if (resultMessage instanceof CheckClientMessage) {
 				addDetailMessage("Need to check the client secure environment...");
@@ -354,12 +359,21 @@ public class Controller {
 			return;
 		} catch (Throwable e) {
 			showError(e);
-
 			return;
 		}
 
 		setStatusMessage(Status.NORMAL, MESSAGE_ID.DONE);
-		this.runtime.gotoTargetPage();
+		this.runtime.gotoTargetPage(requestId);
+	}
+
+	private void delayedClose() {
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// ignore since we are closing
+		}
+
+		runtime.exitApplication();
 	}
 
 	private void showError(Throwable e) {

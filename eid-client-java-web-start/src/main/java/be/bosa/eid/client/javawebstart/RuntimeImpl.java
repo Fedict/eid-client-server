@@ -28,8 +28,10 @@ import javax.jnlp.ClipboardService;
 import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;
 import java.awt.datatransfer.StringSelection;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
@@ -95,8 +97,16 @@ public class RuntimeImpl implements Runtime {
 	}
 
 	@Override
-	public void gotoTargetPage() {
-		getOptionalArgument(TARGET_PAGE).ifPresent(this::goToPage);
+	public void gotoTargetPage(String requestId) {
+		getOptionalArgument(TARGET_PAGE).map(url -> addRequestIdToUrl(url, requestId)).ifPresent(this::goToPage);
+	}
+
+	private String addRequestIdToUrl(String url, String requestId) {
+		try {
+			return String.format("%s?requestId=%s", url, URLEncoder.encode(requestId, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -117,6 +127,11 @@ public class RuntimeImpl implements Runtime {
 	@Override
 	public void copyToClipboard(String text) {
 		getClipboardService().setContents(new StringSelection(text));
+	}
+
+	@Override
+	public void exitApplication() {
+		System.exit(0);
 	}
 
 	private void goToPage(String url) {

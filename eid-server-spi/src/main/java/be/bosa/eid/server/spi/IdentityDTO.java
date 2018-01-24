@@ -44,4 +44,67 @@ public class IdentityDTO implements Serializable {
 	public String nobleCondition;
 	public String duplicate;
 
+	public String getCardNumber() {
+		return cardNumber;
+	}
+
+	public String getChipNumber() {
+		return chipNumber;
+	}
+
+	public GregorianCalendar getCardValidityDateBegin() {
+		return cardValidityDateBegin;
+	}
+
+	public GregorianCalendar getCardValidityDateEnd() {
+		return cardValidityDateEnd;
+	}
+
+	public String getCardDeliveryMunicipality() {
+		return cardDeliveryMunicipality;
+	}
+
+	public String getNationalNumber() {
+		return nationalNumber;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public String getNationality() {
+		return nationality;
+	}
+
+	public String getPlaceOfBirth() {
+		return placeOfBirth;
+	}
+
+	public GregorianCalendar getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public boolean isMale() {
+		return male;
+	}
+
+	public boolean isFemale() {
+		return female;
+	}
+
+	public String getNobleCondition() {
+		return nobleCondition;
+	}
+
+	public String getDuplicate() {
+		return duplicate;
+	}
 }

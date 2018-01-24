@@ -41,11 +41,15 @@ public class HelloMessage extends AbstractProtocolMessage {
 	@HttpHeader(HTTP_HEADER_PREFIX + "Language")
 	public String language;
 
+	@HttpHeader(HTTP_HEADER_PREFIX + "RequestId")
+	public String requestId;
+
 	public HelloMessage() {
 		super();
 	}
 
-	public HelloMessage(String language) {
+	public HelloMessage(String language, String requestId) {
 		this.language = language;
+		this.requestId = requestId;
 	}
 }
