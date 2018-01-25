@@ -101,6 +101,10 @@ mvn jetty:run-war
 Then open your browser at [http://localhost:8080](http://localhost:8080/) or 
 [https://localhost:8443](https://localhost:8443/).
 
+# Further documentation
+
+More information can be found in the [dev-guide](docs/dev-guide.md).
+
 # To Do
 
 Although already a significant effort was taken in migrating the existing code base, 
