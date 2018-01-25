@@ -32,7 +32,7 @@
 	</resources>
 	<application-desc name="eID Client" main-class="be.bosa.eid.client.javawebstart.JavaWebStartApplication">
 		<argument>--language=nl</argument>
-		<argument>--eidServerUrl=https://localhost:8443/eid-authentication-service</argument>
+		<argument>--eidServiceUrl=https://localhost:8443/eid-authentication-service</argument>
 		<argument>--targetPage=https://localhost:8443/result.jsp</argument>
 	</application-desc>
 </jnlp>

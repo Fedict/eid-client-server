@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 import static be.bosa.eid.client.javawebstart.ArgumentDescriptor.AUTHORIZATION_ERROR_PAGE;
 import static be.bosa.eid.client.javawebstart.ArgumentDescriptor.BACKGROUND_COLOR;
 import static be.bosa.eid.client.javawebstart.ArgumentDescriptor.CANCEL_PAGE;
-import static be.bosa.eid.client.javawebstart.ArgumentDescriptor.EID_SERVER_URL;
+import static be.bosa.eid.client.javawebstart.ArgumentDescriptor.EID_SERVICE_URL;
 import static be.bosa.eid.client.javawebstart.ArgumentDescriptor.FOREGROUND_COLOR;
 import static be.bosa.eid.client.javawebstart.ArgumentDescriptor.LANGUAGE;
 import static be.bosa.eid.client.javawebstart.ArgumentDescriptor.TARGET_PAGE;
@@ -78,9 +78,9 @@ public class RuntimeImpl implements Runtime {
 	}
 
 	@Override
-	public URL getEidServerUrl() {
+	public URL getEidServiceUrl() {
 		try {
-			return new URL(getRequiredArgument(EID_SERVER_URL));
+			return new URL(getRequiredArgument(EID_SERVICE_URL));
 		} catch (MalformedURLException e) {
 			throw new IllegalArgumentException("Invalid eID Server URL", e);
 		}

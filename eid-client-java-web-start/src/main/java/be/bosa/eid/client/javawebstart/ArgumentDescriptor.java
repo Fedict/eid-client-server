@@ -21,7 +21,7 @@ import org.apache.commons.cli.Option;
 
 public enum ArgumentDescriptor {
 
-	EID_SERVER_URL("eidServerUrl", true),
+	EID_SERVICE_URL("eidServiceUrl", true),
 	LANGUAGE("language", false),
 	TARGET_PAGE("targetPage", false),
 	CANCEL_PAGE("cancelPage", false),

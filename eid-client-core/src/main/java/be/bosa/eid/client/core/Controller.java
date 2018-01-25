@@ -629,7 +629,7 @@ public class Controller {
 
 			String hostname;
 			if (authnRequest.includeHostname) {
-				URL documentBase = runtime.getEidServerUrl();
+				URL documentBase = runtime.getEidServiceUrl();
 				hostname = documentBase.getHost();
 				addDetailMessage("Hostname: " + hostname);
 			} else {
@@ -638,7 +638,7 @@ public class Controller {
 
 			InetAddress inetAddress;
 			if (authnRequest.includeInetAddress) {
-				URL documentBase = this.runtime.getEidServerUrl();
+				URL documentBase = this.runtime.getEidServiceUrl();
 				inetAddress = InetAddress.getByName(documentBase.getHost());
 				addDetailMessage("Inet address: " + inetAddress.getHostAddress());
 			} else {
@@ -767,7 +767,7 @@ public class Controller {
 		addDetailMessage("OS: " + System.getProperty("os.name"));
 		addDetailMessage("OS version: " + System.getProperty("os.version"));
 		addDetailMessage("OS arch: " + System.getProperty("os.arch"));
-		addDetailMessage("Web application URL: " + this.runtime.getEidServerUrl());
+		addDetailMessage("Web application URL: " + this.runtime.getEidServiceUrl());
 		addDetailMessage("Current time: " + new Date());
 	}
 
@@ -911,7 +911,7 @@ public class Controller {
 
 	private HttpURLConnection getServerConnection() throws IOException {
 		EIdClientSSLSocketFactory.installSocketFactory(this.view);
-		return (HttpURLConnection) runtime.getEidServerUrl().openConnection();
+		return (HttpURLConnection) runtime.getEidServiceUrl().openConnection();
 	}
 
 	private void setStatusMessage(Status status, Messages.MESSAGE_ID messageId) {

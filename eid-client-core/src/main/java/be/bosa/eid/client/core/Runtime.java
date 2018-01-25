@@ -24,7 +24,7 @@ public interface Runtime {
 
 	Optional<String> getLanguage();
 
-	URL getEidServerUrl();
+	URL getEidServiceUrl();
 
 	Optional<String> getBackgroundColor();
 
