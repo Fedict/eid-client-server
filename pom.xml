@@ -16,13 +16,12 @@
   ~ along with this software; if not, see https://www.gnu.org/licenses/.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>be.bosa.eid-client-server</groupId>
 	<artifactId>eid-client-server-parent</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>eID Java Web Start Parent</name>
 	<packaging>pom</packaging>
 
@@ -49,7 +48,7 @@
 	<scm>
 		<connection>scm:git:ssh://git@github.com/Fedict/eid-client-server.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/Fedict/eid-client-server.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>eid-client-server-parent-1.0.0</tag>
 	</scm>
 
 	<distributionManagement>
