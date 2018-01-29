@@ -70,7 +70,7 @@
 		<encoding>UTF-8</encoding>
 		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
 
-		<version.be.bosa.commons-eid>1.0.0</version.be.bosa.commons-eid>
+		<version.be.bosa.commons-eid>1.0.1</version.be.bosa.commons-eid>
 
 		<version.javax.servlet>3.1.0</version.javax.servlet>
 		<version.javax.security.jacc>1.5</version.javax.security.jacc>
