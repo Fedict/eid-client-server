@@ -21,7 +21,7 @@
 
 	<groupId>be.bosa.eid-client-server</groupId>
 	<artifactId>eid-client-server-parent</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>eID Java Web Start Parent</name>
 	<packaging>pom</packaging>
 
@@ -48,7 +48,7 @@
 	<scm>
 		<connection>scm:git:ssh://git@github.com/Fedict/eid-client-server.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/Fedict/eid-client-server.git</developerConnection>
-		<tag>eid-client-server-parent-1.0.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<distributionManagement>
