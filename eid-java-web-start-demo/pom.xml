@@ -1,17 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ eID Client - Server Project.
+  ~ Copyright (C) 2018 - 2018 BOSA.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it under the
+  ~ terms of the GNU Lesser General Public License version 3.0 as published by
+  ~ the Free Software Foundation.
+  ~
+  ~ This software is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+  ~ for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this software; if not, see https://www.gnu.org/licenses/.
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>be.bosa.eid-java-web-start</groupId>
-		<artifactId>parent</artifactId>
+		<groupId>be.bosa.eid-client-server</groupId>
+		<artifactId>eid-client-server-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>eid-java-web-start-demo</artifactId>
 	<packaging>war</packaging>
+	<name>Java Web Start Demo Web Application</name>
 
 	<build>
 		<plugins>
@@ -26,7 +44,7 @@
 						</goals>
 						<configuration>
 							<outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
-							<includeArtifactIds>eid-java-web-start-signed</includeArtifactIds>
+							<includeArtifactIds>eid-client-java-web-start-signed</includeArtifactIds>
 							<stripClassifier>true</stripClassifier>
 							<stripVersion>true</stripVersion>
 						</configuration>
@@ -37,7 +55,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<packagingExcludes>WEB-INF/lib/eid-java-web-start*.jar</packagingExcludes>
+					<packagingExcludes>
+						WEB-INF/lib/eid-client-java-web-start*.jar,
+						WEB-INF/lib/eid-client-core*.jar,
+						WEB-INF/lib/commons-eid-*</packagingExcludes>
 				</configuration>
 			</plugin>
 
@@ -82,14 +103,23 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>be.bosa.eid-java-web-start</groupId>
-			<artifactId>eid-java-web-start-signed</artifactId>
+			<groupId>be.bosa.eid-client-server</groupId>
+			<artifactId>eid-server</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-maven-plugin</artifactId>
-			<version>9.4.8.v20171121</version>
+			<groupId>be.bosa.eid-client-server</groupId>
+			<artifactId>eid-server-spi</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>be.bosa.eid-client-server</groupId>
+			<artifactId>eid-client-java-web-start-signed</artifactId>
 		</dependency>
 	</dependencies>
 

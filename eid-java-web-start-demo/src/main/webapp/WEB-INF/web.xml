@@ -1,6 +1,133 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ eID Client - Server Project.
+  ~ Copyright (C) 2018 - 2018 BOSA.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it under the
+  ~ terms of the GNU Lesser General Public License version 3.0 as published by
+  ~ the Free Software Foundation.
+  ~
+  ~ This software is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  ~ FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+  ~ for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this software; if not, see https://www.gnu.org/licenses/.
+  -->
+
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
 		 version="3.1">
+
+	<servlet>
+		<servlet-name>EidIdentificationServiceServlet</servlet-name>
+		<servlet-class>be.bosa.eid.server.EidServiceServlet</servlet-class>
+		<init-param>
+			<param-name>IncludeAddress</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>IncludePhoto</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>IdentityConsumerServiceClass</param-name>
+			<param-value>be.bosa.eid.server.demo.IdentityConsumerServiceImpl</param-value>
+		</init-param>
+		<init-param>
+			<param-name>IdentityServiceClass</param-name>
+			<param-value>be.bosa.eid.server.demo.IdentityServiceImpl</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EidIdentificationServiceServlet</servlet-name>
+		<url-pattern>/eid-identification-service</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>EidAuthenticationServiceServlet</servlet-name>
+		<servlet-class>be.bosa.eid.server.EidServiceServlet</servlet-class>
+		<init-param>
+			<param-name>IncludeAddress</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>IncludePhoto</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>AuthenticationServiceClass</param-name>
+			<param-value>be.bosa.eid.server.demo.AuthenticationServiceImpl</param-value>
+		</init-param>
+		<init-param>
+			<param-name>IdentityConsumerServiceClass</param-name>
+			<param-value>be.bosa.eid.server.demo.IdentityConsumerServiceImpl</param-value>
+		</init-param>
+		<init-param>
+			<param-name>IdentityServiceClass</param-name>
+			<param-value>be.bosa.eid.server.demo.IdentityServiceImpl</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EidAuthenticationServiceServlet</servlet-name>
+		<url-pattern>/eid-authentication-service</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>EidSignatureServiceServlet</servlet-name>
+		<servlet-class>be.bosa.eid.server.EidServiceServlet</servlet-class>
+		<init-param>
+			<param-name>IncludeAddress</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>IncludePhoto</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>SignatureServiceClass</param-name>
+			<param-value>be.bosa.eid.server.demo.SignatureServiceImpl</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EidSignatureServiceServlet</servlet-name>
+		<url-pattern>/eid-signature-service</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>PhotoServlet</servlet-name>
+		<servlet-class>be.bosa.eid.server.demo.PhotoServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PhotoServlet</servlet-name>
+		<url-pattern>/photo</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>JspServlet</servlet-name>
+		<servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+		<init-param>
+			<param-name>fork</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<param-name>xpoweredBy</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>                                    <!-- this should be added -->
+			<param-name>compilerSourceVM</param-name>
+			<param-value>1.8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>compilerTargetVM</param-name>
+			<param-value>1.8</param-value>
+		</init-param>                                   <!-- last added line -->
+		<load-on-startup>3</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>JspServlet</servlet-name>
+		<url-pattern>*.jsp</url-pattern>
+	</servlet-mapping>
 </web-app>
